@@ -127,7 +127,13 @@ class _ErrorInterceptor extends Interceptor {
       );
     }
 
-    handler.reject(apiException);
+    handler.reject(DioException(
+      requestOptions: err.requestOptions,
+      error: apiException,
+      response: err.response,
+      type: err.type,
+      stackTrace: err.stackTrace,
+    ));
   }
 }
 

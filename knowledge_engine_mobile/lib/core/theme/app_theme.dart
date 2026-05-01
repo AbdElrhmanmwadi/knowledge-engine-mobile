@@ -188,7 +188,7 @@ class AppTheme {
         errorStyle: const TextStyle(color: errorColor),
       ),
       // Cards
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: surfaceColor,
         elevation: 2,
         margin: const EdgeInsets.all(0),

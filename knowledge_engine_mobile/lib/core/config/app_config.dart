@@ -17,8 +17,6 @@ class AppConfig {
       return devBaseUrl;
     } else if (Platform.isIOS) {
       return 'http://localhost:8000';
-    } else if (Platform.isWeb) {
-      return 'http://localhost:8000';
     }
 
     return defaultBaseUrl;
