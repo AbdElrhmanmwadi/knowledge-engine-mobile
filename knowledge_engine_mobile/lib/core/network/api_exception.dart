@@ -123,4 +123,19 @@ class ApiException implements Exception {
       stackTrace: stackTrace,
     );
   }
+
+  /// Backend-declared failure while still returning a valid JSON body.
+  factory ApiException.backendError({
+    required String message,
+    String? code,
+    dynamic originalException,
+    StackTrace? stackTrace,
+  }) {
+    return ApiException(
+      message: message,
+      code: code ?? 'BACKEND_ERROR',
+      originalException: originalException,
+      stackTrace: stackTrace,
+    );
+  }
 }
