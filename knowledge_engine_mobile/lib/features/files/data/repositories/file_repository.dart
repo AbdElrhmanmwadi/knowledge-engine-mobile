@@ -59,7 +59,7 @@ class FileRepository {
       doReset: doReset,
     );
 
-    _currentFileId = response.fileId;
+    _currentFileId = response.fileId ?? fileId;
     _lastChunkSize = chunkSize;
     _lastOverlapSize = overlapSize;
     _lastResetFlag = doReset;

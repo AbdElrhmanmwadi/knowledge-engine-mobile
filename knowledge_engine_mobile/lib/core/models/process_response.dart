@@ -3,14 +3,14 @@ import 'api_response_base.dart';
 class ProcessResponse extends ApiResponseBase {
   const ProcessResponse({
     required super.signal,
-    required this.fileId,
     required this.insertedChunks,
     required this.processedFiles,
+    this.fileId,
     this.chunkSize,
     this.overlapSize,
   });
 
-  final String fileId;
+  final String? fileId;
   final int insertedChunks;
   final int processedFiles;
   final int? chunkSize;
@@ -19,7 +19,7 @@ class ProcessResponse extends ApiResponseBase {
   factory ProcessResponse.fromJson(JsonMap json) {
     return ProcessResponse(
       signal: ApiResponseBase.readRequiredString(json, 'signal'),
-      fileId: ApiResponseBase.readRequiredString(json, 'file_id'),
+      fileId: ApiResponseBase.readOptionalString(json, 'file_id'),
       insertedChunks: ApiResponseBase.readRequiredInt(json, 'inserted_chunks'),
       processedFiles: ApiResponseBase.readRequiredInt(json, 'processed_files'),
       chunkSize: ApiResponseBase.readOptionalInt(json, 'chunk_size'),
@@ -50,9 +50,9 @@ class ProcessResponse extends ApiResponseBase {
   JsonMap toJson() {
     return <String, dynamic>{
       'signal': signal,
-      'file_id': fileId,
       'inserted_chunks': insertedChunks,
       'processed_files': processedFiles,
+      if (fileId != null) 'file_id': fileId,
       if (chunkSize != null) 'chunk_size': chunkSize,
       if (overlapSize != null) 'overlap_size': overlapSize,
     };

@@ -142,10 +142,11 @@ class ProcessSection extends ConsumerWidget {
                       label: 'Processed files',
                       value: state.processResponse!.processedFiles.toString(),
                     ),
-                    _MetricTile(
-                      label: 'File ID',
-                      value: state.processResponse!.fileId,
-                    ),
+                    if (state.processResponse!.fileId != null)
+                      _MetricTile(
+                        label: 'File ID',
+                        value: state.processResponse!.fileId!,
+                      ),
                   ],
                 ),
               ],
