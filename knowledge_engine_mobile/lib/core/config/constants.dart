@@ -103,6 +103,10 @@ class ApiSignals {
   static const String success = 'success';
   static const String error = 'error';
   static const String warning = 'warning';
+  static bool isSuccessSignal(String signal) {
+  final normalized = signal.trim().toLowerCase();
+  return normalized == success || normalized.endsWith(success); 
+}
 }
 
 /// Validation constants

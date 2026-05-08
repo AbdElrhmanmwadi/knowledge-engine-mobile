@@ -308,7 +308,7 @@ class DioApiService implements ApiService {
     }
 
     final signal = ApiResponseBase.readRequiredString(json, 'signal');
-    if (signal.toLowerCase() == ApiSignals.success) {
+    if (ApiSignals.isSuccessSignal(signal)) {
       return;
     }
 
