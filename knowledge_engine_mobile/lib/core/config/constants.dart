@@ -80,7 +80,26 @@ class LanguageCodes {
   static List<String> getCodes() => languages.keys.toList();
 
   static String getLanguageName(String code) {
-    return languages[code] ?? code.toUpperCase();
+    switch (code) {
+      case 'ar':
+        return 'Arabic';
+      case 'es':
+        return 'Spanish';
+      case 'fr':
+        return 'French';
+      case 'zh':
+        return 'Chinese';
+      case 'ru':
+        return 'Russian';
+      case 'ja':
+        return 'Japanese';
+      case 'pt':
+        return 'Portuguese';
+      case 'ko':
+        return 'Korean';
+      default:
+        return languages[code] ?? code.toUpperCase();
+    }
   }
 }
 
