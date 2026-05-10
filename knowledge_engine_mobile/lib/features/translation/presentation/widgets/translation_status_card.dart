@@ -31,9 +31,13 @@ class TranslationStatusCard extends ConsumerWidget {
     final badgeColor = _statusColor(currentStatus);
     final jobId = job?.jobId ?? created?.jobId ?? '-';
     final resultFileId = job?.resultFileId;
+    final resultAssetId = job?.resultAssetId;
     final errorMessage = job?.errorMessage;
     final progress = job?.progressPercentage;
     final createdAt = created?.createdAt;
+    final sourceLang = job?.sourceLang ?? created?.sourceLang;
+    final targetLang = job?.targetLang ?? created?.targetLang;
+    final sourceAssetId = job?.assetId ?? created?.assetId;
 
     return AppCard(
       title: 'Job Status',
@@ -91,6 +95,30 @@ class TranslationStatusCard extends ConsumerWidget {
             ],
           ),
         ],
+        if (job != null && created == null) ...[
+          const SizedBox(height: 14),
+          Wrap(
+            spacing: 12,
+            runSpacing: 12,
+            children: [
+              _InfoPill(
+                label: 'Signal',
+                value: state.jobStatusResponse!.signal,
+              ),
+              if (sourceLang != null && targetLang != null)
+                _InfoPill(
+                  label: 'Languages',
+                  value:
+                      '${LanguageCodes.getLanguageName(sourceLang)} -> ${LanguageCodes.getLanguageName(targetLang)}',
+                ),
+              if (sourceAssetId != null)
+                _InfoPill(
+                  label: 'Source asset',
+                  value: sourceAssetId,
+                ),
+            ],
+          ),
+        ],
         if (createdAt != null) ...[
           const SizedBox(height: 12),
           Text(
@@ -117,37 +145,92 @@ class TranslationStatusCard extends ConsumerWidget {
         ],
         if (resultFileId != null && resultFileId.trim().isNotEmpty) ...[
           const SizedBox(height: 14),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: AppTheme.successColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.successColor.withOpacity(0.2)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Translated file is ready',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppTheme.successColor,
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  'Filename',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+                const SizedBox(height: 4),
+                SelectableText(
+                  resultFileId,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                if (resultAssetId != null && resultAssetId.trim().isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Text(
+                    'Result asset ID',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 4),
+                  SelectableText(
+                    resultAssetId,
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                ],
+                const SizedBox(height: 12),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
                   children: [
-                    Text(
-                      'Result file ID',
-                      style: Theme.of(context).textTheme.titleSmall,
+                    TextButton.icon(
+                      onPressed: () => _copyText(
+                        context,
+                        resultFileId,
+                        'Translated filename copied.',
+                      ),
+                      icon: const Icon(Icons.copy_outlined),
+                      label: const Text('Copy filename'),
                     ),
-                    const SizedBox(height: 4),
-                    SelectableText(
-                      resultFileId,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w700,
-                          ),
-                    ),
+                    if (resultAssetId != null && resultAssetId.trim().isNotEmpty)
+                      TextButton.icon(
+                        onPressed: () => _copyText(
+                          context,
+                          resultAssetId,
+                          'Result asset ID copied.',
+                        ),
+                        icon: const Icon(Icons.inventory_2_outlined),
+                        label: const Text('Copy asset ID'),
+                      ),
                   ],
                 ),
-              ),
-              const SizedBox(width: 12),
-              TextButton.icon(
-                onPressed: () => _copyText(
-                  context,
-                  resultFileId,
-                  'Result file ID copied.',
-                ),
-                icon: const Icon(Icons.copy_outlined),
-                label: const Text('Copy'),
-              ),
-            ],
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.warningColor.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.warningColor.withOpacity(0.2)),
+            ),
+            child: Text(
+              'The backend returned the translated file metadata, but this app does not yet have a preview or download endpoint connected for opening the file contents directly.',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
           ),
         ],
         if (errorMessage != null && errorMessage.trim().isNotEmpty) ...[

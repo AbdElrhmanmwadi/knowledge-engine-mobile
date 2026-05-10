@@ -153,7 +153,7 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
       _isDisposed = true;
       _pollingSubscription?.cancel();
     });
-    _restoreStoredLanguages();
+    _restoreStoredPreferences();
     return TranslationState.initial(_projectId);
   }
 
@@ -169,7 +169,7 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
     state = AsyncValue.data(nextState);
   }
 
-  Future<void> _restoreStoredLanguages() async {
+  Future<void> _restoreStoredPreferences() async {
     final prefs = await SharedPreferences.getInstance();
     if (_isDisposed) {
       return;
@@ -178,8 +178,15 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
     _prefs = prefs;
     final source = prefs.getString(StorageKeys.lastSourceLanguage);
     final target = prefs.getString(StorageKeys.lastTargetLanguage);
+    final latestFileId = prefs.getString(
+      StorageKeys.latestFileIdForProject(_projectId),
+    );
 
     _updateState(_currentState.copyWith(
+      fileIdInput:
+          latestFileId != null && latestFileId.trim().isNotEmpty
+              ? latestFileId
+              : _currentState.fileIdInput,
       sourceLang: LanguageCodes.languages.containsKey(source)
           ? source
           : _currentState.sourceLang,

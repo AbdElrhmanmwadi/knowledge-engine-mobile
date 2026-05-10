@@ -23,7 +23,7 @@ class AppConfig {
   }
 
   /// API request timeout in seconds
-  static const int requestTimeout = 30;
+  static const int requestTimeout = 60;
 
   /// File upload timeout in seconds
   static const int uploadTimeout = 120;

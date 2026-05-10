@@ -8,7 +8,7 @@ import '../../../../core/widgets/app_card.dart';
 import '../providers/translation_provider.dart';
 import 'language_selector_widget.dart';
 
-class JobCreationSection extends ConsumerWidget {
+class JobCreationSection extends ConsumerStatefulWidget {
   const JobCreationSection({
     super.key,
     required this.projectId,
@@ -17,11 +17,38 @@ class JobCreationSection extends ConsumerWidget {
   final int projectId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<JobCreationSection> createState() => _JobCreationSectionState();
+}
+
+class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
+  late final TextEditingController _fileIdController;
+
+  @override
+  void initState() {
+    super.initState();
+    _fileIdController = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _fileIdController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final projectId = widget.projectId;
     final state = ref.watch(translationStateProvider(projectId));
     final notifier = ref.read(translationNotifierProvider(projectId).notifier);
     final featureColor = AppTheme.getFeatureColor('translate');
     final createdJob = state.createdJobResponse;
+
+    if (_fileIdController.text != state.fileIdInput) {
+      _fileIdController.value = TextEditingValue(
+        text: state.fileIdInput,
+        selection: TextSelection.collapsed(offset: state.fileIdInput.length),
+      );
+    }
 
     return AppCard(
       title: 'Create Translation Job',
@@ -32,13 +59,16 @@ class JobCreationSection extends ConsumerWidget {
         ),
         const SizedBox(height: 16),
         TextField(
+          controller: _fileIdController,
           enabled: !state.isBusy,
           onChanged: notifier.updateFileId,
           decoration: InputDecoration(
             labelText: 'File ID',
-            hintText: 'Enter the file ID returned by upload',
+            hintText: 'Latest uploaded file ID will appear here automatically',
             helperText:
-                'Supported source assets include ${SupportedFileTypes.extensions.join(', ')}.',
+                state.fileIdInput.trim().isEmpty
+                    ? 'Upload a file first, then the latest file ID for this project will appear here automatically.'
+                    : 'Auto-filled from the latest uploaded file for this project. You can still edit it if needed.',
             errorText: state.fileIdError,
           ),
         ),

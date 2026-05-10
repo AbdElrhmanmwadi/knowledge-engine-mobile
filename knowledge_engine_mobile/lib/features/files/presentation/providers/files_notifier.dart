@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/config/constants.dart';
@@ -176,10 +177,12 @@ class FilesNotifier extends AsyncNotifier<FilesState> {
 
   final int _projectId;
   late FileRepository _repository;
+  SharedPreferences? _prefs;
 
   @override
   FilesState build() {
     _repository = FileRepository();
+    _warmSharedPreferences();
     return FilesState.initial(_projectId);
   }
 
@@ -487,8 +490,22 @@ class FilesNotifier extends AsyncNotifier<FilesState> {
       fileId: response.fileId,
       errorMessage: null,
     ));
+    _persistLatestFileId(response.fileId);
     _addToLog('Upload completed for $fileName.', StatusLogKind.success);
     _addToLog('Received file ID: ${response.fileId}.', StatusLogKind.success);
+  }
+
+  Future<void> _warmSharedPreferences() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> _persistLatestFileId(String fileId) async {
+    final prefs = _prefs ?? await SharedPreferences.getInstance();
+    _prefs = prefs;
+    await prefs.setString(
+      StorageKeys.latestFileIdForProject(_projectId),
+      fileId,
+    );
   }
 
   bool _validateParameters() {

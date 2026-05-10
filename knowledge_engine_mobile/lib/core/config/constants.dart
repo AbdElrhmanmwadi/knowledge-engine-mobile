@@ -156,4 +156,7 @@ class StorageKeys {
   static const String lastBackendUrl = 'last_backend_url';
   static const String lastTargetLanguage = 'last_target_language';
   static const String lastSourceLanguage = 'last_source_language';
+
+  static String latestFileIdForProject(int projectId) =>
+      'latest_file_id_project_$projectId';
 }
