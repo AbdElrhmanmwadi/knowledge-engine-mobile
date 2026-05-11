@@ -54,6 +54,19 @@ void main() {
       expect(response.chunkSize, 512);
       expect(response.overlapSize, 50);
     });
+
+    test('accepts processing responses without file id', () {
+      final response = ProcessResponse.fromJson(<String, dynamic>{
+        'signal': 'success',
+        'inserted_chunks': 1,
+        'processed_files': 1,
+      });
+
+      expect(response.fileId, isNull);
+      expect(response.insertedChunks, 1);
+      expect(response.processedFiles, 1);
+      expect(response.toJson().containsKey('file_id'), isFalse);
+    });
   });
 
   group('IndexPushResponse', () {
