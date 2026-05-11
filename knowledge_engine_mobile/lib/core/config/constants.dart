@@ -23,6 +23,8 @@ class ApiConstants {
   static const String createTranslationJob = '$translatePath/file';
   static String getTranslationStatus(String jobId) =>
       '$translatePath/status/$jobId';
+  static String downloadTranslatedFile(int jobId) =>
+      '$translatePath/download/$jobId';
 }
 
 /// Supported file types for upload

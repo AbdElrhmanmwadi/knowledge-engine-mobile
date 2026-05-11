@@ -44,6 +44,12 @@ class TranslationRepository {
     return response;
   }
 
+  Future<({List<int> bytes, String? filename})> downloadTranslatedFile({
+    required int jobId,
+  }) {
+    return _apiService.downloadTranslatedFile(jobId: jobId);
+  }
+
   Stream<TranslationJobStatusResponse> pollJobStatus({
     required String jobId,
     Duration interval = const Duration(seconds: 5),

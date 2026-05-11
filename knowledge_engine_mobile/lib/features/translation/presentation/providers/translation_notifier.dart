@@ -1,6 +1,10 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../core/config/app_config.dart';
@@ -27,6 +31,9 @@ class TranslationState {
     this.autoRefreshEnabled = false,
     this.refreshIntervalSeconds = AppConfig.translationPollInterval,
     this.lastRefreshTime,
+    this.isDownloading = false,
+    this.downloadError,
+    this.lastDownloadedPath,
   });
 
   factory TranslationState.initial(int projectId) {
@@ -49,6 +56,9 @@ class TranslationState {
   final bool autoRefreshEnabled;
   final int refreshIntervalSeconds;
   final DateTime? lastRefreshTime;
+  final bool isDownloading;
+  final String? downloadError;
+  final String? lastDownloadedPath;
 
   bool get isBusy => isCreatingJob || isCheckingStatus;
 
@@ -103,6 +113,9 @@ class TranslationState {
     bool? autoRefreshEnabled,
     int? refreshIntervalSeconds,
     Object? lastRefreshTime = _unset,
+    bool? isDownloading,
+    Object? downloadError = _unset,
+    Object? lastDownloadedPath = _unset,
   }) {
     return TranslationState(
       currentProjectId: currentProjectId,
@@ -133,6 +146,13 @@ class TranslationState {
       lastRefreshTime: identical(lastRefreshTime, _unset)
           ? this.lastRefreshTime
           : lastRefreshTime as DateTime?,
+      isDownloading: isDownloading ?? this.isDownloading,
+      downloadError: identical(downloadError, _unset)
+          ? this.downloadError
+          : downloadError as String?,
+      lastDownloadedPath: identical(lastDownloadedPath, _unset)
+          ? this.lastDownloadedPath
+          : lastDownloadedPath as String?,
     );
   }
 }
@@ -389,7 +409,79 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
       statusError: null,
       autoRefreshEnabled: false,
       lastRefreshTime: null,
+      isDownloading: false,
+      downloadError: null,
+      lastDownloadedPath: null,
     ));
+  }
+
+  Future<String?> downloadResultFile() async {
+    final currentState = _currentState;
+    final job = currentState.jobStatusResponse?.job;
+    final status = job?.status ?? currentState.createdJobResponse?.status;
+    if (status == null || status.toLowerCase() != JobStatus.completed) {
+      _updateState(currentState.copyWith(
+        downloadError: 'Translation job is not completed yet.',
+      ));
+      return null;
+    }
+
+    final jobIdString = currentState.resolvedJobId;
+    final jobId = jobIdString == null ? null : int.tryParse(jobIdString);
+    if (jobId == null || jobId <= 0) {
+      _updateState(currentState.copyWith(
+        downloadError: 'Invalid job ID for download.',
+      ));
+      return null;
+    }
+
+    if (currentState.isDownloading) {
+      return currentState.lastDownloadedPath;
+    }
+
+    _updateState(currentState.copyWith(
+      isDownloading: true,
+      downloadError: null,
+      lastDownloadedPath: null,
+    ));
+
+    try {
+      final download = await _repository.downloadTranslatedFile(jobId: jobId);
+      final dir = await getApplicationDocumentsDirectory();
+
+      final rawName =
+          (download.filename?.trim().isNotEmpty ?? false)
+              ? download.filename!.trim()
+              : 'translated_$jobId.bin';
+      final safeName = _sanitizeFileName(rawName);
+      final outPath = p.join(dir.path, safeName);
+
+      final outFile = File(outPath);
+      await outFile.writeAsBytes(download.bytes, flush: true);
+
+      _updateState(_currentState.copyWith(
+        isDownloading: false,
+        downloadError: null,
+        lastDownloadedPath: outPath,
+      ));
+
+      await OpenFilex.open(outPath);
+      return outPath;
+    } catch (e) {
+      _updateState(_currentState.copyWith(
+        isDownloading: false,
+        downloadError: e.toString(),
+      ));
+      return null;
+    }
+  }
+
+  String _sanitizeFileName(String name) {
+    var result = name.replaceAll(RegExp(r'[\\/:*?"<>|]'), '_').trim();
+    if (result.isEmpty) {
+      result = 'download.bin';
+    }
+    return result;
   }
 
   void _applyStatusResponse(TranslationJobStatusResponse response) {
@@ -405,6 +497,7 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
       statusError: null,
       lastRefreshTime: DateTime.now(),
       autoRefreshEnabled: terminal ? false : _currentState.autoRefreshEnabled,
+      downloadError: null,
     ));
   }
 

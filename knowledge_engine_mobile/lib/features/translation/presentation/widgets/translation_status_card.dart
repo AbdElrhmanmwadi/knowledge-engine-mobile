@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../../../../core/config/constants.dart';
 import '../../../../core/theme/app_theme.dart';
+import '../../../../core/widgets/app_button.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../../../../core/widgets/status_badge.dart';
 import '../providers/translation_provider.dart';
@@ -20,6 +21,7 @@ class TranslationStatusCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(translationStateProvider(projectId));
+    final notifier = ref.read(translationNotifierProvider(projectId).notifier);
     final created = state.createdJobResponse;
     final job = state.jobStatusResponse?.job;
 
@@ -38,6 +40,7 @@ class TranslationStatusCard extends ConsumerWidget {
     final sourceLang = job?.sourceLang ?? created?.sourceLang;
     final targetLang = job?.targetLang ?? created?.targetLang;
     final sourceAssetId = job?.assetId ?? created?.assetId;
+    final isCompleted = currentStatus.toLowerCase() == JobStatus.completed;
 
     return AppCard(
       title: 'Job Status',
@@ -218,20 +221,47 @@ class TranslationStatusCard extends ConsumerWidget {
               ],
             ),
           ),
+          if (isCompleted) ...[
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: AppButton(
+                label: state.isDownloading ? 'Downloading...' : 'Download',
+                icon: Icons.download_outlined,
+                isLoading: state.isDownloading,
+                isEnabled: !state.isDownloading,
+                onPressed: () async {
+                  final path = await notifier.downloadResultFile();
+                  if (!context.mounted) return;
+                  if (path == null) {
+                    final message = state.downloadError ?? 'Download failed.';
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text(message)),
+                    );
+                    return;
+                  }
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Saved to $path')),
+                  );
+                },
+              ),
+            ),
+          ],
           const SizedBox(height: 12),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: AppTheme.warningColor.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: AppTheme.warningColor.withOpacity(0.2)),
+          if (!isCompleted)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: AppTheme.warningColor.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppTheme.warningColor.withOpacity(0.2)),
+              ),
+              child: Text(
+                'The backend returned the translated file metadata, but the translated file download is only available once the job completes.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
             ),
-            child: Text(
-              'The backend returned the translated file metadata, but this app does not yet have a preview or download endpoint connected for opening the file contents directly.',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
         ],
         if (errorMessage != null && errorMessage.trim().isNotEmpty) ...[
           const SizedBox(height: 14),
@@ -249,6 +279,17 @@ class TranslationStatusCard extends ConsumerWidget {
                     color: AppTheme.errorColor,
                   ),
             ),
+          ),
+        ],
+        if (state.downloadError != null &&
+            state.downloadError!.trim().isNotEmpty) ...[
+          const SizedBox(height: 12),
+          Text(
+            state.downloadError!,
+            style: Theme.of(context)
+                .textTheme
+                .bodySmall
+                ?.copyWith(color: AppTheme.errorColor),
           ),
         ],
         const SizedBox(height: 14),

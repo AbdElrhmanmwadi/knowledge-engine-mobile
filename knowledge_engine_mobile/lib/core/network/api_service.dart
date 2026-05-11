@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 
@@ -68,6 +69,10 @@ abstract class ApiService {
   Future<TranslationJobStatusResponse> getTranslationStatus({
     required String jobId,
   });
+
+  Future<({List<int> bytes, String? filename})> downloadTranslatedFile({
+    required int jobId,
+  });
 }
 
 /// Dio-based implementation of [ApiService].
@@ -89,6 +94,43 @@ class DioApiService implements ApiService {
       requireSuccessSignal: true,
       validateSignalIfPresent: true,
     );
+  }
+
+  @override
+  Future<({List<int> bytes, String? filename})> downloadTranslatedFile({
+    required int jobId,
+  }) async {
+    try {
+      final response = await _dio.get<dynamic>(
+        ApiConstants.downloadTranslatedFile(jobId),
+        options: Options(
+          responseType: ResponseType.bytes,
+          followRedirects: true,
+        ),
+      );
+
+      final data = response.data;
+      final List<int> bytes;
+      if (data is Uint8List) {
+        bytes = data.toList(growable: false);
+      } else if (data is List<int>) {
+        bytes = data;
+      } else if (data is List) {
+        // Some platforms may decode as List<dynamic>.
+        bytes = data.map((e) => e as int).toList(growable: false);
+      } else {
+        throw ApiException.parseError(
+          message: 'download translated file: unexpected response type',
+          originalException: FormatException('Invalid response payload'),
+        );
+      }
+
+      final contentDisposition = response.headers.value('content-disposition');
+      final filename = _extractFilenameFromContentDisposition(contentDisposition);
+      return (bytes: bytes, filename: filename);
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
   }
 
   @override
@@ -322,6 +364,42 @@ class DioApiService implements ApiService {
         stackTrace: stackTrace,
       );
     }
+  }
+
+  String? _extractFilenameFromContentDisposition(String? value) {
+    if (value == null) return null;
+    final raw = value.trim();
+    if (raw.isEmpty) return null;
+
+    // Prefer RFC 5987: filename*=utf-8''<urlencoded>
+    final filenameStar = RegExp(
+      r'filename\*\s*=\s*([^;]+)',
+      caseSensitive: false,
+    ).firstMatch(raw);
+    if (filenameStar != null) {
+      var v = filenameStar.group(1)?.trim();
+      if (v != null) {
+        v = v.replaceAll('"', '');
+        final lower = v.toLowerCase();
+        if (lower.startsWith("utf-8''")) {
+          v = v.substring("utf-8''".length);
+        }
+        if (v.isNotEmpty) {
+          try {
+            return Uri.decodeFull(v);
+          } catch (_) {
+            return v;
+          }
+        }
+      }
+    }
+
+    // Fallback: filename="..."
+    final filename = RegExp(
+      r'filename\s*=\s*("?)([^";]+)\1',
+      caseSensitive: false,
+    ).firstMatch(raw);
+    return filename?.group(2)?.trim();
   }
 
   JsonMap _normalizeJson(
