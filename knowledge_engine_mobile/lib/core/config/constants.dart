@@ -9,6 +9,8 @@ class ApiConstants {
   // Data endpoints
   static String uploadFile(int projectId) => '$dataPath/upload/$projectId';
   static String processFile(int projectId) => '$dataPath/process/$projectId';
+  static String deleteAllProjectFiles(int projectId) =>
+      '$dataPath/delete_all/$projectId';
 
   // Index endpoints
   static String pushIndex(int projectId) => '$nlpPath/index/push/$projectId';

@@ -203,6 +203,7 @@ class ProjectsPage extends ConsumerWidget {
                   child: _buildRecentProjectTile(
                     context,
                     projectId,
+                    notifier,
                   ),
                 );
               }).toList(),
@@ -234,39 +235,101 @@ class ProjectsPage extends ConsumerWidget {
   }
 
   /// Build individual recent project tile
-  Widget _buildRecentProjectTile(BuildContext context, int projectId) {
-    return GestureDetector(
-      onTap: () {
-        context.push('/dashboard', extra: projectId);
-      },
-      child: AppCard(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Project',
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  projectId.toString(),
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ],
+  Widget _buildRecentProjectTile(
+    BuildContext context,
+    int projectId,
+    ProjectsNotifier notifier,
+  ) {
+    return Dismissible(
+      key: ValueKey('recent_project_$projectId'),
+      direction: DismissDirection.horizontal,
+      confirmDismiss: (direction) async {
+        final ok = await notifier.deleteProject(projectId);
+        if (!ok && context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Failed to delete project $projectId'),
             ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: Colors.grey[400],
+          );
+        }
+        return ok;
+      },
+      background: Container(
+        decoration: BoxDecoration(
+          color: Colors.red[600],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: Alignment.centerLeft,
+        child: const Row(
+          children: [
+            Icon(Icons.delete, color: Colors.white),
+            SizedBox(width: 8),
+            Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
             ),
           ],
+        ),
+      ),
+      secondaryBackground: Container(
+        decoration: BoxDecoration(
+          color: Colors.red[600],
+          borderRadius: BorderRadius.circular(12),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        alignment: Alignment.centerRight,
+        child: const Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'Delete',
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            SizedBox(width: 8),
+            Icon(Icons.delete, color: Colors.white),
+          ],
+        ),
+      ),
+      child: GestureDetector(
+        onTap: () {
+          context.push('/dashboard', extra: projectId);
+        },
+        child: AppCard(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Project',
+                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    projectId.toString(),
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 16,
+                color: Colors.grey[400],
+              ),
+            ],
+          ),
         ),
       ),
     );

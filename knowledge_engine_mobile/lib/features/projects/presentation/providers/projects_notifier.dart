@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/repositories/projects_repository.dart';
+import '../../data/repositories/projects_api_repository.dart';
+import 'recent_projects_provider.dart';
 
 /// State for projects feature
 class ProjectsState {
@@ -34,11 +36,13 @@ class ProjectsState {
 /// Async notifier for projects feature
 class ProjectsNotifier extends AsyncNotifier<ProjectsState> {
   late ProjectsRepository repository;
+  late ProjectsApiRepository apiRepository;
 
   @override
   Future<ProjectsState> build() async {
     final prefs = await SharedPreferences.getInstance();
     repository = ProjectsRepository(prefs: prefs);
+    apiRepository = ProjectsApiRepository();
     return ProjectsState();
   }
 
@@ -109,6 +113,30 @@ class ProjectsNotifier extends AsyncNotifier<ProjectsState> {
           errorMessage: 'Error saving project: $e',
         ),
       );
+    }
+  }
+
+  /// Delete a project on the backend and remove it from local recent projects.
+  /// Returns `true` if delete succeeded, otherwise `false`.
+  Future<bool> deleteProject(int projectId) async {
+    if (projectId <= 0) return false;
+
+    try {
+      await apiRepository.deleteAllProjectFiles(projectId: projectId);
+      await repository.removeRecentProject(projectId);
+      ref.invalidate(recentProjectsProvider);
+      return true;
+    } catch (e) {
+      final currentState = state.maybeWhen(
+        data: (s) => s,
+        orElse: () => ProjectsState(),
+      );
+      state = AsyncValue.data(
+        currentState.copyWith(
+          errorMessage: 'Error deleting project: $e',
+        ),
+      );
+      return false;
     }
   }
 

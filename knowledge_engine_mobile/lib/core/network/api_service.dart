@@ -25,6 +25,10 @@ abstract class ApiService {
     ProgressCallback? onProgress,
   });
 
+  Future<JsonMap> deleteAllProjectFiles({
+    required int projectId,
+  });
+
   Future<ProcessResponse> processFile({
     required int projectId,
     required String fileId,
@@ -75,12 +79,25 @@ class DioApiService implements ApiService {
   final Dio _dio;
 
   @override
+  Future<JsonMap> deleteAllProjectFiles({
+    required int projectId,
+  }) {
+    return _delete(
+      path: ApiConstants.deleteAllProjectFiles(projectId),
+      parser: (JsonMap json) => json,
+      operation: 'delete project',
+      requireSuccessSignal: true,
+      validateSignalIfPresent: true,
+    );
+  }
+
+  @override
   Future<UploadResponse> uploadFile({
     required int projectId,
     required File file,
     ProgressCallback? onProgress,
   }) async {
-    final formData = await FormData.fromMap(<String, dynamic>{
+    final formData = FormData.fromMap(<String, dynamic>{
       'file': await MultipartFile.fromFile(
         file.path,
         filename: _resolveFileName(file),
@@ -246,6 +263,28 @@ class DioApiService implements ApiService {
         path,
         data: data,
         onSendProgress: onSendProgress,
+        options: options,
+      ),
+      parser: parser,
+      operation: operation,
+      requireSuccessSignal: requireSuccessSignal,
+      validateSignalIfPresent: validateSignalIfPresent,
+    );
+  }
+
+  Future<T> _delete<T>({
+    required String path,
+    required JsonParser<T> parser,
+    required String operation,
+    Object? data,
+    Options? options,
+    bool requireSuccessSignal = true,
+    bool validateSignalIfPresent = false,
+  }) {
+    return _executeRequest(
+      request: () => _dio.delete<dynamic>(
+        path,
+        data: data,
         options: options,
       ),
       parser: parser,

@@ -41,8 +41,20 @@ class ProjectsRepository {
     );
   }
 
+
   /// Clear all recent projects
   Future<void> clearRecentProjects() async {
     await _prefs.remove(_recentProjectsKey);
+  }
+
+  /// Remove a single project ID from recent projects.
+  Future<void> removeRecentProject(int projectId) async {
+    if (projectId <= 0) return;
+    final recent = await getRecentProjects();
+    recent.removeWhere((id) => id == projectId);
+    await _prefs.setStringList(
+      _recentProjectsKey,
+      recent.map((e) => e.toString()).toList(),
+    );
   }
 }
