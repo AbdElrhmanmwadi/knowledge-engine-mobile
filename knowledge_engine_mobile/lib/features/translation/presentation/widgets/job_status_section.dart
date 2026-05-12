@@ -25,24 +25,64 @@ class JobStatusSection extends ConsumerWidget {
     final latestJobId = state.createdJobResponse?.jobId;
 
     return AppCard(
-      title: 'Check Job Status',
+      title: 'Translation status',
       children: [
         Text(
-          'Refresh the latest translation status manually or keep it polling automatically.',
+          'We’ll track the latest translation request for you.',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
-        TextField(
-          enabled: !state.isBusy,
-          onChanged: notifier.updateJobStatusId,
-          decoration: InputDecoration(
-            labelText: 'Job ID',
-            hintText: 'Enter a job ID to inspect',
-            helperText: latestJobId == null
-                ? 'If left empty, the section uses the latest created job automatically.'
-                : 'Latest created job: $latestJobId',
-            errorText: state.jobStatusIdError,
+        if (latestJobId != null && latestJobId.trim().isNotEmpty)
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: featureColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: featureColor.withOpacity(0.18)),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.confirmation_number_outlined, color: featureColor),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    'Latest request: $latestJobId',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
+                  ),
+                ),
+              ],
+            ),
           ),
+        if (latestJobId == null || latestJobId.trim().isEmpty)
+          Text(
+            'Create a translation request first to see its status here.',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Colors.grey[700],
+                ),
+          ),
+        const SizedBox(height: 10),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          title: const Text('Advanced'),
+          subtitle: const Text('Look up a different request by ID.'),
+          children: [
+            const SizedBox(height: 8),
+            TextField(
+              enabled: !state.isBusy,
+              onChanged: notifier.updateJobStatusId,
+              decoration: InputDecoration(
+                labelText: 'Request ID',
+                hintText: 'Optional',
+                helperText: 'Leave empty to use the latest request.',
+                errorText: state.jobStatusIdError,
+              ),
+            ),
+            const SizedBox(height: 12),
+          ],
         ),
         if (state.statusError != null) ...[
           const SizedBox(height: 12),
@@ -58,7 +98,7 @@ class JobStatusSection extends ConsumerWidget {
         SizedBox(
           width: double.infinity,
           child: AppButton(
-            label: 'Check Status',
+            label: 'Refresh status',
             icon: Icons.refresh,
             onPressed: notifier.checkJobStatus,
             isLoading: state.isCheckingStatus,
@@ -74,7 +114,7 @@ class JobStatusSection extends ConsumerWidget {
           value: state.autoRefreshEnabled,
           onChanged: (value) => notifier.toggleAutoRefresh(value),
           contentPadding: EdgeInsets.zero,
-          title: const Text('Auto-refresh'),
+          title: const Text('Keep updating automatically'),
           subtitle: Text(
             'Refresh every ${state.refreshIntervalSeconds} seconds until the job completes.',
           ),

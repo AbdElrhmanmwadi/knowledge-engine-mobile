@@ -9,6 +9,7 @@ import '../../../../core/config/constants.dart';
 import '../../../../core/models/index_push_response.dart';
 import '../../../../core/models/process_response.dart';
 import '../../../../core/models/upload_response.dart';
+import '../../../../core/network/user_friendly_error.dart';
 import '../../data/repositories/file_repository.dart';
 
 enum StatusLogKind { info, success, error }
@@ -292,7 +293,10 @@ class FilesNotifier extends AsyncNotifier<FilesState> {
       _updateState(_currentState.copyWith(
         isUploading: false,
         uploadProgress: 0,
-        errorMessage: error.toString(),
+        errorMessage: UserFriendlyError.message(
+          error,
+          fallback: 'Upload failed. Please try again.',
+        ),
       ));
       _addToLog('Upload failed: $error', StatusLogKind.error);
     }
@@ -351,7 +355,10 @@ class FilesNotifier extends AsyncNotifier<FilesState> {
     } catch (error) {
       _updateState(_currentState.copyWith(
         isProcessing: false,
-        errorMessage: error.toString(),
+        errorMessage: UserFriendlyError.message(
+          error,
+          fallback: 'Processing failed. Please try again.',
+        ),
       ));
       _addToLog('Processing failed: $error', StatusLogKind.error);
     }
@@ -405,7 +412,10 @@ class FilesNotifier extends AsyncNotifier<FilesState> {
     } catch (error) {
       _updateState(_currentState.copyWith(
         isIndexing: false,
-        errorMessage: error.toString(),
+        errorMessage: UserFriendlyError.message(
+          error,
+          fallback: 'Couldn’t update the knowledge base. Please try again.',
+        ),
       ));
       _addToLog('Index push failed: $error', StatusLogKind.error);
     }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../../core/config/app_config.dart';
 import '../../../../core/config/constants.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_button.dart';
@@ -24,61 +23,66 @@ class ProcessSection extends ConsumerWidget {
     final featureColor = AppTheme.getFeatureColor('files');
 
     return AppCard(
-      title: '2. Process File',
+      title: '2. Prepare document',
       children: [
         Text(
           state.fileId == null
-              ? 'Upload a file first to unlock processing.'
-              : 'Configure how the uploaded file will be chunked before indexing.',
+              ? 'Upload a file first to unlock this step.'
+              : 'This prepares your document so it can be searched and used for answers.',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
-        CheckboxListTile(
-          value: state.showAdvancedOptions,
-          onChanged: state.isBusy
-              ? null
-              : (value) => notifier.toggleAdvancedOptions(value ?? false),
-          contentPadding: EdgeInsets.zero,
-          controlAffinity: ListTileControlAffinity.leading,
-          title: const Text('Advanced chunk settings'),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          title: const Text('Advanced'),
           subtitle: Text(
-            'Default values: ${AppConfig.defaultChunkSize} chunk size and ${AppConfig.defaultOverlapSize} overlap.',
+            'Default settings work for most files.',
+            style: Theme.of(context).textTheme.bodySmall,
           ),
+          onExpansionChanged: state.isBusy ? null : notifier.toggleAdvancedOptions,
+          initiallyExpanded: state.showAdvancedOptions,
+          children: [
+            const SizedBox(height: 8),
+            TextField(
+              enabled: !state.isBusy,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              decoration: InputDecoration(
+                labelText: 'Chunk size',
+                hintText: state.chunkSize.toString(),
+                helperText:
+                    'Range: ${ValidationConstants.minChunkSize}-${ValidationConstants.maxChunkSize}',
+                errorText: state.chunkSizeError,
+              ),
+              onChanged: notifier.updateChunkSize,
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              enabled: !state.isBusy,
+              keyboardType: TextInputType.number,
+              inputFormatters: <TextInputFormatter>[
+                FilteringTextInputFormatter.digitsOnly,
+              ],
+              decoration: InputDecoration(
+                labelText: 'Overlap size',
+                hintText: state.overlapSize.toString(),
+                helperText:
+                    'Range: ${ValidationConstants.minOverlapSize}-${ValidationConstants.maxOverlapSize}',
+                errorText: state.overlapSizeError,
+              ),
+              onChanged: notifier.updateOverlapSize,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'Tip: Only change these if you know what you’re optimizing for.',
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
+            const SizedBox(height: 12),
+          ],
         ),
-        if (state.showAdvancedOptions) ...[
-          const SizedBox(height: 8),
-          TextField(
-            enabled: !state.isBusy,
-            keyboardType: TextInputType.number,
-            inputFormatters:  <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            decoration: InputDecoration(
-              labelText: 'Chunk size',
-              hintText: state.chunkSize.toString(),
-              helperText:
-                  'Range: ${ValidationConstants.minChunkSize}-${ValidationConstants.maxChunkSize}',
-              errorText: state.chunkSizeError,
-            ),
-            onChanged: notifier.updateChunkSize,
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            enabled: !state.isBusy,
-            keyboardType: TextInputType.number,
-            inputFormatters:  <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly,
-            ],
-            decoration: InputDecoration(
-              labelText: 'Overlap size',
-              hintText: state.overlapSize.toString(),
-              helperText:
-                  'Range: ${ValidationConstants.minOverlapSize}-${ValidationConstants.maxOverlapSize}',
-              errorText: state.overlapSizeError,
-            ),
-            onChanged: notifier.updateOverlapSize,
-          ),
-        ],
         const SizedBox(height: 12),
         CheckboxListTile(
           value: state.processDoReset,
@@ -87,16 +91,14 @@ class ProcessSection extends ConsumerWidget {
               : (value) => notifier.toggleProcessDoReset(value ?? false),
           contentPadding: EdgeInsets.zero,
           controlAffinity: ListTileControlAffinity.leading,
-          title: const Text('Reset processed chunks before reprocessing'),
-          subtitle: const Text(
-            'Enable this when you want to replace prior chunks.',
-          ),
+          title: const Text('Replace previous preparation'),
+          subtitle: const Text('Use this if you re-uploaded or changed the file.'),
         ),
         const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,
           child: AppButton(
-            label: 'Process File',
+            label: 'Prepare document',
             icon: Icons.auto_awesome_motion_outlined,
             onPressed: notifier.processFile,
             isLoading: state.isProcessing,

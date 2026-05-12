@@ -4,6 +4,7 @@ import '../../../../core/config/app_config.dart';
 import '../../../../core/config/constants.dart';
 import '../../../../core/models/rag_answer_response.dart';
 import '../../../../core/models/search_response.dart';
+import '../../../../core/network/user_friendly_error.dart';
 import '../../data/repositories/answer_repository.dart';
 import '../../data/repositories/search_repository.dart';
 
@@ -267,7 +268,10 @@ class RagNotifier extends AsyncNotifier<RagState> {
     } catch (error) {
       _updateState(_currentState.copyWith(
         isSearching: false,
-        searchErrorMessage: error.toString(),
+        searchErrorMessage: UserFriendlyError.message(
+          error,
+          fallback: 'Couldn’t search right now. Please try again.',
+        ),
       ));
     }
   }
@@ -317,7 +321,10 @@ class RagNotifier extends AsyncNotifier<RagState> {
     } catch (error) {
       _updateState(_currentState.copyWith(
         isAnswering: false,
-        answerErrorMessage: error.toString(),
+        answerErrorMessage: UserFriendlyError.message(
+          error,
+          fallback: 'Couldn’t generate an answer. Please try again.',
+        ),
       ));
     }
   }

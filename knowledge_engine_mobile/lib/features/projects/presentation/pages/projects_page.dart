@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import '../providers/projects_notifier.dart';
 import '../providers/recent_projects_provider.dart';
 import 'package:knowledge_engine_mobile/core/widgets/app_button.dart';
@@ -8,17 +9,46 @@ import 'package:knowledge_engine_mobile/core/widgets/app_card.dart';
 
 /// Projects Page - First screen for project selection
 /// Allows users to enter a project ID and view recent projects
-class ProjectsPage extends ConsumerWidget {
+class ProjectsPage extends ConsumerStatefulWidget {
   const ProjectsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ProjectsPage> createState() => _ProjectsPageState();
+}
+
+class _ProjectsPageState extends ConsumerState<ProjectsPage> {
+  late final TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final stateAsync = ref.watch(projectsNotifierProvider);
     final notifier = ref.read(projectsNotifierProvider.notifier);
     final recentProjects = ref.watch(recentProjectsProvider);
 
     return stateAsync.when(
       data: (state) {
+        if (_controller.text != state.projectInput) {
+          _controller.value = _controller.value.copyWith(
+            text: state.projectInput,
+            selection: TextSelection.collapsed(
+              offset: state.projectInput.length,
+            ),
+            composing: TextRange.empty,
+          );
+        }
+
         return Scaffold(
           appBar: AppBar(
             title: const Text('Knowledge Engine'),
@@ -106,9 +136,12 @@ class ProjectsPage extends ConsumerWidget {
             style: Theme.of(context).textTheme.titleLarge,
           ),
           const SizedBox(height: 12),
-          // Text input field
           TextField(
+            controller: _controller,
             keyboardType: TextInputType.number,
+            inputFormatters: <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly,
+            ],
             onChanged: notifier.updateProjectInput,
             decoration: InputDecoration(
               hintText: 'Enter project ID',
@@ -120,6 +153,15 @@ class ProjectsPage extends ConsumerWidget {
                 horizontal: 12,
                 vertical: 12,
               ),
+              suffixIcon: state.projectInput.trim().isEmpty
+                  ? null
+                  : IconButton(
+                      tooltip: 'Clear',
+                      onPressed: () {
+                        notifier.updateProjectInput('');
+                      },
+                      icon: const Icon(Icons.clear),
+                    ),
             ),
           ),
           const SizedBox(height: 16),
@@ -127,7 +169,7 @@ class ProjectsPage extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: AppButton(
-              label: 'Open Project',
+              label: 'Continue',
               isLoading: state.isLoading,
               onPressed: () {
                 if (notifier.validateAndOpenProject()) {
@@ -188,7 +230,7 @@ class ProjectsPage extends ConsumerWidget {
               return AppCard(
                 child: Center(
                   child: Text(
-                    'No recent projects',
+                    'No recent projects yet',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: Colors.grey[600],
                     ),
@@ -248,7 +290,7 @@ class ProjectsPage extends ConsumerWidget {
         if (!ok && context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
-              content: Text('Failed to delete project $projectId'),
+              content: Text('Couldn’t delete Project $projectId. Try again.'),
             ),
           );
         }
@@ -316,7 +358,7 @@ class ProjectsPage extends ConsumerWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    projectId.toString(),
+                    '#${projectId.toString()}',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),

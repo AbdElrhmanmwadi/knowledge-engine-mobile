@@ -71,7 +71,7 @@ class ProjectsNotifier extends AsyncNotifier<ProjectsState> {
     // Check if empty
     if (input.isEmpty) {
       state = AsyncValue.data(
-        currentState.copyWith(validationError: 'Please enter a project ID'),
+        currentState.copyWith(validationError: 'Enter your Project ID to continue.'),
       );
       return false;
     }
@@ -81,7 +81,7 @@ class ProjectsNotifier extends AsyncNotifier<ProjectsState> {
     if (projectId == null || projectId <= 0) {
       state = AsyncValue.data(
         currentState.copyWith(
-          validationError: 'Project ID must be a positive number',
+          validationError: 'Project ID must be a positive number (e.g. 123).',
         ),
       );
       return false;
@@ -110,7 +110,7 @@ class ProjectsNotifier extends AsyncNotifier<ProjectsState> {
       state = AsyncValue.data(
         currentState.copyWith(
           isLoading: false,
-          errorMessage: 'Error saving project: $e',
+          errorMessage: 'Couldn’t save this project to Recents. Please try again.',
         ),
       );
     }
@@ -133,7 +133,7 @@ class ProjectsNotifier extends AsyncNotifier<ProjectsState> {
       );
       state = AsyncValue.data(
         currentState.copyWith(
-          errorMessage: 'Error deleting project: $e',
+          errorMessage: 'Couldn’t delete this project. Please try again.',
         ),
       );
       return false;

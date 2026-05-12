@@ -19,7 +19,7 @@ class DashboardPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Project $projectId'),
+        title: const Text('Workspace'),
         centerTitle: false,
       ),
       body: SafeArea(
@@ -44,14 +44,14 @@ class DashboardPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Project workspace',
+                      'Your project is ready',
                       style: textTheme.headlineSmall?.copyWith(
                         color: Colors.white,
                       ),
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Project ID: $projectId',
+                      'Project #$projectId',
                       style: textTheme.titleMedium?.copyWith(
                         color: Colors.white.withOpacity(0.92),
                         fontWeight: FontWeight.w700,
@@ -59,7 +59,7 @@ class DashboardPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12),
                     Text(
-                      'Choose what you want to do next: manage files, ask AI questions, or create translation jobs.',
+                      'Pick what you want to do next. You can always come back here.',
                       style: textTheme.bodyMedium?.copyWith(
                         color: Colors.white.withOpacity(0.92),
                       ),
@@ -69,30 +69,27 @@ class DashboardPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                'Actions',
+                'Next steps',
                 style: textTheme.titleLarge,
               ),
               const SizedBox(height: 8),
               _DashboardActionCard(
-                title: 'Manage Files',
-                description:
-                    'Upload documents, process them into chunks, and push them to the vector index.',
+                title: 'Add documents',
+                description: 'Upload files and prepare them for searching.',
                 icon: Icons.folder_open_outlined,
                 color: AppTheme.secondaryColor,
                 onTap: () => context.push('/files', extra: projectId),
               ),
               _DashboardActionCard(
-                title: 'Ask AI',
-                description:
-                    'Run semantic search or ask grounded RAG questions for this project.',
+                title: 'Ask questions',
+                description: 'Search and ask the AI using your project documents.',
                 icon: Icons.auto_awesome_outlined,
                 color: AppTheme.primaryColor,
                 onTap: () => context.push('/ask', extra: projectId),
               ),
               _DashboardActionCard(
-                title: 'Translate Files',
-                description:
-                    'Create translation jobs, monitor progress, and capture translated result file IDs.',
+                title: 'Translate a file',
+                description: 'Request a translation and download the result.',
                 icon: Icons.translate_outlined,
                 color: AppTheme.tertiaryColor,
                 onTap: () => context.push('/translate', extra: projectId),
@@ -102,7 +99,7 @@ class DashboardPage extends StatelessWidget {
                 child: TextButton.icon(
                   onPressed: () => context.go('/projects'),
                   icon: const Icon(Icons.arrow_back),
-                  label: const Text('Back to Projects'),
+                  label: const Text('Switch project'),
                 ),
               ),
             ],

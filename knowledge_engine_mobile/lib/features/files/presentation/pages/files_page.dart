@@ -24,7 +24,7 @@ class FilesPage extends ConsumerWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Files'),
+        title: const Text('Documents'),
         centerTitle: false,
       ),
       body: LoadingOverlay(
@@ -52,7 +52,7 @@ class FilesPage extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Upload, process, and index files',
+                        'Add your documents',
                         style:
                             Theme.of(context).textTheme.headlineSmall?.copyWith(
                                   color: Colors.white,
@@ -60,7 +60,7 @@ class FilesPage extends ConsumerWidget {
                       ),
                       const SizedBox(height: 8),
                       Text(
-                        'Project $projectId uses a guided 3-step flow: upload a file, process it into chunks, then push it to the vector index.',
+                        'Upload a file, prepare it, then update the knowledge base so you can search and ask questions.',
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                               color: Colors.white.withOpacity(0.92),
                             ),

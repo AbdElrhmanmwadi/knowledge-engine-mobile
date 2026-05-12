@@ -41,9 +41,10 @@ class TranslationStatusCard extends ConsumerWidget {
     final targetLang = job?.targetLang ?? created?.targetLang;
     final sourceAssetId = job?.assetId ?? created?.assetId;
     final isCompleted = currentStatus.toLowerCase() == JobStatus.completed;
+    final isFailed = currentStatus.toLowerCase() == JobStatus.failed;
 
     return AppCard(
-      title: 'Job Status',
+      title: 'Translation request',
       margin: EdgeInsets.zero,
       children: [
         Row(
@@ -54,7 +55,7 @@ class TranslationStatusCard extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Job ID',
+                    'Request ID',
                     style: Theme.of(context).textTheme.titleSmall,
                   ),
                   const SizedBox(height: 4),
@@ -168,7 +169,7 @@ class TranslationStatusCard extends ConsumerWidget {
                 ),
                 const SizedBox(height: 12),
                 Text(
-                  'Filename',
+                  'Result',
                   style: Theme.of(context).textTheme.titleSmall,
                 ),
                 const SizedBox(height: 4),
@@ -258,10 +259,28 @@ class TranslationStatusCard extends ConsumerWidget {
                 border: Border.all(color: AppTheme.warningColor.withOpacity(0.2)),
               ),
               child: Text(
-                'The backend returned the translated file metadata, but the translated file download is only available once the job completes.',
+                'Your translation is being prepared. The download button will appear once it completes.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
+        ],
+        if (isFailed && (errorMessage == null || errorMessage.trim().isEmpty)) ...[
+          const SizedBox(height: 14),
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: AppTheme.errorColor.withOpacity(0.08),
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: AppTheme.errorColor.withOpacity(0.2)),
+            ),
+            child: Text(
+              'Translation failed. Please try again.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    color: AppTheme.errorColor,
+                  ),
+            ),
+          ),
         ],
         if (errorMessage != null && errorMessage.trim().isNotEmpty) ...[
           const SizedBox(height: 14),

@@ -22,30 +22,39 @@ class IndexSection extends ConsumerWidget {
     final featureColor = AppTheme.getFeatureColor('files');
 
     return AppCard(
-      title: '3. Push to Index',
+      title: '3. Update knowledge base',
       children: [
         Text(
           state.processResponse == null
-              ? 'Processing must finish before indexing becomes available.'
-              : 'Push processed chunks into the vector database for retrieval.',
+              ? 'Finish preparing the document first.'
+              : 'This makes your prepared document available for search and answers.',
           style: Theme.of(context).textTheme.bodyMedium,
         ),
         const SizedBox(height: 16),
-        CheckboxListTile(
-          value: state.indexDoReset,
-          onChanged: state.isBusy
-              ? null
-              : (value) => notifier.toggleIndexDoReset(value ?? false),
-          contentPadding: EdgeInsets.zero,
-          controlAffinity: ListTileControlAffinity.leading,
-          title: const Text('Full reindex (do_reset)'),
-          subtitle: const Text('Rebuild the vector collection from scratch.'),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          childrenPadding: EdgeInsets.zero,
+          title: const Text('Advanced'),
+          subtitle: const Text('Only needed for full rebuilds.'),
+          children: [
+            CheckboxListTile(
+              value: state.indexDoReset,
+              onChanged: state.isBusy
+                  ? null
+                  : (value) => notifier.toggleIndexDoReset(value ?? false),
+              contentPadding: EdgeInsets.zero,
+              controlAffinity: ListTileControlAffinity.leading,
+              title: const Text('Full rebuild'),
+              subtitle:
+                  const Text('Rebuild the knowledge base from scratch (slower).'),
+            ),
+          ],
         ),
         const SizedBox(height: 8),
         SizedBox(
           width: double.infinity,
           child: AppButton(
-            label: 'Push Index',
+            label: 'Update knowledge base',
             icon: Icons.publish_outlined,
             onPressed: notifier.pushIndex,
             isLoading: state.isIndexing,
