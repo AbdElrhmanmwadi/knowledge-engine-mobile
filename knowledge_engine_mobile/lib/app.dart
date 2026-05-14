@@ -6,6 +6,7 @@ import 'features/dashboard/presentation/pages/dashboard_page.dart';
 import 'features/files/presentation/pages/files_page.dart';
 import 'features/rag/presentation/pages/ask_page.dart';
 import 'features/translation/presentation/pages/translate_page.dart';
+import 'features/voice/presentation/pages/voice_page.dart';
 
 /// Main application widget with routing configuration
 class KnowledgeEngineApp extends StatelessWidget {
@@ -68,6 +69,16 @@ final _router = GoRouter(
           return const ProjectsPage();
         }
         return TranslatePage(projectId: projectId);
+      },
+    ),
+    GoRoute(
+      path: '/voice',
+      builder: (context, state) {
+        final projectId = state.extra as int?;
+        if (projectId == null) {
+          return const ProjectsPage();
+        }
+        return VoicePage(projectId: projectId);
       },
     ),
   ],

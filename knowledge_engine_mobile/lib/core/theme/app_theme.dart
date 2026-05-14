@@ -7,6 +7,7 @@ class AppTheme {
   static const Color primaryColor = Color(0xFF2E7D32); // Green for AI/Ask
   static const Color secondaryColor = Color(0xFF1976D2); // Blue for Files
   static const Color tertiaryColor = Color(0xFFF57C00); // Orange for Translation
+  static const Color voiceColor = Color(0xFFFF8F00); // Amber for Voice
   static const Color accentColor = Color(0xFF00BCD4); // Teal/Cyan accent
 
   static const Color successColor = Color(0xFF4CAF50);

@@ -88,6 +88,13 @@ class DashboardPage extends StatelessWidget {
                 onTap: () => context.push('/ask', extra: projectId),
               ),
               _DashboardActionCard(
+                title: 'Voice',
+                description: 'Transcribe speech, hear text aloud, or ask by voice.',
+                icon: Icons.mic_none_outlined,
+                color: AppTheme.voiceColor,
+                onTap: () => context.push('/voice', extra: projectId),
+              ),
+              _DashboardActionCard(
                 title: 'Translate a file',
                 description: 'Request a translation and download the result.',
                 icon: Icons.translate_outlined,

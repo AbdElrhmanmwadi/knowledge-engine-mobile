@@ -4,6 +4,7 @@ class ApiConstants {
   static const String basePath = '/api/v1';
   static const String dataPath = '/api/v1/data';
   static const String nlpPath = '/api/v1/nlp';
+  static const String voicePath = '/api/v1/voice';
   static const String translatePath = '/translate';
 
   // Data endpoints
@@ -18,6 +19,11 @@ class ApiConstants {
   static String searchIndex(int projectId) => '$nlpPath/index/search/$projectId';
   static String answerQuestion(int projectId) =>
       '$nlpPath/index/answer/$projectId';
+
+  // Voice endpoints
+  static const String speechToText = '$voicePath/stt';
+  static const String textToSpeech = '$voicePath/tts';
+  static String voiceChat(int projectId) => '$voicePath/chat/$projectId';
 
   // Translation endpoints
   static const String createTranslationJob = '$translatePath/file';
@@ -144,6 +150,8 @@ class ValidationConstants {
   static const int maxSearchLimit = 50;
   static const int minRagLimit = 1;
   static const int maxRagLimit = 20;
+  static const int minVoiceChatLimit = 1;
+  static const int maxVoiceChatLimit = 200;
 }
 
 /// UI constants

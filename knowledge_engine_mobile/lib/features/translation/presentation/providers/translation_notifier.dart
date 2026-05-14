@@ -11,6 +11,7 @@ import '../../../../core/config/app_config.dart';
 import '../../../../core/config/constants.dart';
 import '../../../../core/models/translation_job_create_response.dart';
 import '../../../../core/models/translation_job_status_response.dart';
+import '../../../../core/network/user_friendly_error.dart';
 import '../../data/repositories/translation_repository.dart';
 
 class TranslationState {
@@ -323,7 +324,10 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
     } catch (error) {
       _updateState(_currentState.copyWith(
         isCreatingJob: false,
-        creationError: error.toString(),
+        creationError: UserFriendlyError.message(
+          error,
+          fallback: 'Couldn’t create the translation request. Please try again.',
+        ),
       ));
     }
   }
@@ -356,7 +360,10 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
     } catch (error) {
       _updateState(_currentState.copyWith(
         isCheckingStatus: false,
-        statusError: error.toString(),
+        statusError: UserFriendlyError.message(
+          error,
+          fallback: 'Couldn’t refresh the status. Please try again.',
+        ),
       ));
     }
   }
@@ -470,7 +477,10 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
     } catch (e) {
       _updateState(_currentState.copyWith(
         isDownloading: false,
-        downloadError: e.toString(),
+        downloadError: UserFriendlyError.message(
+          e,
+          fallback: 'Couldn’t download the file. Please try again.',
+        ),
       ));
       return null;
     }
@@ -515,7 +525,10 @@ class TranslationNotifier extends AsyncNotifier<TranslationState> {
         _pollingSubscription = null;
         _updateState(_currentState.copyWith(
           isCheckingStatus: false,
-          statusError: error.toString(),
+          statusError: UserFriendlyError.message(
+            error,
+            fallback: 'Auto-refresh stopped due to an error. Try again.',
+          ),
           autoRefreshEnabled: false,
         ));
       },

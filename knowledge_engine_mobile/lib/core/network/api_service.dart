@@ -10,9 +10,12 @@ import '../models/index_push_response.dart';
 import '../models/process_response.dart';
 import '../models/rag_answer_response.dart';
 import '../models/search_response.dart';
+import '../models/stt_response.dart';
 import '../models/translation_job_create_response.dart';
 import '../models/translation_job_status_response.dart';
+import '../models/tts_result.dart';
 import '../models/upload_response.dart';
+import '../models/voice_chat_response.dart';
 import 'api_exception.dart';
 import 'dio_client.dart';
 
@@ -57,6 +60,24 @@ abstract class ApiService {
     required int projectId,
     required String text,
     int limit = AppConfig.defaultRagLimit,
+  });
+
+  Future<SttResponse> speechToText({
+    required File audioFile,
+    String? language,
+  });
+
+  Future<TtsResult> textToSpeech({
+    required String text,
+    String format = 'wav',
+  });
+
+  Future<VoiceChatResponse> voiceChat({
+    required int projectId,
+    required File audioFile,
+    int limit = 30,
+    bool returnAudioBase64 = true,
+    String? language,
   });
 
   Future<TranslationJobCreateResponse> createTranslationJob({
@@ -274,6 +295,130 @@ class DioApiService implements ApiService {
     );
   }
 
+  @override
+  Future<SttResponse> speechToText({
+    required File audioFile,
+    String? language,
+  }) async {
+    final formData = FormData.fromMap(<String, dynamic>{
+      'audio': await MultipartFile.fromFile(
+        audioFile.path,
+        filename: _resolveFileName(audioFile),
+      ),
+    });
+
+    return _post(
+      path: ApiConstants.speechToText,
+      data: formData,
+      queryParameters: _optionalLanguageQuery(language),
+      options: Options(
+        contentType: 'multipart/form-data',
+        sendTimeout: Duration(seconds: AppConfig.uploadTimeout),
+        receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+      ),
+      parser: SttResponse.fromJson,
+      operation: 'speech to text',
+    );
+  }
+
+  @override
+  Future<TtsResult> textToSpeech({
+    required String text,
+    String format = 'wav',
+  }) async {
+    try {
+      final response = await _dio.post<dynamic>(
+        ApiConstants.textToSpeech,
+        data: <String, dynamic>{
+          'text': text,
+          'format': format,
+        },
+        options: Options(
+          responseType: ResponseType.bytes,
+          contentType: Headers.jsonContentType,
+          receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+        ),
+      );
+      final status = response.statusCode ?? 0;
+      if (status >= 200 && status < 300) {
+        final bytes = _coerceResponseToBytes(response.data);
+        if (bytes.isEmpty) {
+          return const TtsFailure(
+            message: 'The server returned an empty audio response.',
+          );
+        }
+        return TtsSuccess(bytes: bytes);
+      }
+      return TtsFailure(
+        message: 'Unexpected response status $status.',
+        signal: null,
+      );
+    } on DioException catch (error) {
+      final wrapped = error.error;
+      if (wrapped is ApiException) {
+        return TtsFailure(
+          message: wrapped.message,
+          signal: wrapped.code,
+        );
+      }
+      throw _mapDioException(error);
+    }
+  }
+
+  @override
+  Future<VoiceChatResponse> voiceChat({
+    required int projectId,
+    required File audioFile,
+    int limit = 30,
+    bool returnAudioBase64 = true,
+    String? language,
+  }) async {
+    final formData = FormData.fromMap(<String, dynamic>{
+      'audio': await MultipartFile.fromFile(
+        audioFile.path,
+        filename: _resolveFileName(audioFile),
+      ),
+      'limit': limit.toString(),
+      'return_audio_base64': returnAudioBase64.toString(),
+    });
+
+    return _post(
+      path: ApiConstants.voiceChat(projectId),
+      data: formData,
+      queryParameters: _optionalLanguageQuery(language),
+      options: Options(
+        contentType: 'multipart/form-data',
+        sendTimeout: Duration(seconds: AppConfig.uploadTimeout),
+        receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+      ),
+      parser: VoiceChatResponse.fromJson,
+      operation: 'voice chat',
+    );
+  }
+
+  Map<String, dynamic>? _optionalLanguageQuery(String? language) {
+    final trimmed = language?.trim();
+    if (trimmed == null || trimmed.isEmpty) {
+      return null;
+    }
+    return <String, dynamic>{'language': trimmed};
+  }
+
+  Uint8List _coerceResponseToBytes(dynamic data) {
+    if (data is Uint8List) {
+      return data;
+    }
+    if (data is List<int>) {
+      return Uint8List.fromList(data);
+    }
+    if (data is List) {
+      return Uint8List.fromList(
+        data.map((dynamic e) => e as int).toList(growable: false),
+      );
+    }
+    return Uint8List(0);
+  }
+
   Future<T> _get<T>({
     required String path,
     required JsonParser<T> parser,
@@ -297,6 +442,7 @@ class DioApiService implements ApiService {
     Object? data,
     ProgressCallback? onSendProgress,
     Options? options,
+    Map<String, dynamic>? queryParameters,
     bool requireSuccessSignal = true,
     bool validateSignalIfPresent = false,
   }) {
@@ -304,6 +450,7 @@ class DioApiService implements ApiService {
       request: () => _dio.post<dynamic>(
         path,
         data: data,
+        queryParameters: queryParameters,
         onSendProgress: onSendProgress,
         options: options,
       ),
