@@ -1,19 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:knowledge_engine_mobile/features/translation/presentation/pages/translate_page.dart';
 
 import '../../../../core/config/constants.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_button.dart';
-import '../../../../core/widgets/app_card.dart';
 import '../providers/translation_provider.dart';
 import 'language_selector_widget.dart';
 
 class JobCreationSection extends ConsumerStatefulWidget {
-  const JobCreationSection({
-    super.key,
-    required this.projectId,
-  });
-
+  const JobCreationSection({super.key, required this.projectId});
   final int projectId;
 
   @override
@@ -37,10 +31,9 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
 
   @override
   Widget build(BuildContext context) {
-    final projectId = widget.projectId;
-    final state = ref.watch(translationStateProvider(projectId));
-    final notifier = ref.read(translationNotifierProvider(projectId).notifier);
-    final featureColor = AppTheme.getFeatureColor('translate');
+    final state = ref.watch(translationStateProvider(widget.projectId));
+    final notifier =
+        ref.read(translationNotifierProvider(widget.projectId).notifier);
     final createdJob = state.createdJobResponse;
 
     if (_fileIdController.text != state.fileIdInput) {
@@ -50,96 +43,269 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
       );
     }
 
-    return AppCard(
-      title: 'Create Translation Job',
-      children: [
-        Text(
-          'Submit a translation request for a file in project $projectId.',
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
-        const SizedBox(height: 16),
-        TextField(
-          controller: _fileIdController,
-          enabled: !state.isBusy,
-          onChanged: notifier.updateFileId,
-          decoration: InputDecoration(
-            labelText: 'File ID',
-            hintText: 'Latest uploaded file ID will appear here automatically',
-            helperText:
-                state.fileIdInput.trim().isEmpty
-                    ? 'Upload a file first, then the latest file ID for this project will appear here automatically.'
-                    : 'Auto-filled from the latest uploaded file for this project. You can still edit it if needed.',
-            errorText: state.fileIdError,
-          ),
-        ),
-        const SizedBox(height: 16),
-        LanguageSelectorWidget(projectId: projectId),
-        if (state.creationError != null) ...[
-          const SizedBox(height: 12),
+    return TSection(
+      label: 'Create Job',
+      icon: Icons.add_circle_outline_rounded,
+      iconColor: TColors.amber,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
           Text(
-            state.creationError!,
-            style: Theme.of(context)
-                .textTheme
-                .bodyMedium
-                ?.copyWith(color: AppTheme.errorColor),
+            'Submit a translation request for a file in project ${widget.projectId}.',
+            style: const TextStyle(color: TColors.textSecondary, fontSize: 13),
           ),
-        ],
-        const SizedBox(height: 16),
-        SizedBox(
-          width: double.infinity,
-          child: AppButton(
-            label: 'Create Job',
-            icon: Icons.playlist_add_check_circle_outlined,
-            onPressed: notifier.createTranslationJob,
-            isLoading: state.isCreatingJob,
-            isEnabled: state.canCreate,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: featureColor,
-              foregroundColor: Colors.white,
-            ),
-          ),
-        ),
-        if (createdJob != null) ...[
           const SizedBox(height: 16),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: featureColor.withOpacity(0.08),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: featureColor.withOpacity(0.22)),
+
+          // ── File ID field ──────────────────────────────────────────
+          TextField(
+            controller: _fileIdController,
+            enabled: !state.isBusy,
+            onChanged: notifier.updateFileId,
+            style: const TextStyle(color: TColors.textPrimary, fontSize: 14),
+            decoration: InputDecoration(
+              labelText: 'File ID',
+              hintText: 'Latest uploaded file ID will appear here',
+              helperText: state.fileIdInput.trim().isEmpty
+                  ? 'Upload a file first — the ID will auto-fill.'
+                  : 'Auto-filled from the latest upload. Edit if needed.',
+              errorText: state.fileIdError,
+              prefixIcon: const Icon(Icons.insert_drive_file_outlined,
+                  size: 18, color: TColors.textSecondary),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Latest created job',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+          ),
+          const SizedBox(height: 16),
+
+          // ── Language selector ─────────────────────────────────────
+          LanguageSelectorWidget(projectId: widget.projectId),
+
+          // ── Error ─────────────────────────────────────────────────
+          if (state.creationError != null) ...[
+            const SizedBox(height: 12),
+            _AlertBanner(
+              icon: Icons.error_outline_rounded,
+              color: TColors.error,
+              message: state.creationError!,
+            ),
+          ],
+          const SizedBox(height: 16),
+
+          // ── Submit button ─────────────────────────────────────────
+          SizedBox(
+            width: double.infinity,
+            child: FilledButton.icon(
+              onPressed: (state.isBusy || !state.canCreate)
+                  ? null
+                  : notifier.createTranslationJob,
+              style: FilledButton.styleFrom(
+                backgroundColor: TColors.amber,
+                foregroundColor: Colors.white,
+                disabledBackgroundColor: TColors.amber.withOpacity(0.3),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                textStyle: const TextStyle(
+                    fontSize: 14, fontWeight: FontWeight.w600),
+              ),
+              icon: state.isCreatingJob
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2, color: Colors.white),
+                    )
+                  : const Icon(Icons.playlist_add_check_circle_outlined,
+                      size: 18),
+              label:
+                  Text(state.isCreatingJob ? 'Creating…' : 'Create Job'),
+            ),
+          ),
+
+          // ── Created job result ────────────────────────────────────
+          if (createdJob != null) ...[
+            const SizedBox(height: 16),
+            _CreatedJobCard(job: createdJob),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+// ── Created job result card ─────────────────────────────────────────────────
+class _CreatedJobCard extends StatelessWidget {
+  const _CreatedJobCard({required this.job});
+  final dynamic job;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: TColors.amber.withOpacity(0.07),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: TColors.amber.withOpacity(0.22)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              const Icon(Icons.check_circle_rounded,
+                  color: TColors.amber, size: 15),
+              const SizedBox(width: 6),
+              const Text(
+                'JOB CREATED',
+                style: TextStyle(
+                  color: TColors.amber,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.2,
                 ),
-                const SizedBox(height: 10),
-                SelectableText(
-                  createdJob.jobId,
-                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          SelectableText(
+            job.jobId as String,
+            style: const TextStyle(
+              color: TColors.textPrimary,
+              fontWeight: FontWeight.w700,
+              fontSize: 15,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            runSpacing: 6,
+            children: [
+              _MiniPill(label: 'Status', value: job.status as String),
+              _MiniPill(label: 'Asset', value: job.assetId as String),
+              _MiniPill(
+                label: 'Route',
+                value:
+                    '${LanguageCodes.getLanguageName(job.sourceLang as String)} → ${LanguageCodes.getLanguageName(job.targetLang as String)}',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MiniPill extends StatelessWidget {
+  const _MiniPill({required this.label, required this.value});
+  final String label;
+  final String value;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(color: Colors.white.withOpacity(0.08)),
+      ),
+      child: Text(
+        '$label: $value',
+        style: const TextStyle(
+          color: TColors.textSecondary,
+          fontSize: 11,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+  }
+}
+
+// ─── Shared section wrapper ─────────────────────────────────────────────────
+class TSection extends StatelessWidget {
+  const TSection({
+    required this.label,
+    required this.icon,
+    required this.iconColor,
+    required this.child,
+  });
+
+  final String label;
+  final IconData icon;
+  final Color iconColor;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: TColors.card,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: Colors.white.withOpacity(0.07)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Icon(icon, color: iconColor, size: 16),
+              const SizedBox(width: 8),
+              Text(
+                label.toUpperCase(),
+                style: TextStyle(
+                  color: iconColor,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 1.2,
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Status: ${createdJob.status} | Asset: ${createdJob.assetId}',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  'Route: ${LanguageCodes.getLanguageName(createdJob.sourceLang)} -> ${LanguageCodes.getLanguageName(createdJob.targetLang)}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
+              ),
+            ],
+          ),
+          Divider(
+            color: Colors.white.withOpacity(0.06),
+            height: 20,
+          ),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+// ─── Alert banner ───────────────────────────────────────────────────────────
+class _AlertBanner extends StatelessWidget {
+  const _AlertBanner({
+    required this.icon,
+    required this.color,
+    required this.message,
+  });
+
+  final IconData icon;
+  final Color color;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: color.withOpacity(0.3)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, color: color, size: 16),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Text(
+              message,
+              style: TextStyle(color: color, fontSize: 12, height: 1.45),
             ),
           ),
         ],
-      ],
+      ),
     );
   }
 }
