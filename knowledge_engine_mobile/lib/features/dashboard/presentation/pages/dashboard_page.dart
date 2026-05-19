@@ -1,184 +1,472 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/theme/app_theme.dart';
-import '../../../../core/widgets/app_card.dart';
+// ── Design tokens ─────────────────────────────────────────────────────────────
+class _C {
+  static const bg            = Color(0xFF0D0F14);
+  static const surface       = Color(0xFF161923);
+  static const card          = Color(0xFF1E2230);
+  static const textPrimary   = Color(0xFFF0F2FF);
+  static const textSecondary = Color(0xFF8891B0);
 
-/// Dashboard Page - Project overview and navigation hub
-class DashboardPage extends StatelessWidget {
+  // Feature colours — one per section
+  static const files     = Color(0xFF38EFC4); // teal
+  static const ask       = Color(0xFF6C8EFF); // indigo
+  static const voice     = Color(0xFFB07CFF); // purple
+  static const translate = Color(0xFFFFB547); // amber
+}
+
+/// Dashboard Page — project hub with feature navigation.
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({Key? key, required this.projectId}) : super(key: key);
   final int projectId;
 
-  const DashboardPage({
-    Key? key,
-    required this.projectId,
-  }) : super(key: key);
+  @override
+  State<DashboardPage> createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _wave;
+
+  @override
+  void initState() {
+    super.initState();
+    _wave = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 4),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _wave.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
-
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Workspace'),
-        centerTitle: false,
-      ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: <Color>[
-                      AppTheme.primaryColor,
-                      AppTheme.accentColor,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(24),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Your project is ready',
-                      style: textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Project #$projectId',
-                      style: textTheme.titleMedium?.copyWith(
-                        color: Colors.white.withOpacity(0.92),
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      'Pick what you want to do next. You can always come back here.',
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: Colors.white.withOpacity(0.92),
-                      ),
-                    ),
-                  ],
-                ),
+      backgroundColor: _C.bg,
+      body: CustomScrollView(
+        slivers: [
+          // ── Hero app bar ────────────────────────────────────────
+          SliverAppBar(
+            backgroundColor: _C.bg,
+            expandedHeight: 230,
+            pinned: true,
+            elevation: 0,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_rounded,
+                  color: _C.textSecondary),
+              onPressed: () => context.go('/projects'),
+            ),
+            title: const Text(
+              'Workspace',
+              style: TextStyle(
+                fontFamily: 'Georgia',
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.3,
+                color: _C.textPrimary,
               ),
-              const SizedBox(height: 20),
-              Text(
-                'Next steps',
-                style: textTheme.titleLarge,
+            ),
+            centerTitle: false,
+            flexibleSpace: FlexibleSpaceBar(
+              collapseMode: CollapseMode.parallax,
+              background: _DashboardHero(
+                projectId: widget.projectId,
+                waveController: _wave,
               ),
-              const SizedBox(height: 8),
-              _DashboardActionCard(
-                title: 'Add documents',
-                description: 'Upload files and prepare them for searching.',
-                icon: Icons.folder_open_outlined,
-                color: AppTheme.secondaryColor,
-                onTap: () => context.push('/files', extra: projectId),
-              ),
-              _DashboardActionCard(
-                title: 'Ask questions',
-                description: 'Search and ask the AI using your project documents.',
-                icon: Icons.auto_awesome_outlined,
-                color: AppTheme.primaryColor,
-                onTap: () => context.push('/ask', extra: projectId),
-              ),
-              _DashboardActionCard(
-                title: 'Voice',
-                description: 'Transcribe speech, hear text aloud, or ask by voice.',
-                icon: Icons.mic_none_outlined,
-                color: AppTheme.voiceColor,
-                onTap: () => context.push('/voice', extra: projectId),
-              ),
-              _DashboardActionCard(
-                title: 'Translate a file',
-                description: 'Request a translation and download the result.',
-                icon: Icons.translate_outlined,
-                color: AppTheme.tertiaryColor,
-                onTap: () => context.push('/translate', extra: projectId),
-              ),
-              const SizedBox(height: 12),
-              Center(
-                child: TextButton.icon(
-                  onPressed: () => context.go('/projects'),
-                  icon: const Icon(Icons.arrow_back),
-                  label: const Text('Switch project'),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+
+          // ── Body ────────────────────────────────────────────────
+          SliverPadding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Section label
+                const _Label('What would you like to do?'),
+                const SizedBox(height: 14),
+
+                // Feature cards grid (2 cols)
+                _FeatureGrid(projectId: widget.projectId),
+
+                const SizedBox(height: 24),
+
+                // Switch project
+                Center(
+                  child: GestureDetector(
+                    onTap: () => context.go('/projects'),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: _C.card,
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                            color: Colors.white.withOpacity(0.08)),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.swap_horiz_rounded,
+                              size: 16,
+                              color: _C.textSecondary.withOpacity(0.7)),
+                          const SizedBox(width: 7),
+                          Text(
+                            'Switch project',
+                            style: TextStyle(
+                              color: _C.textSecondary.withOpacity(0.8),
+                              fontSize: 13,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 32),
+              ]),
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
-class _DashboardActionCard extends StatelessWidget {
-  const _DashboardActionCard({
+// ── Hero header ──────────────────────────────────────────────────────────────
+class _DashboardHero extends StatelessWidget {
+  const _DashboardHero({
+    required this.projectId,
+    required this.waveController,
+  });
+  final int projectId;
+  final AnimationController waveController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        // Gradient bg — subtle multi-color blend
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                const Color(0xFF0D0F14),
+                _C.ask.withOpacity(0.22),
+                _C.files.withOpacity(0.1),
+              ],
+            ),
+          ),
+        ),
+        // Animated waves
+        AnimatedBuilder(
+          animation: waveController,
+          builder: (_, __) => CustomPaint(
+            painter: _WavePainter(
+              progress: waveController.value,
+              color1: _C.ask.withOpacity(0.15),
+              color2: _C.files.withOpacity(0.1),
+            ),
+          ),
+        ),
+        // Content
+        Positioned(
+          bottom: 28,
+          left: 20,
+          right: 20,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Project badge
+              Container(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: _C.ask.withOpacity(0.14),
+                  borderRadius: BorderRadius.circular(20),
+                  border:
+                      Border.all(color: _C.ask.withOpacity(0.3)),
+                ),
+                child: Text(
+                  'PROJECT #$projectId',
+                  style: const TextStyle(
+                    color: _C.ask,
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1.2,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Your project\nis ready',
+                style: TextStyle(
+                  fontFamily: 'Georgia',
+                  fontSize: 26,
+                  fontWeight: FontWeight.w700,
+                  color: _C.textPrimary,
+                  height: 1.2,
+                  letterSpacing: -0.3,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Pick what you want to do next.',
+                style: TextStyle(
+                  fontSize: 13,
+                  color: _C.textPrimary.withOpacity(0.5),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _WavePainter extends CustomPainter {
+  const _WavePainter(
+      {required this.progress, required this.color1, required this.color2});
+  final double progress;
+  final Color color1;
+  final Color color2;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    void wave(Color c, double amp, double speed, double off) {
+      final p = Paint()
+        ..color = c
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5;
+      final path = Path();
+      final phase = (progress * speed + off) * 2 * math.pi;
+      path.moveTo(0, size.height * 0.6);
+      for (double x = 0; x <= size.width; x++) {
+        path.lineTo(x,
+            size.height * 0.6 +
+                math.sin(x / size.width * 3 * math.pi + phase) * amp);
+      }
+      canvas.drawPath(path, p);
+    }
+
+    wave(color1, 14, 0.55, 0.0);
+    wave(color1.withOpacity(0.5), 8, 1.0, 0.5);
+    wave(color2, 18, 0.4, 1.0);
+    wave(color2.withOpacity(0.4), 6, 1.2, 1.5);
+  }
+
+  @override
+  bool shouldRepaint(_WavePainter old) => old.progress != progress;
+}
+
+// ── Feature grid ─────────────────────────────────────────────────────────────
+class _FeatureGrid extends StatelessWidget {
+  const _FeatureGrid({required this.projectId});
+  final int projectId;
+
+  @override
+  Widget build(BuildContext context) {
+    final features = [
+      _Feature(
+        title: 'Documents',
+        description: 'Upload & index files',
+        icon: Icons.folder_open_rounded,
+        color: _C.files,
+        onTap: () => context.push('/files', extra: projectId),
+      ),
+      _Feature(
+        title: 'Ask AI',
+        description: 'Search & get answers',
+        icon: Icons.auto_awesome_rounded,
+        color: _C.ask,
+        onTap: () => context.push('/ask', extra: projectId),
+      ),
+      _Feature(
+        title: 'Voice',
+        description: 'Speak, transcribe, listen',
+        icon: Icons.mic_rounded,
+        color: _C.voice,
+        onTap: () => context.push('/voice', extra: projectId),
+      ),
+      _Feature(
+        title: 'Translate',
+        description: 'Translate & download',
+        icon: Icons.translate_rounded,
+        color: _C.translate,
+        onTap: () => context.push('/translate', extra: projectId),
+      ),
+    ];
+
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: _FeatureCard(feature: features[0])),
+            const SizedBox(width: 12),
+            Expanded(child: _FeatureCard(feature: features[1])),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(child: _FeatureCard(feature: features[2])),
+            const SizedBox(width: 12),
+            Expanded(child: _FeatureCard(feature: features[3])),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _Feature {
+  const _Feature({
     required this.title,
     required this.description,
     required this.icon,
     required this.color,
     required this.onTap,
   });
-
   final String title;
   final String description;
   final IconData icon;
   final Color color;
   final VoidCallback onTap;
+}
+
+class _FeatureCard extends StatefulWidget {
+  const _FeatureCard({required this.feature});
+  final _Feature feature;
+
+  @override
+  State<_FeatureCard> createState() => _FeatureCardState();
+}
+
+class _FeatureCardState extends State<_FeatureCard> {
+  bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
-    return AppCard(
-      onTap: onTap,
-      margin: const EdgeInsets.only(top: 12),
-      padding: const EdgeInsets.all(18),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.12),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(
-              icon,
-              color: color,
-              size: 28,
-            ),
+    final f = widget.feature;
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _pressed = true),
+      onTapUp: (_) {
+        setState(() => _pressed = false);
+        f.onTap();
+      },
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 120),
+        padding: const EdgeInsets.all(18),
+        decoration: BoxDecoration(
+          color: _pressed
+              ? f.color.withOpacity(0.12)
+              : _C.card,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: _pressed
+                ? f.color.withOpacity(0.4)
+                : f.color.withOpacity(0.18),
+            width: _pressed ? 1.5 : 1,
           ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          boxShadow: _pressed
+              ? [
+                  BoxShadow(
+                    color: f.color.withOpacity(0.1),
+                    blurRadius: 16,
+                    spreadRadius: 1,
+                  )
+                ]
+              : [],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Icon
+            Container(
+              width: 44,
+              height: 44,
+              decoration: BoxDecoration(
+                color: f.color.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(13),
+                border:
+                    Border.all(color: f.color.withOpacity(0.25)),
+              ),
+              child:
+                  Icon(f.icon, color: f.color, size: 22),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              f.title,
+              style: const TextStyle(
+                color: _C.textPrimary,
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              f.description,
+              style: const TextStyle(
+                color: _C.textSecondary,
+                fontSize: 11,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 12),
+            // Arrow indicator
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                Text(
-                  title,
-                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w700,
+                Container(
+                  width: 24,
+                  height: 24,
+                  decoration: BoxDecoration(
+                    color: f.color.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                ),
-                const SizedBox(height: 6),
-                Text(
-                  description,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  child: Icon(
+                    Icons.arrow_forward_rounded,
+                    color: f.color,
+                    size: 14,
+                  ),
                 ),
               ],
             ),
-          ),
-          const SizedBox(width: 12),
-          Icon(
-            Icons.arrow_forward_ios,
-            size: 18,
-            color: Colors.grey.shade400,
-          ),
-        ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ── Section label ─────────────────────────────────────────────────────────────
+class _Label extends StatelessWidget {
+  const _Label(this.text);
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text.toUpperCase(),
+      style: const TextStyle(
+        color: _C.textSecondary,
+        fontSize: 11,
+        fontWeight: FontWeight.w700,
+        letterSpacing: 1.4,
       ),
     );
   }
