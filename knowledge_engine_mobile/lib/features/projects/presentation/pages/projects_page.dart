@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/theme/theme_toggle.dart';
 
 import '../providers/projects_notifier.dart';
 import '../providers/recent_projects_provider.dart';
@@ -145,6 +146,9 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                     ),
                   ),
                   centerTitle: false,
+                  actions: const [
+                    ThemeToggleButton(),
+                  ],
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.parallax,
                     background: _Hero(waveController: _waveController),

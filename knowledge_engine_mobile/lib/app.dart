@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/theme/app_theme.dart';
+import 'core/theme/theme_controller.dart';
+import 'core/theme/theme_toggle.dart';
 import 'features/projects/presentation/pages/projects_page.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
 import 'features/files/presentation/pages/files_page.dart';
@@ -9,14 +12,17 @@ import 'features/translation/presentation/pages/translate_page.dart';
 import 'features/voice/presentation/pages/voice_page.dart';
 
 /// Main application widget with routing configuration
-class KnowledgeEngineApp extends StatelessWidget {
+class KnowledgeEngineApp extends ConsumerWidget {
   const KnowledgeEngineApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
     return MaterialApp.router(
       title: 'Knowledge Engine',
       theme: AppTheme.lightTheme(),
+      darkTheme: AppTheme.darkTheme(),
+      themeMode: themeMode,
       routerConfig: _router,
       debugShowCheckedModeBanner: false,
     );
