@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:knowledge_engine_mobile/features/translation/presentation/pages/translate_page.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/translation_provider.dart';
@@ -17,6 +16,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
     final items = LanguageCodes.getCodes();
 
     final sourceDropdown = _buildDropdown(
+      context: context,
       label: 'Source language',
       value: state.sourceLang,
       items: items,
@@ -27,6 +27,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
     );
 
     final targetDropdown = _buildDropdown(
+      context: context,
       label: 'Target language',
       value: state.targetLang,
       items: items,
@@ -40,14 +41,14 @@ class LanguageSelectorWidget extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // ── Section micro-label ──────────────────────────────────────
-        const Row(
+        Row(
           children: [
-            Icon(Icons.translate_rounded, size: 14, color: TColors.amber),
-            SizedBox(width: 6),
+            Icon(Icons.translate_rounded, size: 14, color: Theme.of(context).colorScheme.secondary),
+            const SizedBox(width: 6),
             Text(
               'LANGUAGES',
               style: TextStyle(
-                color: TColors.amber,
+                color: Theme.of(context).colorScheme.secondary,
                 fontSize: 10,
                 fontWeight: FontWeight.w700,
                 letterSpacing: 1.2,
@@ -68,8 +69,8 @@ class LanguageSelectorWidget extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
                     child: Icon(Icons.arrow_forward_rounded,
-                        color: TColors.textSecondary.withOpacity(0.5),
-                        size: 18),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      size: 18),
                   ),
                   Expanded(child: targetDropdown),
                 ],
@@ -82,7 +83,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
                 const SizedBox(height: 10),
                 Center(
                   child: Icon(Icons.arrow_downward_rounded,
-                      color: TColors.textSecondary.withOpacity(0.5),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
                       size: 18),
                 ),
                 const SizedBox(height: 10),
@@ -97,20 +98,20 @@ class LanguageSelectorWidget extends ConsumerWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
           decoration: BoxDecoration(
-            color: TColors.amber.withOpacity(0.06),
+            color: Theme.of(context).colorScheme.secondary.withOpacity(0.06),
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: TColors.amber.withOpacity(0.18)),
+            border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.18)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.route_rounded,
-                  size: 13, color: TColors.amber),
+              Icon(Icons.route_rounded,
+                  size: 13, color: Theme.of(context).colorScheme.secondary),
               const SizedBox(width: 7),
               Text(
                 '${LanguageCodes.getLanguageName(state.sourceLang)} → ${LanguageCodes.getLanguageName(state.targetLang)}',
-                style: const TextStyle(
-                  color: TColors.amber,
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
                 ),
@@ -123,6 +124,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
   }
 
   Widget _buildDropdown({
+    required BuildContext context,
     required String label,
     required String value,
     required List<String> items,
@@ -131,16 +133,16 @@ class LanguageSelectorWidget extends ConsumerWidget {
   }) {
     return DropdownButtonFormField<String>(
       value: value,
-      dropdownColor: TColors.card,
-      style: const TextStyle(color: TColors.textPrimary, fontSize: 13),
-      icon: const Icon(Icons.keyboard_arrow_down_rounded,
-          color: TColors.textSecondary, size: 18),
+      dropdownColor: Theme.of(context).cardColor,
+      style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 13),
+      icon: Icon(Icons.keyboard_arrow_down_rounded,
+          color: Theme.of(context).textTheme.bodyMedium?.color, size: 18),
       decoration: InputDecoration(
         labelText: label,
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
         filled: true,
-        fillColor: TColors.card,
+        fillColor: Theme.of(context).cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
           borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
@@ -151,7 +153,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14),
-          borderSide: const BorderSide(color: TColors.amber, width: 1.5),
+          borderSide: BorderSide(color: Theme.of(context).colorScheme.secondary, width: 1.5),
         ),
       ),
       items: items

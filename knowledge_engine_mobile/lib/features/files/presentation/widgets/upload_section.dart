@@ -3,7 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/files_provider.dart';
-import '../pages/files_page.dart';    // FColors
+import '../pages/files_page.dart';    // uses AppTheme
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_radius.dart';
 
 class UploadSection extends ConsumerWidget {
   const UploadSection({super.key, required this.projectId});
@@ -24,8 +27,8 @@ class UploadSection extends ConsumerWidget {
         children: [
           Text(
             'Choose a supported file and upload it to project ${state.currentProjectId}.',
-            style: const TextStyle(
-                color: FColors.textSecondary, fontSize: 13),
+            style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
           ),
           const SizedBox(height: 16),
 
@@ -36,16 +39,16 @@ class UploadSection extends ConsumerWidget {
                 child: OutlinedButton.icon(
                   onPressed:
                       state.isBusy ? null : notifier.selectFile,
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: FColors.accent,
+                    style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.primary,
                     side: BorderSide(
-                        color: FColors.accent.withOpacity(0.45)),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.45)),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(AppRadius.md)),
                     padding: const EdgeInsets.symmetric(vertical: 13),
                     textStyle: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w500),
-                  ),
+                      fontSize: 13, fontWeight: FontWeight.w500),
+                    ),
                   icon: const Icon(Icons.attach_file_rounded, size: 16),
                   label: const Text('Choose file'),
                 ),
@@ -56,23 +59,23 @@ class UploadSection extends ConsumerWidget {
                   onPressed: (state.isBusy || !state.canUpload)
                       ? null
                       : notifier.uploadFile,
-                  style: FilledButton.styleFrom(
-                    backgroundColor: FColors.accent,
-                    foregroundColor: FColors.bg,
+                    style: FilledButton.styleFrom(
+                    backgroundColor: Theme.of(context).colorScheme.primary,
+                    foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     disabledBackgroundColor:
-                        FColors.accent.withOpacity(0.25),
+                      Theme.of(context).colorScheme.primary.withOpacity(0.25),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12)),
+                      borderRadius: BorderRadius.circular(AppRadius.md)),
                     padding: const EdgeInsets.symmetric(vertical: 13),
                     textStyle: const TextStyle(
-                        fontSize: 13, fontWeight: FontWeight.w600),
-                  ),
+                      fontSize: 13, fontWeight: FontWeight.w600),
+                    ),
                   icon: state.isUploading
-                      ? const SizedBox(
+                        ? SizedBox(
                           width: 14,
                           height: 14,
                           child: CircularProgressIndicator(
-                              strokeWidth: 2, color: FColors.bg),
+                            strokeWidth: 2, color: Theme.of(context).colorScheme.onPrimary),
                         )
                       : const Icon(Icons.cloud_upload_outlined, size: 16),
                   label: Text(
@@ -97,17 +100,17 @@ class UploadSection extends ConsumerWidget {
                     child: LinearProgressIndicator(
                       value: state.uploadProgress.clamp(0.0, 1.0),
                       minHeight: 5,
-                      backgroundColor:
-                          FColors.accent.withOpacity(0.12),
-                      color: FColors.accent,
+                        backgroundColor:
+                          Theme.of(context).colorScheme.primary.withOpacity(0.12),
+                        color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
                 ),
                 const SizedBox(width: 10),
                 Text(
                   '${(state.uploadProgress * 100).toStringAsFixed(0)}%',
-                  style: const TextStyle(
-                    color: FColors.accent,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
@@ -136,15 +139,15 @@ class UploadSection extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 9, vertical: 4),
                 decoration: BoxDecoration(
-                  color: FColors.accent.withOpacity(0.07),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
                   borderRadius: BorderRadius.circular(7),
                   border: Border.all(
-                      color: FColors.accent.withOpacity(0.2)),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
                 ),
                 child: Text(
                   ext,
-                  style: const TextStyle(
-                    color: FColors.accent,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 11,
                     fontWeight: FontWeight.w500,
                   ),
@@ -171,13 +174,13 @@ class _SelectedFileTile extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
       decoration: BoxDecoration(
         color: has
-            ? FColors.accent.withOpacity(0.07)
-            : Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(12),
+          ? Theme.of(context).colorScheme.primary.withOpacity(0.07)
+          : Theme.of(context).cardColor.withOpacity(0.03),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(
           color: has
-              ? FColors.accent.withOpacity(0.25)
-              : Colors.white.withOpacity(0.07),
+            ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
+            : Theme.of(context).dividerColor.withOpacity(0.07),
         ),
       ),
       child: Row(
@@ -186,7 +189,7 @@ class _SelectedFileTile extends StatelessWidget {
             has
                 ? Icons.insert_drive_file_outlined
                 : Icons.info_outline_rounded,
-            color: has ? FColors.accent : FColors.textSecondary,
+            color: has ? Theme.of(context).colorScheme.primary : Theme.of(context).textTheme.bodyMedium?.color,
             size: 16,
           ),
           const SizedBox(width: 10),
@@ -195,8 +198,8 @@ class _SelectedFileTile extends StatelessWidget {
               has ? fileName! : 'No file selected yet.',
               style: TextStyle(
                 color: has
-                    ? FColors.textPrimary
-                    : FColors.textSecondary,
+                    ? Theme.of(context).textTheme.bodyLarge?.color
+                    : Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 13,
               ),
               overflow: TextOverflow.ellipsis,
@@ -224,24 +227,24 @@ class _ResultBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
       decoration: BoxDecoration(
-        color: FColors.accent.withOpacity(0.07),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: FColors.accent.withOpacity(0.22)),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
       ),
       child: Row(
         children: [
-          Icon(icon, color: FColors.accent, size: 15),
+          Icon(icon, color: Theme.of(context).colorScheme.primary, size: 15),
           const SizedBox(width: 8),
           Text(
             '$label: ',
-            style: const TextStyle(
-                color: FColors.textSecondary, fontSize: 12),
+            style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
           ),
           Expanded(
             child: SelectableText(
               value,
-              style: const TextStyle(
-                color: FColors.accent,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.primary,
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
                 fontFamily: 'Courier',
@@ -277,10 +280,10 @@ class FSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Color color = isComplete
-        ? FColors.accent
+        ? Theme.of(context).colorScheme.primary
         : isLocked
-            ? FColors.textSecondary.withOpacity(0.4)
-            : FColors.accent;
+            ? (Theme.of(context).textTheme.bodyMedium?.color ?? Theme.of(context).colorScheme.onSurface).withOpacity(0.4)
+            : Theme.of(context).colorScheme.primary;
 
     return AnimatedOpacity(
       opacity: isLocked ? 0.45 : 1.0,
@@ -288,12 +291,12 @@ class FSection extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: FColors.card,
+          color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isComplete
-                ? FColors.accent.withOpacity(0.25)
-                : Colors.white.withOpacity(0.07),
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
+                : Theme.of(context).dividerColor.withOpacity(0.07),
             width: isComplete ? 1.2 : 1,
           ),
         ),
@@ -342,13 +345,13 @@ class FSection extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 8, vertical: 3),
                     decoration: BoxDecoration(
-                      color: FColors.accent.withOpacity(0.1),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                       borderRadius: BorderRadius.circular(6),
                     ),
-                    child: const Text(
+                    child: Text(
                       'Done',
                       style: TextStyle(
-                        color: FColors.accent,
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
@@ -358,7 +361,7 @@ class FSection extends StatelessWidget {
               ],
             ),
             Divider(
-                color: Colors.white.withOpacity(0.06), height: 20),
+                color: Theme.of(context).dividerColor.withOpacity(0.06), height: 20),
             child,
           ],
         ),

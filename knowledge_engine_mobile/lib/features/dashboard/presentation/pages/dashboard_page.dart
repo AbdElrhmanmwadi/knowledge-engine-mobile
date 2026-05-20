@@ -3,20 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-// ── Design tokens ─────────────────────────────────────────────────────────────
-class _C {
-  static const bg            = Color(0xFF0D0F14);
-  static const surface       = Color(0xFF161923);
-  static const card          = Color(0xFF1E2230);
-  static const textPrimary   = Color(0xFFF0F2FF);
-  static const textSecondary = Color(0xFF8891B0);
-
-  // Feature colours — one per section
-  static const files     = Color(0xFF38EFC4); // teal
-  static const ask       = Color(0xFF6C8EFF); // indigo
-  static const voice     = Color(0xFFB07CFF); // purple
-  static const translate = Color(0xFFFFB547); // amber
-}
+// Local design tokens removed — use Theme / AppColors instead
 
 /// Dashboard Page — project hub with feature navigation.
 class DashboardPage extends StatefulWidget {
@@ -49,28 +36,28 @@ class _DashboardPageState extends State<DashboardPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: _C.bg,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CustomScrollView(
         slivers: [
           // ── Hero app bar ────────────────────────────────────────
           SliverAppBar(
-            backgroundColor: _C.bg,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             expandedHeight: 230,
             pinned: true,
             elevation: 0,
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_rounded,
-                  color: _C.textSecondary),
+                  color: Colors.transparent),
               onPressed: () => context.go('/projects'),
             ),
-            title: const Text(
+            title: Text(
               'Workspace',
               style: TextStyle(
                 fontFamily: 'Georgia',
                 fontSize: 18,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.3,
-                color: _C.textPrimary,
+                color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
             centerTitle: false,
@@ -97,41 +84,7 @@ class _DashboardPageState extends State<DashboardPage>
                 _FeatureGrid(projectId: widget.projectId),
 
                 const SizedBox(height: 24),
-
-                // Switch project
-                Center(
-                  child: GestureDetector(
-                    onTap: () => context.go('/projects'),
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 18, vertical: 10),
-                      decoration: BoxDecoration(
-                        color: _C.card,
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: Colors.white.withOpacity(0.08)),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(Icons.swap_horiz_rounded,
-                              size: 16,
-                              color: _C.textSecondary.withOpacity(0.7)),
-                          const SizedBox(width: 7),
-                          Text(
-                            'Switch project',
-                            style: TextStyle(
-                              color: _C.textSecondary.withOpacity(0.8),
-                              fontSize: 13,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
+               
               ]),
             ),
           ),
@@ -162,9 +115,9 @@ class _DashboardHero extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF0D0F14),
-                _C.ask.withOpacity(0.22),
-                _C.files.withOpacity(0.1),
+                Theme.of(context).scaffoldBackgroundColor,
+                Theme.of(context).colorScheme.primary.withOpacity(0.22),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.1),
               ],
             ),
           ),
@@ -175,8 +128,8 @@ class _DashboardHero extends StatelessWidget {
           builder: (_, __) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
-              color1: _C.ask.withOpacity(0.15),
-              color2: _C.files.withOpacity(0.1),
+              color1: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
             ),
           ),
         ),
@@ -194,15 +147,15 @@ class _DashboardHero extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _C.ask.withOpacity(0.14),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
                   borderRadius: BorderRadius.circular(20),
                   border:
-                      Border.all(color: _C.ask.withOpacity(0.3)),
+                      Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
                 ),
                 child: Text(
                   'PROJECT #$projectId',
-                  style: const TextStyle(
-                    color: _C.ask,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
@@ -210,13 +163,13 @@ class _DashboardHero extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Your project\nis ready',
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: _C.textPrimary,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
@@ -226,7 +179,7 @@ class _DashboardHero extends StatelessWidget {
                 'Pick what you want to do next.',
                 style: TextStyle(
                   fontSize: 13,
-                  color: _C.textPrimary.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                 ),
               ),
             ],
@@ -284,28 +237,28 @@ class _FeatureGrid extends StatelessWidget {
         title: 'Documents',
         description: 'Upload & index files',
         icon: Icons.folder_open_rounded,
-        color: _C.files,
+        color: Theme.of(context).colorScheme.secondary,
         onTap: () => context.push('/files', extra: projectId),
       ),
       _Feature(
         title: 'Ask AI',
         description: 'Search & get answers',
         icon: Icons.auto_awesome_rounded,
-        color: _C.ask,
+        color: Theme.of(context).colorScheme.primary,
         onTap: () => context.push('/ask', extra: projectId),
       ),
       _Feature(
         title: 'Voice',
         description: 'Speak, transcribe, listen',
         icon: Icons.mic_rounded,
-        color: _C.voice,
+        color: Theme.of(context).colorScheme.tertiary ?? Theme.of(context).colorScheme.primary,
         onTap: () => context.push('/voice', extra: projectId),
       ),
       _Feature(
         title: 'Translate',
         description: 'Translate & download',
         icon: Icons.translate_rounded,
-        color: _C.translate,
+        color: Theme.of(context).colorScheme.tertiaryContainer ?? Theme.of(context).colorScheme.secondary,
         onTap: () => context.push('/translate', extra: projectId),
       ),
     ];
@@ -372,9 +325,7 @@ class _FeatureCardState extends State<_FeatureCard> {
         duration: const Duration(milliseconds: 120),
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: _pressed
-              ? f.color.withOpacity(0.12)
-              : _C.card,
+          color: _pressed ? f.color.withOpacity(0.12) : Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: _pressed
@@ -402,17 +353,15 @@ class _FeatureCardState extends State<_FeatureCard> {
               decoration: BoxDecoration(
                 color: f.color.withOpacity(0.12),
                 borderRadius: BorderRadius.circular(13),
-                border:
-                    Border.all(color: f.color.withOpacity(0.25)),
+                border: Border.all(color: f.color.withOpacity(0.25)),
               ),
-              child:
-                  Icon(f.icon, color: f.color, size: 22),
+              child: Icon(f.icon, color: f.color, size: 22),
             ),
             const SizedBox(height: 14),
             Text(
               f.title,
-              style: const TextStyle(
-                color: _C.textPrimary,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -420,8 +369,8 @@ class _FeatureCardState extends State<_FeatureCard> {
             const SizedBox(height: 4),
             Text(
               f.description,
-              style: const TextStyle(
-                color: _C.textSecondary,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 11,
                 height: 1.4,
               ),
@@ -462,8 +411,8 @@ class _Label extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       text.toUpperCase(),
-      style: const TextStyle(
-        color: _C.textSecondary,
+      style: TextStyle(
+        color: Theme.of(context).textTheme.bodyMedium?.color,
         fontSize: 11,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.4,

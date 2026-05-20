@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/rag_provider.dart';
-import 'package:knowledge_engine_mobile/features/rag/presentation/pages/ask_page.dart'; // RColors
 class AnswerSection extends ConsumerWidget {
   const AnswerSection({super.key, required this.projectId});
   final int projectId;
@@ -17,13 +16,13 @@ class AnswerSection extends ConsumerWidget {
     return RSection(
       label: 'Ask AI',
       icon: Icons.auto_awesome_rounded,
-      iconColor: RColors.accent,
+      iconColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Ask a question about the indexed knowledge in project $projectId.',
-            style: const TextStyle(color: RColors.textSecondary, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
           ),
           const SizedBox(height: 16),
 
@@ -32,17 +31,17 @@ class AnswerSection extends ConsumerWidget {
             enabled: !state.isBusy,
             minLines: 3,
             maxLines: 6,
-            style: const TextStyle(color: RColors.textPrimary, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
             decoration: InputDecoration(
               labelText: 'Your question',
               hintText: 'Ask anything about your uploaded knowledge…',
               alignLabelWithHint: true,
               filled: true,
-              fillColor: RColors.card,
-              prefixIcon: const Padding(
-                padding: EdgeInsets.only(bottom: 52),
+              fillColor: Theme.of(context).cardColor,
+              prefixIcon: Padding(
+                padding: const EdgeInsets.only(bottom: 52),
                 child: Icon(Icons.help_outline_rounded,
-                    size: 18, color: RColors.textSecondary),
+                    size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
               ),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
@@ -57,7 +56,7 @@ class AnswerSection extends ConsumerWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:
-                    const BorderSide(color: RColors.accent, width: 1.5),
+                    BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
               ),
             ),
             onChanged: notifier.updateQuestion,
@@ -69,19 +68,19 @@ class AnswerSection extends ConsumerWidget {
             enabled: !state.isBusy,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: const TextStyle(color: RColors.textPrimary, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
             decoration: InputDecoration(
               labelText: 'Retrieved chunks limit',
               hintText: state.answerLimit.toString(),
               helperText:
                   'Range: ${ValidationConstants.minRagLimit}–${ValidationConstants.maxRagLimit}',
               helperStyle:
-                  const TextStyle(color: RColors.textSecondary, fontSize: 11),
+                TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
               errorText: state.answerLimitError,
               filled: true,
-              fillColor: RColors.card,
-              prefixIcon: const Icon(Icons.layers_outlined,
-                  size: 18, color: RColors.textSecondary),
+              fillColor: Theme.of(context).cardColor,
+              prefixIcon: Icon(Icons.layers_outlined,
+                size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:
@@ -95,7 +94,7 @@ class AnswerSection extends ConsumerWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:
-                    const BorderSide(color: RColors.accent, width: 1.5),
+                    BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
               ),
             ),
             onChanged: notifier.updateAnswerLimit,
@@ -106,7 +105,7 @@ class AnswerSection extends ConsumerWidget {
             const SizedBox(height: 12),
             RAlertBanner(
               icon: Icons.error_outline_rounded,
-              color: RColors.error,
+              color: Theme.of(context).colorScheme.error,
               message: state.answerErrorMessage!,
             ),
           ],
@@ -119,14 +118,14 @@ class AnswerSection extends ConsumerWidget {
               onPressed:
                   (state.isBusy || !state.canAsk) ? null : notifier.askQuestion,
               style: FilledButton.styleFrom(
-                backgroundColor: RColors.accent,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor: RColors.accent.withOpacity(0.3),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                textStyle: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              textStyle: const TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w600),
               ),
               icon: state.isAnswering
                   ? const SizedBox(
@@ -164,7 +163,7 @@ class RSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: RColors.card,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withOpacity(0.07)),
       ),

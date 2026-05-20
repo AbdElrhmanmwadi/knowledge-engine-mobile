@@ -4,7 +4,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../providers/files_provider.dart';
-import '../pages/files_page.dart';    // FColors
+import '../pages/files_page.dart';    // uses AppTheme
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_radius.dart';
 
 class StatusLogWidget extends ConsumerStatefulWidget {
   const StatusLogWidget({super.key, required this.projectId});
@@ -44,9 +47,9 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
 
     return Container(
       decoration: BoxDecoration(
-        color: FColors.card,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,13 +59,13 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
             padding: const EdgeInsets.fromLTRB(18, 16, 8, 0),
             child: Row(
               children: [
-                const Icon(Icons.terminal_rounded,
-                    color: FColors.textSecondary, size: 15),
+                Icon(Icons.terminal_rounded,
+                    color: Theme.of(context).textTheme.bodyMedium?.color, size: 15),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'STATUS LOG',
                   style: TextStyle(
-                    color: FColors.textSecondary,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
@@ -74,13 +77,13 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 7, vertical: 2),
                     decoration: BoxDecoration(
-                      color: FColors.textSecondary.withOpacity(0.1),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.08),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: Text(
                       '${logs.length}',
-                      style: const TextStyle(
-                        color: FColors.textSecondary,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
                         fontSize: 10,
                         fontWeight: FontWeight.w600,
                       ),
@@ -107,12 +110,12 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                       );
                     },
                   ),
-                if (logs.isNotEmpty) ...[
+                if (logs.isNotEmpty) ...[ 
                   const SizedBox(width: 6),
                   _LogAction(
                     icon: Icons.delete_sweep_outlined,
                     label: 'Clear',
-                    color: FColors.error,
+                    color: Theme.of(context).colorScheme.error,
                     onTap: notifier.clearStatus,
                   ),
                 ],
@@ -120,8 +123,8 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
               ],
             ),
           ),
-          Divider(
-              color: Colors.white.withOpacity(0.06), height: 18),
+            Divider(
+              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 18),
 
           // ── Log list ──────────────────────────────────────────────
           SizedBox(
@@ -132,15 +135,13 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.hourglass_empty_rounded,
-                            color: FColors.textSecondary
-                                .withOpacity(0.3),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.3),
                             size: 32),
                         const SizedBox(height: 10),
                         Text(
                           'No activity yet.',
                           style: TextStyle(
-                            color: FColors.textSecondary
-                                .withOpacity(0.5),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
                             fontSize: 13,
                           ),
                         ),
@@ -148,8 +149,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                         Text(
                           'Actions will appear here with timestamps.',
                           style: TextStyle(
-                            color: FColors.textSecondary
-                                .withOpacity(0.35),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.35),
                             fontSize: 11,
                           ),
                         ),
@@ -179,29 +179,29 @@ class _LogEntry extends StatelessWidget {
   const _LogEntry({required this.entry});
   final dynamic entry;
 
-  static Color _statusColor(String status) {
+  static Color _statusColor(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case 'success':
-        return FColors.accent;
+        return Theme.of(context).colorScheme.primary;
       case 'error':
       case 'failed':
-        return FColors.error;
+        return Theme.of(context).colorScheme.error;
       case 'warning':
-        return FColors.warning;
+        return Colors.amber;
       default:
-        return FColors.indigo;
+        return Theme.of(context).colorScheme.secondary;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final time  = DateFormat('HH:mm:ss').format(entry.timestamp as DateTime);
-    final color = _statusColor(entry.status as String);
+    final color = _statusColor(context, entry.status as String);
 
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: FColors.surface,
+        color: Theme.of(context).canvasColor,
         borderRadius: BorderRadius.circular(12),
         border: Border.all(color: color.withOpacity(0.18)),
       ),
@@ -230,8 +230,8 @@ class _LogEntry extends StatelessWidget {
               const Spacer(),
               Text(
                 time,
-                style: const TextStyle(
-                  color: FColors.textSecondary,
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                   fontSize: 10,
                   fontFamily: 'Courier',
                 ),
@@ -241,8 +241,8 @@ class _LogEntry extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             entry.message as String,
-            style: const TextStyle(
-              color: FColors.textPrimary,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyLarge?.color,
               fontSize: 12,
               height: 1.5,
             ),
@@ -259,32 +259,33 @@ class _LogAction extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
-    this.color = FColors.textSecondary,
+    this.color,
   });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final Color c = color ?? Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: c.withOpacity(0.08),
           borderRadius: BorderRadius.circular(7),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: c.withOpacity(0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 13),
+            Icon(icon, color: c, size: 13),
             const SizedBox(width: 4),
             Text(label,
                 style: TextStyle(
-                    color: color,
+                    color: c,
                     fontSize: 11,
                     fontWeight: FontWeight.w500)),
           ],

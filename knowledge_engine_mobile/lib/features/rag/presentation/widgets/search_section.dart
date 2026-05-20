@@ -20,13 +20,13 @@ class SearchSection extends ConsumerWidget {
     return RSection(
       label: 'Search Knowledge',
       icon: Icons.manage_search_rounded,
-      iconColor: RColors.purple,
+      iconColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Run semantic search against the indexed chunks in project $projectId.',
-            style: const TextStyle(color: RColors.textSecondary, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
           ),
           const SizedBox(height: 16),
 
@@ -34,14 +34,14 @@ class SearchSection extends ConsumerWidget {
           TextField(
             enabled: !state.isBusy,
             textInputAction: TextInputAction.search,
-            style: const TextStyle(color: RColors.textPrimary, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
             decoration: InputDecoration(
               labelText: 'Search query',
               hintText: 'Find relevant chunks or concepts…',
               filled: true,
-              fillColor: RColors.card,
-              prefixIcon: const Icon(Icons.search_rounded,
-                  size: 18, color: RColors.textSecondary),
+              fillColor: Theme.of(context).cardColor,
+              prefixIcon: Icon(Icons.search_rounded,
+                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:
@@ -55,7 +55,7 @@ class SearchSection extends ConsumerWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:
-                    const BorderSide(color: RColors.purple, width: 1.5),
+                    BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
               ),
             ),
             onChanged: notifier.updateSearchQuery,
@@ -68,19 +68,19 @@ class SearchSection extends ConsumerWidget {
             enabled: !state.isBusy,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: const TextStyle(color: RColors.textPrimary, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
             decoration: InputDecoration(
               labelText: 'Result limit',
               hintText: state.searchLimit.toString(),
               helperText:
                   'Range: ${ValidationConstants.minSearchLimit}–${ValidationConstants.maxSearchLimit}',
-              helperStyle: const TextStyle(
-                  color: RColors.textSecondary, fontSize: 11),
+              helperStyle: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
               errorText: state.searchLimitError,
               filled: true,
-              fillColor: RColors.card,
-              prefixIcon: const Icon(Icons.format_list_numbered_rounded,
-                  size: 18, color: RColors.textSecondary),
+              fillColor: Theme.of(context).cardColor,
+              prefixIcon: Icon(Icons.format_list_numbered_rounded,
+                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:
@@ -94,7 +94,7 @@ class SearchSection extends ConsumerWidget {
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14),
                 borderSide:
-                    const BorderSide(color: RColors.purple, width: 1.5),
+                    BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
               ),
             ),
             onChanged: notifier.updateSearchLimit,
@@ -105,7 +105,7 @@ class SearchSection extends ConsumerWidget {
             const SizedBox(height: 12),
             RAlertBanner(
               icon: Icons.error_outline_rounded,
-              color: RColors.error,
+              color: Theme.of(context).colorScheme.error,
               message: state.searchErrorMessage!,
             ),
           ],
@@ -119,14 +119,14 @@ class SearchSection extends ConsumerWidget {
                   ? null
                   : notifier.performSearch,
               style: FilledButton.styleFrom(
-                backgroundColor: RColors.purple,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor: RColors.purple.withOpacity(0.3),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                textStyle: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12)),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              textStyle: const TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w600),
               ),
               icon: state.isSearching
                   ? const SizedBox(

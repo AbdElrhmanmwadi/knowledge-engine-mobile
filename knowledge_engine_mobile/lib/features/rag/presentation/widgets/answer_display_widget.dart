@@ -18,9 +18,9 @@ class AnswerDisplayWidget extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: RColors.card,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: RColors.accent.withOpacity(0.22)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -30,13 +30,13 @@ class AnswerDisplayWidget extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
             child: Row(
               children: [
-                const Icon(Icons.auto_awesome_rounded,
-                    color: RColors.accent, size: 15),
+                Icon(Icons.auto_awesome_rounded,
+                    color: Theme.of(context).colorScheme.primary, size: 15),
                 const SizedBox(width: 8),
-                const Text(
+                Text(
                   'AI ANSWER',
                   style: TextStyle(
-                    color: RColors.accent,
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
@@ -46,7 +46,7 @@ class AnswerDisplayWidget extends ConsumerWidget {
                 if (response.retrievedChunks != null)
                   _MiniPill(
                     label: '${response.retrievedChunks} chunks',
-                    color: RColors.teal,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
               ],
             ),
@@ -58,8 +58,8 @@ class AnswerDisplayWidget extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
             child: SelectableText(
               response.answer,
-              style: const TextStyle(
-                color: RColors.textPrimary,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color,
                 fontSize: 14,
                 height: 1.7,
               ),
@@ -74,14 +74,14 @@ class AnswerDisplayWidget extends ConsumerWidget {
               children: [
                 _MiniPill(
                   label: 'Signal: ${response.signal}',
-                  color: RColors.textSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color ?? Theme.of(context).colorScheme.onSurface,
                 ),
                 const Spacer(),
                 // Copy
                 _IconAction(
                   icon: Icons.copy_outlined,
                   label: 'Copy',
-                  color: RColors.accent,
+                  color: Theme.of(context).colorScheme.primary,
                   onTap: () => _copy(
                     context,
                     response.answer,
@@ -95,7 +95,7 @@ class AnswerDisplayWidget extends ConsumerWidget {
                         ? Icons.visibility_off_outlined
                         : Icons.bug_report_outlined,
                     label: state.isDebugVisible ? 'Hide debug' : 'Debug',
-                    color: RColors.amber,
+                    color: Theme.of(context).colorScheme.secondary,
                     onTap: ref
                         .read(ragNotifierProvider(projectId).notifier)
                         .toggleDebugVisibility,

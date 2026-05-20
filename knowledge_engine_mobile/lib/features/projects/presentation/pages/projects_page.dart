@@ -5,22 +5,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/theme/theme_toggle.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_radius.dart';
 
 import '../providers/projects_notifier.dart';
 import '../providers/recent_projects_provider.dart';
 
-// ── Design tokens (same system as voice/translate/ask pages) ────────────────
-class _C {
-  static const bg            = Color(0xFF0D0F14);
-  static const surface       = Color(0xFF161923);
-  static const card          = Color(0xFF1E2230);
-  static const accent        = Color(0xFF6C8EFF);
-  static const accentSoft    = Color(0xFF3D5AF1);
-  static const teal          = Color(0xFF38EFC4);
-  static const error         = Color(0xFFFF5C6B);
-  static const textPrimary   = Color(0xFFF0F2FF);
-  static const textSecondary = Color(0xFF8891B0);
-}
+// centralized tokens via AppColors/AppSpacing/AppRadius
 
 class ProjectsPage extends ConsumerStatefulWidget {
   const ProjectsPage({super.key});
@@ -51,53 +43,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
     super.dispose();
   }
 
-  // ── Theme ──────────────────────────────────────────────────────────────────
-  ThemeData _theme() => ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: _C.bg,
-        colorScheme: const ColorScheme.dark(
-          primary: _C.accent,
-          secondary: _C.teal,
-          surface: _C.surface,
-          error: _C.error,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: _C.card,
-          labelStyle:
-              const TextStyle(color: _C.textSecondary, fontSize: 13),
-          hintStyle:
-              TextStyle(color: _C.textSecondary.withOpacity(0.5)),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                BorderSide(color: Colors.white.withOpacity(0.08)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                BorderSide(color: Colors.white.withOpacity(0.08)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                const BorderSide(color: _C.accent, width: 1.5),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: _C.error),
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-        snackBarTheme: SnackBarThemeData(
-          backgroundColor: _C.card,
-          contentTextStyle:
-              const TextStyle(color: _C.textPrimary, fontSize: 13),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12)),
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
+  // No page-local theme — use centralized AppTheme
 
   @override
   Widget build(BuildContext context) {
@@ -105,15 +51,12 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
     final notifier      = ref.read(projectsNotifierProvider.notifier);
     final recentProjects = ref.watch(recentProjectsProvider);
 
-    return Theme(
-      data: _theme(),
-      child: stateAsync.when(
-        loading: () => _shell(child: const Center(
-          child: CircularProgressIndicator(color: _C.accent),
+    return stateAsync.when(
+        loading: () => _shell(context, child: Center(
+          child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
         )),
-        error: (e, _) => _shell(child: Center(
-          child: Text('Error: $e',
-              style: const TextStyle(color: _C.error)),
+        error: (e, _) => _shell(context, child: Center(
+          child: Text('Error: $e', style: TextStyle(color: Theme.of(context).colorScheme.error)),
         )),
         data: (state) {
           // Sync controller
@@ -126,23 +69,23 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
             );
           }
 
-          return _shell(
+          return _shell(context,
             child: CustomScrollView(
               slivers: [
                 // ── Collapsing hero ──────────────────────────────────
                 SliverAppBar(
-                  backgroundColor: _C.bg,
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                   expandedHeight: 220,
                   pinned: true,
                   elevation: 0,
-                  title: const Text(
+                  title: Text(
                     'Knowledge Engine',
                     style: TextStyle(
                       fontFamily: 'Georgia',
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.3,
-                      color: _C.textPrimary,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                   centerTitle: false,
@@ -162,11 +105,11 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       // Error banner
-                      if (state.errorMessage != null) ...[
-                        _AlertBanner(
-                            icon: Icons.error_outline_rounded,
-                            color: _C.error,
-                            message: state.errorMessage!),
+                              if (state.errorMessage != null) ...[
+                                _AlertBanner(
+                                    icon: Icons.error_outline_rounded,
+                                    color: Theme.of(context).colorScheme.error,
+                                    message: state.errorMessage!),
                         const SizedBox(height: 14),
                       ],
 
@@ -213,12 +156,12 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
             ),
           );
         },
-      ),
+      
     );
   }
 
-  Widget _shell({required Widget child}) => Scaffold(
-        backgroundColor: _C.bg,
+  Widget _shell(BuildContext context, {required Widget child}) => Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: child,
       );
 }
@@ -239,20 +182,20 @@ class _Hero extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF0D0F14),
-                _C.accentSoft.withOpacity(0.3),
-                _C.teal.withOpacity(0.1),
+                Theme.of(context).scaffoldBackgroundColor,
+                Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.1),
               ],
             ),
           ),
         ),
         AnimatedBuilder(
           animation: waveController,
-          builder: (_, __) => CustomPaint(
+            builder: (_, __) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
-              color1: _C.accent.withOpacity(0.16),
-              color2: _C.teal.withOpacity(0.09),
+              color1: Theme.of(context).colorScheme.primary.withOpacity(0.16),
+              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.09),
             ),
           ),
         ),
@@ -268,15 +211,15 @@ class _Hero extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: _C.accent.withOpacity(0.14),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
-                      color: _C.accent.withOpacity(0.32)),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
                 ),
-                child: const Text(
+                child: Text(
                   'KNOWLEDGE ENGINE',
                   style: TextStyle(
-                    color: _C.accent,
+                    color: Theme.of(context).colorScheme.primary,
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
@@ -284,13 +227,13 @@ class _Hero extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Your projects,\nat a glance',
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: _C.textPrimary,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
@@ -300,7 +243,7 @@ class _Hero extends StatelessWidget {
                 'Enter a project ID or pick a recent one',
                 style: TextStyle(
                   fontSize: 13,
-                  color: _C.textPrimary.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                 ),
               ),
             ],
@@ -364,7 +307,7 @@ class _ProjectInputCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E2230),
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white.withOpacity(0.07)),
       ),
@@ -375,47 +318,47 @@ class _ProjectInputCard extends StatelessWidget {
             controller: controller,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: const TextStyle(
-                color: _C.textPrimary, fontSize: 16, fontWeight: FontWeight.w500),
+            style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16, fontWeight: FontWeight.w500),
             onChanged: notifier.updateProjectInput,
             onSubmitted: (_) => _submit(context),
             decoration: InputDecoration(
               labelText: 'Project ID',
               hintText: 'e.g. 42',
               errorText: state.validationError,
-              prefixIcon: const Icon(Icons.folder_outlined,
-                  size: 18, color: _C.textSecondary),
-              suffixIcon: state.projectInput.trim().isNotEmpty
+                prefixIcon: Icon(Icons.folder_outlined,
+                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
+                suffixIcon: state.projectInput.trim().isNotEmpty
                   ? IconButton(
-                      icon: const Icon(Icons.close_rounded,
-                          size: 18, color: _C.textSecondary),
-                      tooltip: 'Clear',
-                      onPressed: () => notifier.updateProjectInput(''),
-                    )
+                    icon: Icon(Icons.close_rounded,
+                      size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
+                    tooltip: 'Clear',
+                    onPressed: () => notifier.updateProjectInput(''),
+                  )
                   : null,
             ),
           ),
           const SizedBox(height: 14),
           SizedBox(
             width: double.infinity,
-            child: FilledButton.icon(
+              child: FilledButton.icon(
               onPressed: state.isLoading ? null : () => _submit(context),
               style: FilledButton.styleFrom(
-                backgroundColor: _C.accent,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor: _C.accent.withOpacity(0.3),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                textStyle: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600),
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.lg)),
+              padding: const EdgeInsets.symmetric(vertical: 14),
+              textStyle: const TextStyle(
+                fontSize: 14, fontWeight: FontWeight.w600),
               ),
               icon: state.isLoading
                   ? const SizedBox(
                       width: 16,
                       height: 16,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2, color: Colors.white),
                     )
                   : const Icon(Icons.arrow_forward_rounded, size: 18),
               label:
@@ -452,45 +395,45 @@ class _RecentProjectsList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return recentProjects.when(
-      loading: () => const Center(
+      loading: () => Center(
         child: Padding(
-          padding: EdgeInsets.all(24),
+          padding: const EdgeInsets.all(24),
           child: CircularProgressIndicator(
-              strokeWidth: 2, color: _C.accent),
+              strokeWidth: 2, color: Theme.of(context).colorScheme.primary),
         ),
       ),
       error: (e, _) => _AlertBanner(
         icon: Icons.error_outline_rounded,
-        color: _C.error,
+        color: Theme.of(context).colorScheme.error,
         message: 'Error loading recent projects: $e',
       ),
       data: (projects) {
         if (projects.isEmpty) {
-          return Container(
+                return Container(
             padding: const EdgeInsets.symmetric(
                 vertical: 32, horizontal: 20),
             decoration: BoxDecoration(
-              color: const Color(0xFF1E2230),
-              borderRadius: BorderRadius.circular(20),
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
               border: Border.all(
-                  color: Colors.white.withOpacity(0.07)),
+                  color: Theme.of(context).dividerColor.withOpacity(0.07)),
             ),
             child: Column(
               children: [
                 Icon(Icons.folder_off_outlined,
-                    color: _C.textSecondary.withOpacity(0.4),
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
                     size: 36),
                 const SizedBox(height: 10),
-                const Text(
+                Text(
                   'No recent projects yet',
                   style: TextStyle(
-                      color: _C.textSecondary, fontSize: 13),
+                      color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
                 ),
                 const SizedBox(height: 4),
                 Text(
                   'Open a project above to see it here',
                   style: TextStyle(
-                      color: _C.textSecondary.withOpacity(0.5),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
                       fontSize: 11),
                 ),
               ],
@@ -533,10 +476,10 @@ class _RecentProjectTile extends StatelessWidget {
 
   // Cycle through accent colours so tiles feel distinct
   static const _colors = [
-    _C.accent,
-    _C.teal,
-    Color(0xFFB07CFF),
-    Color(0xFFFFB547),
+    AppColors.primary,
+    AppColors.secondary,
+    AppColors.purple,
+    AppColors.amber,
   ];
 
   @override
@@ -557,7 +500,7 @@ class _RecentProjectTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(
               horizontal: 16, vertical: 14),
           decoration: BoxDecoration(
-            color: const Color(0xFF1E2230),
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
                 color: color.withOpacity(0.18)),
@@ -584,8 +527,8 @@ class _RecentProjectTile extends StatelessWidget {
                   children: [
                     Text(
                       'Project #$projectId',
-                      style: const TextStyle(
-                        color: _C.textPrimary,
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
                         fontWeight: FontWeight.w600,
                         fontSize: 14,
                       ),
@@ -594,15 +537,15 @@ class _RecentProjectTile extends StatelessWidget {
                     Text(
                       'Tap to open · swipe to delete',
                       style: TextStyle(
-                        color: _C.textSecondary.withOpacity(0.6),
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
                         fontSize: 11,
                       ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right_rounded,
-                  color: _C.textSecondary.withOpacity(0.4),
+                Icon(Icons.chevron_right_rounded,
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
                   size: 20),
             ],
           ),
@@ -621,35 +564,35 @@ class _SwipeBackground extends StatelessWidget {
     final isLeft = alignment == Alignment.centerLeft;
     return Container(
       decoration: BoxDecoration(
-        color: _C.error.withOpacity(0.15),
+        color: Theme.of(context).colorScheme.error.withOpacity(0.15),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: _C.error.withOpacity(0.3)),
+        border: Border.all(color: Theme.of(context).colorScheme.error.withOpacity(0.3)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 20),
       alignment: alignment,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: isLeft
-            ? [
-                const Icon(Icons.delete_outline_rounded,
-                    color: _C.error, size: 20),
-                const SizedBox(width: 6),
-                const Text('Delete',
-                    style: TextStyle(
-                        color: _C.error,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13)),
-              ]
-            : [
-                const Text('Delete',
-                    style: TextStyle(
-                        color: _C.error,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 13)),
-                const SizedBox(width: 6),
-                const Icon(Icons.delete_outline_rounded,
-                    color: _C.error, size: 20),
-              ],
+    child: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: isLeft
+      ? [
+        Icon(Icons.delete_outline_rounded,
+          color: Theme.of(context).colorScheme.error, size: 20),
+        const SizedBox(width: 6),
+        Text('Delete',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.error,
+            fontWeight: FontWeight.w600,
+            fontSize: 13)),
+        ]
+      : [
+        Text('Delete',
+          style: TextStyle(
+            color: Theme.of(context).colorScheme.error,
+            fontWeight: FontWeight.w600,
+            fontSize: 13)),
+        const SizedBox(width: 6),
+        Icon(Icons.delete_outline_rounded,
+          color: Theme.of(context).colorScheme.error, size: 20),
+        ],
       ),
     );
   }
@@ -664,8 +607,8 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Text(
       label.toUpperCase(),
-      style: const TextStyle(
-        color: _C.textSecondary,
+      style: TextStyle(
+        color: Theme.of(context).textTheme.bodyMedium?.color,
         fontSize: 11,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.4,

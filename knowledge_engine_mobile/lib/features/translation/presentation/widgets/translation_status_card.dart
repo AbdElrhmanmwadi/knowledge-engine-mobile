@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
-import 'package:knowledge_engine_mobile/features/translation/presentation/pages/translate_page.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/translation_provider.dart';
+import '../../../../core/theme/app_radius.dart';
 
 class TranslationStatusCard extends ConsumerWidget {
   const TranslationStatusCard({super.key, required this.projectId});
@@ -23,7 +23,7 @@ class TranslationStatusCard extends ConsumerWidget {
 
     final currentStatus =
         job?.status ?? created?.status ?? JobStatus.pending;
-    final badgeColor = _statusColor(currentStatus);
+    final badgeColor = _statusColor(context, currentStatus);
     final jobId = job?.jobId ?? created?.jobId ?? '-';
     final resultFileId = job?.resultFileId;
     final resultAssetId = job?.resultAssetId;
@@ -39,7 +39,7 @@ class TranslationStatusCard extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: TColors.card,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: badgeColor.withOpacity(0.25),
@@ -72,8 +72,8 @@ class TranslationStatusCard extends ConsumerWidget {
               ],
             ),
           ),
-          Divider(
-              color: Colors.white.withOpacity(0.06), height: 20),
+            Divider(
+              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 20),
 
           Padding(
             padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
@@ -81,10 +81,10 @@ class TranslationStatusCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // ── Job ID ────────────────────────────────────
-                const Text(
+                Text(
                   'REQUEST ID',
                   style: TextStyle(
-                    color: TColors.textSecondary,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 10,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1,
@@ -93,8 +93,8 @@ class TranslationStatusCard extends ConsumerWidget {
                 const SizedBox(height: 4),
                 SelectableText(
                   jobId,
-                  style: const TextStyle(
-                    color: TColors.textPrimary,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                     fontWeight: FontWeight.w700,
                     fontSize: 15,
                     fontFamily: 'Courier',
@@ -125,11 +125,11 @@ class TranslationStatusCard extends ConsumerWidget {
                 // ── Created at ────────────────────────────────
                 if (createdAt != null) ...[
                   const SizedBox(height: 10),
-                  Text(
-                    'Created ${DateFormat('yyyy-MM-dd HH:mm:ss').format((createdAt as DateTime).toLocal())}',
-                    style: const TextStyle(
-                        color: TColors.textSecondary, fontSize: 11),
-                  ),
+                    Text(
+                      'Created ${DateFormat('yyyy-MM-dd HH:mm:ss').format((createdAt as DateTime).toLocal())}',
+                      style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+                    ),
                 ],
 
                 // ── Progress bar ──────────────────────────────
@@ -140,8 +140,7 @@ class TranslationStatusCard extends ConsumerWidget {
                       Text(
                         'Progress',
                         style: TextStyle(
-                          color: TColors.textSecondary
-                              .withOpacity(0.7),
+                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
                           fontSize: 11,
                           fontWeight: FontWeight.w600,
                         ),
@@ -209,28 +208,28 @@ class TranslationStatusCard extends ConsumerWidget {
                     (errorMessage == null ||
                         (errorMessage as String).trim().isEmpty)) ...[
                   const SizedBox(height: 14),
-                  _InlineBanner(
-                    color: TColors.error,
-                    icon: Icons.error_outline_rounded,
-                    message: 'Translation failed. Please try again.',
-                  ),
+                    _InlineBanner(
+                      color: Theme.of(context).colorScheme.error,
+                      icon: Icons.error_outline_rounded,
+                      message: 'Translation failed. Please try again.',
+                    ),
                 ],
                 if (errorMessage != null &&
                     (errorMessage as String).trim().isNotEmpty) ...[
                   const SizedBox(height: 14),
-                  _InlineBanner(
-                    color: TColors.error,
-                    icon: Icons.error_outline_rounded,
-                    message: errorMessage as String,
-                  ),
+                    _InlineBanner(
+                      color: Theme.of(context).colorScheme.error,
+                      icon: Icons.error_outline_rounded,
+                      message: errorMessage as String,
+                    ),
                 ],
                 if (state.downloadError != null &&
                     state.downloadError!.trim().isNotEmpty) ...[
                   const SizedBox(height: 8),
                   Text(
                     state.downloadError!,
-                    style: const TextStyle(
-                        color: TColors.error, fontSize: 11),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.error, fontSize: 11),
                   ),
                 ],
 
@@ -240,8 +239,8 @@ class TranslationStatusCard extends ConsumerWidget {
                   state.lastRefreshTime == null
                       ? 'Not yet refreshed from backend.'
                       : 'Last refreshed: ${DateFormat('HH:mm:ss').format((state.lastRefreshTime as DateTime).toLocal())}',
-                  style: const TextStyle(
-                      color: TColors.textSecondary, fontSize: 11),
+                  style: TextStyle(
+                      color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
                 ),
               ],
             ),
@@ -259,17 +258,17 @@ class TranslationStatusCard extends ConsumerWidget {
         .showSnackBar(SnackBar(content: Text(label)));
   }
 
-  static Color _statusColor(String status) {
+  static Color _statusColor(BuildContext context, String status) {
     switch (status.toLowerCase()) {
       case JobStatus.completed:
-        return TColors.teal;
+        return Theme.of(context).colorScheme.primary;
       case JobStatus.failed:
-        return TColors.error;
+        return Theme.of(context).colorScheme.error;
       case JobStatus.pending:
       case JobStatus.processing:
-        return TColors.amber;
+        return Colors.amber;
       default:
-        return TColors.accent;
+        return Theme.of(context).colorScheme.secondary;
     }
   }
 
@@ -316,22 +315,22 @@ class _ResultSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: TColors.teal.withOpacity(0.07),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: TColors.teal.withOpacity(0.2)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.check_circle_rounded,
-                  color: TColors.teal, size: 15),
+              Icon(Icons.check_circle_rounded,
+                  color: Theme.of(context).colorScheme.primary, size: 15),
               const SizedBox(width: 6),
-              const Text(
+              Text(
                 'TRANSLATED FILE READY',
                 style: TextStyle(
-                  color: TColors.teal,
+                  color: Theme.of(context).colorScheme.primary,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
@@ -340,10 +339,10 @@ class _ResultSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          const Text(
+          Text(
             'Result filename',
             style: TextStyle(
-                color: TColors.textSecondary,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
                 fontSize: 10,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.8),
@@ -351,8 +350,8 @@ class _ResultSection extends StatelessWidget {
           const SizedBox(height: 4),
           SelectableText(
             resultFileId,
-            style: const TextStyle(
-              color: TColors.textPrimary,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyLarge?.color,
               fontWeight: FontWeight.w700,
               fontSize: 13,
               fontFamily: 'Courier',
@@ -361,10 +360,10 @@ class _ResultSection extends StatelessWidget {
           if (resultAssetId != null &&
               resultAssetId!.trim().isNotEmpty) ...[
             const SizedBox(height: 10),
-            const Text(
+            Text(
               'Result asset ID',
               style: TextStyle(
-                  color: TColors.textSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                   fontSize: 10,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.8),
@@ -372,8 +371,8 @@ class _ResultSection extends StatelessWidget {
             const SizedBox(height: 4),
             SelectableText(
               resultAssetId!,
-              style: const TextStyle(
-                color: TColors.textPrimary,
+              style: TextStyle(
+                color: Theme.of(context).textTheme.bodyLarge?.color,
                 fontWeight: FontWeight.w700,
                 fontSize: 13,
                 fontFamily: 'Courier',
@@ -389,26 +388,26 @@ class _ResultSection extends StatelessWidget {
                 FilledButton.icon(
                   onPressed: isDownloading ? null : onDownload,
                   style: FilledButton.styleFrom(
-                    backgroundColor: TColors.teal,
-                    foregroundColor: const Color(0xFF0D0F14),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
-                    textStyle: const TextStyle(
-                        fontSize: 12, fontWeight: FontWeight.w600),
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md)),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 14, vertical: 10),
+                  textStyle: const TextStyle(
+                    fontSize: 12, fontWeight: FontWeight.w600),
                   ),
                   icon: isDownloading
-                      ? const SizedBox(
-                          width: 13,
-                          height: 13,
-                          child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Color(0xFF0D0F14)),
-                        )
-                      : const Icon(Icons.download_rounded, size: 15),
+                    ? SizedBox(
+                      width: 13,
+                      height: 13,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Theme.of(context).colorScheme.onPrimary),
+                    )
+                    : const Icon(Icons.download_rounded, size: 15),
                   label: Text(
-                      isDownloading ? 'Downloading…' : 'Download'),
+                    isDownloading ? 'Downloading…' : 'Download'),
                 ),
               _CopyButton(
                   label: 'Copy filename', onTap: onCopyFile),
@@ -421,7 +420,7 @@ class _ResultSection extends StatelessWidget {
           if (!isCompleted) ...[
             const SizedBox(height: 10),
             _InlineBanner(
-              color: TColors.amber,
+              color: Colors.amber,
               icon: Icons.hourglass_top_rounded,
               message:
                   'Translation is being prepared. Download will appear once complete.',
@@ -443,10 +442,10 @@ class _CopyButton extends StatelessWidget {
     return OutlinedButton.icon(
       onPressed: onTap,
       style: OutlinedButton.styleFrom(
-        foregroundColor: TColors.textSecondary,
-        side: BorderSide(color: Colors.white.withOpacity(0.12)),
+        foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
+        side: BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.12)),
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10)),
+            borderRadius: BorderRadius.circular(AppRadius.md)),
         padding:
             const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
         textStyle:
@@ -498,14 +497,14 @@ class _InfoPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
-        color: TColors.amber.withOpacity(0.07),
+        color: Colors.amber.withOpacity(0.07),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: TColors.amber.withOpacity(0.2)),
+        border: Border.all(color: Colors.amber.withOpacity(0.2)),
       ),
       child: Text(
         '$label: $value',
-        style: const TextStyle(
-          color: TColors.amber,
+        style: TextStyle(
+          color: Colors.amber,
           fontSize: 11,
           fontWeight: FontWeight.w500,
         ),

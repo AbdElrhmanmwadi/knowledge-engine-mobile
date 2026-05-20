@@ -5,6 +5,7 @@ import 'package:knowledge_engine_mobile/features/translation/presentation/pages/
 import '../../../../core/config/constants.dart';
 import '../providers/translation_provider.dart';
 import 'language_selector_widget.dart';
+import '../../../../core/theme/app_radius.dart';
 
 class JobCreationSection extends ConsumerStatefulWidget {
   const JobCreationSection({super.key, required this.projectId});
@@ -46,13 +47,13 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
     return TSection(
       label: 'Create Job',
       icon: Icons.add_circle_outline_rounded,
-      iconColor: TColors.amber,
+      iconColor: Theme.of(context).colorScheme.secondary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             'Submit a translation request for a file in project ${widget.projectId}.',
-            style: const TextStyle(color: TColors.textSecondary, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
           ),
           const SizedBox(height: 16),
 
@@ -61,7 +62,7 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
             controller: _fileIdController,
             enabled: !state.isBusy,
             onChanged: notifier.updateFileId,
-            style: const TextStyle(color: TColors.textPrimary, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
             decoration: InputDecoration(
               labelText: 'File ID',
               hintText: 'Latest uploaded file ID will appear here',
@@ -69,8 +70,8 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
                   ? 'Upload a file first — the ID will auto-fill.'
                   : 'Auto-filled from the latest upload. Edit if needed.',
               errorText: state.fileIdError,
-              prefixIcon: const Icon(Icons.insert_drive_file_outlined,
-                  size: 18, color: TColors.textSecondary),
+                prefixIcon: Icon(Icons.insert_drive_file_outlined,
+                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
           ),
           const SizedBox(height: 16),
@@ -83,7 +84,7 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
             const SizedBox(height: 12),
             _AlertBanner(
               icon: Icons.error_outline_rounded,
-              color: TColors.error,
+              color: Theme.of(context).colorScheme.error,
               message: state.creationError!,
             ),
           ],
@@ -96,22 +97,22 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
               onPressed: (state.isBusy || !state.canCreate)
                   ? null
                   : notifier.createTranslationJob,
-              style: FilledButton.styleFrom(
-                backgroundColor: TColors.amber,
-                foregroundColor: Colors.white,
-                disabledBackgroundColor: TColors.amber.withOpacity(0.3),
+                style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.secondary,
+                foregroundColor: Theme.of(context).colorScheme.onSecondary,
+                disabledBackgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(AppRadius.md)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 textStyle: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600),
-              ),
+                  fontSize: 14, fontWeight: FontWeight.w600),
+                ),
               icon: state.isCreatingJob
-                  ? const SizedBox(
+                      ? SizedBox(
                       width: 16,
                       height: 16,
                       child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
+                          strokeWidth: 2, color: Theme.of(context).colorScheme.onSecondary),
                     )
                   : const Icon(Icons.playlist_add_check_circle_outlined,
                       size: 18),
@@ -142,22 +143,22 @@ class _CreatedJobCard extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: TColors.amber.withOpacity(0.07),
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.07),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: TColors.amber.withOpacity(0.22)),
+        border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              const Icon(Icons.check_circle_rounded,
-                  color: TColors.amber, size: 15),
+              Icon(Icons.check_circle_rounded,
+                  color: Theme.of(context).colorScheme.secondary, size: 15),
               const SizedBox(width: 6),
-              const Text(
+              Text(
                 'JOB CREATED',
                 style: TextStyle(
-                  color: TColors.amber,
+                  color: Theme.of(context).colorScheme.secondary,
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.2,
@@ -168,8 +169,8 @@ class _CreatedJobCard extends StatelessWidget {
           const SizedBox(height: 10),
           SelectableText(
             job.jobId as String,
-            style: const TextStyle(
-              color: TColors.textPrimary,
+            style: TextStyle(
+              color: Theme.of(context).textTheme.bodyLarge?.color,
               fontWeight: FontWeight.w700,
               fontSize: 15,
             ),
@@ -210,8 +211,8 @@ class _MiniPill extends StatelessWidget {
       ),
       child: Text(
         '$label: $value',
-        style: const TextStyle(
-          color: TColors.textSecondary,
+        style: TextStyle(
+          color: Theme.of(context).textTheme.bodyMedium?.color,
           fontSize: 11,
           fontWeight: FontWeight.w500,
         ),
@@ -239,9 +240,9 @@ class TSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: TColors.card,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +263,7 @@ class TSection extends StatelessWidget {
             ],
           ),
           Divider(
-            color: Colors.white.withOpacity(0.06),
+            color: Theme.of(context).dividerColor.withOpacity(0.06),
             height: 20,
           ),
           child,

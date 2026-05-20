@@ -24,13 +24,13 @@ class JobStatusSection extends ConsumerWidget {
     return TSection(
       label: 'Translation Status',
       icon: Icons.track_changes_rounded,
-      iconColor: TColors.teal,
+      iconColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Well track the latest translation request for you.',
-            style: TextStyle(color: TColors.textSecondary, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
           ),
           const SizedBox(height: 14),
 
@@ -40,20 +40,20 @@ class JobStatusSection extends ConsumerWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
               decoration: BoxDecoration(
-                color: TColors.teal.withOpacity(0.07),
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: TColors.teal.withOpacity(0.22)),
+                border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.confirmation_number_outlined,
-                      color: TColors.teal, size: 16),
+                  Icon(Icons.confirmation_number_outlined,
+                      color: Theme.of(context).colorScheme.primary, size: 16),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       latestJobId,
-                      style: const TextStyle(
-                        color: TColors.teal,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w600,
                         fontSize: 13,
                       ),
@@ -68,21 +68,21 @@ class JobStatusSection extends ConsumerWidget {
               padding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.04),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.04),
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withOpacity(0.07)),
+                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.info_outline_rounded,
-                      color: TColors.textSecondary.withOpacity(0.6),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
                       size: 15),
                   const SizedBox(width: 10),
-                  const Expanded(
+                  Expanded(
                     child: Text(
                       'Create a translation job first to see its status here.',
                       style: TextStyle(
-                          color: TColors.textSecondary, fontSize: 12),
+                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
                     ),
                   ),
                 ],
@@ -98,7 +98,7 @@ class JobStatusSection extends ConsumerWidget {
             const SizedBox(height: 10),
             AlertBanner(
               icon: Icons.error_outline_rounded,
-              color: TColors.error,
+              color: Theme.of(context).colorScheme.error,
               message: state.statusError!,
             ),
           ],
@@ -111,16 +111,16 @@ class JobStatusSection extends ConsumerWidget {
               onPressed: (state.isBusy || !state.canCheck)
                   ? null
                   : notifier.checkJobStatus,
-              style: FilledButton.styleFrom(
-                backgroundColor: TColors.teal,
+                style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: const Color(0xFF0D0F14),
-                disabledBackgroundColor: TColors.teal.withOpacity(0.25),
+                disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.25),
                 shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
+                  borderRadius: BorderRadius.circular(12)),
                 padding: const EdgeInsets.symmetric(vertical: 14),
                 textStyle: const TextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w600),
-              ),
+                  fontSize: 14, fontWeight: FontWeight.w600),
+                ),
               icon: state.isCheckingStatus
                   ? const SizedBox(
                       width: 16,
@@ -158,7 +158,7 @@ class JobStatusSection extends ConsumerWidget {
                   icon: Icons.clear_all_outlined,
                   label: 'Clear',
                   onTap: notifier.clearJob,
-                  color: TColors.textSecondary,
+                  color: Theme.of(context).textTheme.bodyMedium?.color,
                 ),
               ],
             ),
@@ -182,9 +182,9 @@ class _AdvancedExpansion extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.03),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
       ),
       child: ExpansionTile(
         tilePadding: const EdgeInsets.symmetric(horizontal: 14),
@@ -192,30 +192,30 @@ class _AdvancedExpansion extends StatelessWidget {
             const EdgeInsets.fromLTRB(14, 0, 14, 14),
         shape: const Border(),
         collapsedShape: const Border(),
-        leading: const Icon(Icons.tune_rounded,
-            color: TColors.textSecondary, size: 18),
-        title: const Text(
+        leading: Icon(Icons.tune_rounded,
+            color: Theme.of(context).textTheme.bodyMedium?.color, size: 18),
+        title: Text(
           'Advanced',
           style: TextStyle(
-              color: TColors.textPrimary,
+              color: Theme.of(context).textTheme.bodyLarge?.color,
               fontSize: 13,
               fontWeight: FontWeight.w500),
         ),
-        subtitle: const Text(
+        subtitle: Text(
           'Look up a different request by ID',
-          style: TextStyle(color: TColors.textSecondary, fontSize: 11),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
         ),
         children: [
           TextField(
             enabled: !(state.isBusy as bool),
             onChanged: notifier.updateJobStatusId,
-            style: const TextStyle(color: TColors.textPrimary, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
             decoration: InputDecoration(
               labelText: 'Request ID',
               hintText: 'Optional — leave empty for latest',
               errorText: state.jobStatusIdError as String?,
-              prefixIcon: const Icon(Icons.tag_rounded,
-                  size: 16, color: TColors.textSecondary),
+              prefixIcon: Icon(Icons.tag_rounded,
+                  size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
           ),
         ],
@@ -247,24 +247,24 @@ class _AutoRefreshRow extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.autorenew_rounded,
-                  size: 16, color: TColors.textSecondary),
+              Icon(Icons.autorenew_rounded,
+                  size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
               const SizedBox(width: 8),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
+                    Text(
                       'Keep updating automatically',
                       style: TextStyle(
-                          color: TColors.textPrimary,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
                           fontSize: 13,
                           fontWeight: FontWeight.w500),
                     ),
                     Text(
                       'Refresh every ${state.refreshIntervalSeconds}s until complete',
-                      style: const TextStyle(
-                          color: TColors.textSecondary, fontSize: 11),
+                      style: TextStyle(
+                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
                     ),
                   ],
                 ),
@@ -278,25 +278,25 @@ class _AutoRefreshRow extends StatelessWidget {
           const SizedBox(height: 10),
           DropdownButtonFormField<int>(
             value: state.refreshIntervalSeconds as int,
-            dropdownColor: TColors.card,
-            style: const TextStyle(color: TColors.textPrimary, fontSize: 13),
+            dropdownColor: Theme.of(context).cardColor,
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 13),
             decoration: InputDecoration(
               labelText: 'Refresh interval',
-              prefixIcon: const Icon(Icons.timer_outlined,
-                  size: 16, color: TColors.textSecondary),
+              prefixIcon: Icon(Icons.timer_outlined,
+                  size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
               contentPadding:
                   const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
               filled: true,
-              fillColor: TColors.card,
+              fillColor: Theme.of(context).cardColor,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
               ),
             ),
             items: refreshOptions
@@ -324,33 +324,34 @@ class _TinyButton extends StatelessWidget {
     required this.icon,
     required this.label,
     required this.onTap,
-    this.color = TColors.teal,
+    this.color,
   });
   final IconData icon;
   final String label;
   final VoidCallback onTap;
-  final Color color;
+  final Color? color;
 
   @override
   Widget build(BuildContext context) {
+    final btnColor = color ?? Theme.of(context).colorScheme.primary;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: btnColor.withOpacity(0.08),
           borderRadius: BorderRadius.circular(8),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: btnColor.withOpacity(0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 14),
+            Icon(icon, color: btnColor, size: 14),
             const SizedBox(width: 5),
             Text(
               label,
               style: TextStyle(
-                  color: color, fontSize: 12, fontWeight: FontWeight.w500),
+                  color: btnColor, fontSize: 12, fontWeight: FontWeight.w500),
             ),
           ],
         ),

@@ -12,23 +12,8 @@ import '../widgets/search_results_widget.dart';
 import '../widgets/search_section.dart';
 
 /// Ask Page - Semantic search and RAG question answering
-/// 
-class RColors {
-  static const bg            = Color(0xFF0D0F14);
-  static const surface       = Color(0xFF161923);
-  static const card          = Color(0xFF1E2230);
-  static const accent        = Color(0xFF6C8EFF); // indigo – Ask AI
-  static const accentSoft    = Color(0xFF3D5AF1);
-  static const purple        = Color(0xFFB07CFF); // Search
-  static const purpleSoft    = Color(0xFF7B3FE4);
-  static const teal          = Color(0xFF38EFC4); // success / result
-  static const amber         = Color(0xFFFFB547); // warning / debug
-  static const error         = Color(0xFFFF5C6B);
-  static const textPrimary   = Color(0xFFF0F2FF);
-  static const textSecondary = Color(0xFF8891B0);
-
-  
-}
+///
+// Local `RColors` removed — use Theme / AppColors instead
 class AskPage extends ConsumerStatefulWidget {
   const AskPage({super.key, required this.projectId});
   final int projectId;
@@ -61,143 +46,77 @@ class _AskPageState extends ConsumerState<AskPage>
   Widget build(BuildContext context) {
     final state = ref.watch(ragStateProvider(widget.projectId));
 
-    return Theme(
-      data: _buildTheme(),
-      child: Scaffold(
-        backgroundColor: RColors.bg,
-        body: LoadingOverlay(
-          isLoading: state.isBusy,
-          message: state.activeLoadingMessage,
-          child: CustomScrollView(
-            slivers: [
-              // ── Collapsing hero app bar ───────────────────────────
-              SliverAppBar(
-                backgroundColor: RColors.bg,
-                expandedHeight: 210,
-                pinned: true,
-                elevation: 0,
-                title: const Text(
-                  'Ask & Search',
-                  style: TextStyle(
-                    fontFamily: 'Georgia',
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                    color: RColors.textPrimary,
-                  ),
-                ),
-                centerTitle: false,
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.parallax,
-                  background: _AskHero(
-                    projectId: widget.projectId,
-                    waveController: _waveController,
-                  ),
+    return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      body: LoadingOverlay(
+        isLoading: state.isBusy,
+        message: state.activeLoadingMessage,
+        child: CustomScrollView(
+          slivers: [
+            // ── Collapsing hero app bar ───────────────────────────
+            SliverAppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              expandedHeight: 210,
+              pinned: true,
+              elevation: 0,
+              title: Text(
+                'Ask & Search',
+                style: TextStyle(
+                  fontFamily: 'Georgia',
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 0.3,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
-
-              // ── Page body ─────────────────────────────────────────
-              SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 12),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    // Search
-                    SearchSection(projectId: widget.projectId),
-                    _Gap(),
-                    SearchResultsWidget(projectId: widget.projectId),
-                    _Gap(),
-
-                    // Divider between search and ask
-                    _FeatureDivider(
-                      leftLabel: 'Search',
-                      rightLabel: 'Ask AI',
-                      leftColor: RColors.purple,
-                      rightColor: RColors.accent,
-                    ),
-                    _Gap(),
-
-                    // Ask
-                    AnswerSection(projectId: widget.projectId),
-                    _Gap(),
-                    AnswerDisplayWidget(projectId: widget.projectId),
-                    _Gap(),
-                    DebugSectionWidget(projectId: widget.projectId),
-
-                    const SizedBox(height: 32),
-                  ]),
+              centerTitle: false,
+              flexibleSpace: FlexibleSpaceBar(
+                collapseMode: CollapseMode.parallax,
+                background: _AskHero(
+                  projectId: widget.projectId,
+                  waveController: _waveController,
                 ),
               ),
-            ],
-          ),
+            ),
+
+            // ── Page body ─────────────────────────────────────────
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 20, vertical: 12),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([
+                  // Search
+                  SearchSection(projectId: widget.projectId),
+                  _Gap(),
+                  SearchResultsWidget(projectId: widget.projectId),
+                  _Gap(),
+
+                  // Divider between search and ask
+                  _FeatureDivider(
+                    leftLabel: 'Search',
+                    rightLabel: 'Ask AI',
+                    leftColor: Theme.of(context).colorScheme.secondary,
+                    rightColor: Theme.of(context).colorScheme.primary,
+                  ),
+                  _Gap(),
+
+                  // Ask
+                  AnswerSection(projectId: widget.projectId),
+                  _Gap(),
+                  AnswerDisplayWidget(projectId: widget.projectId),
+                  _Gap(),
+                  DebugSectionWidget(projectId: widget.projectId),
+
+                  const SizedBox(height: 32),
+                ]),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  ThemeData _buildTheme() => ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: RColors.bg,
-        colorScheme: const ColorScheme.dark(
-          primary: RColors.accent,
-          secondary: RColors.teal,
-          surface: RColors.surface,
-          error: RColors.error,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: RColors.card,
-          labelStyle:
-              const TextStyle(color: RColors.textSecondary, fontSize: 13),
-          hintStyle:
-              TextStyle(color: RColors.textSecondary.withOpacity(0.5)),
-          helperStyle:
-              const TextStyle(color: RColors.textSecondary, fontSize: 11),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                BorderSide(color: Colors.white.withOpacity(0.08)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                BorderSide(color: Colors.white.withOpacity(0.08)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                const BorderSide(color: RColors.accent, width: 1.5),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: RColors.error),
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-        snackBarTheme: SnackBarThemeData(
-          backgroundColor: RColors.card,
-          contentTextStyle:
-              const TextStyle(color: RColors.textPrimary, fontSize: 13),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12)),
-          behavior: SnackBarBehavior.floating,
-        ),
-        textTheme: const TextTheme(
-          headlineSmall: TextStyle(
-              color: RColors.textPrimary, fontWeight: FontWeight.w700),
-          titleLarge: TextStyle(
-              color: RColors.textPrimary, fontWeight: FontWeight.w600),
-          titleMedium: TextStyle(
-              color: RColors.textPrimary, fontWeight: FontWeight.w600),
-          titleSmall: TextStyle(
-              color: RColors.textSecondary, fontSize: 12),
-          bodyLarge: TextStyle(color: RColors.textPrimary),
-          bodyMedium:
-              TextStyle(color: RColors.textSecondary, fontSize: 13),
-          bodySmall:
-              TextStyle(color: RColors.textSecondary, fontSize: 11),
-        ),
-      );
 }
 
 // ── Hero header ─────────────────────────────────────────────────────────────
@@ -215,16 +134,16 @@ class _AskHero extends StatelessWidget {
     return Stack(
       fit: StackFit.expand,
       children: [
-        // Background gradient — indigo + purple blend
+        // Background gradient — theme-aware blend
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF0D0F14),
-                RColors.accentSoft.withOpacity(0.28),
-                RColors.purpleSoft.withOpacity(0.18),
+                Theme.of(context).scaffoldBackgroundColor,
+                Theme.of(context).colorScheme.primary.withOpacity(0.28),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.18),
               ],
             ),
           ),
@@ -235,8 +154,8 @@ class _AskHero extends StatelessWidget {
           builder: (_, __) => CustomPaint(
             painter: _AskWavePainter(
               progress: waveController.value,
-              color1: RColors.accent.withOpacity(0.18),
-              color2: RColors.purple.withOpacity(0.12),
+              color1: Theme.of(context).colorScheme.primary.withOpacity(0.18),
+              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.12),
             ),
           ),
         ),
@@ -252,25 +171,21 @@ class _AskHero extends StatelessWidget {
               // Dual feature badges
               Row(
                 children: [
-                  _HeroBadge(
-                      label: 'SEARCH', color: RColors.purple),
+                  _HeroBadge(label: 'SEARCH', color: Theme.of(context).colorScheme.secondary),
                   const SizedBox(width: 8),
-                  _HeroBadge(
-                      label: 'ASK AI', color: RColors.accent),
+                  _HeroBadge(label: 'ASK AI', color: Theme.of(context).colorScheme.primary),
                   const SizedBox(width: 8),
-                  _HeroBadge(
-                      label: 'PROJECT $projectId',
-                      color: RColors.textSecondary),
+                  _HeroBadge(label: 'PROJECT $projectId', color: Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey),
                 ],
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Search & ask across\nyour knowledge',
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: RColors.textPrimary,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
@@ -280,7 +195,7 @@ class _AskHero extends StatelessWidget {
                 'Semantic search · RAG answers · debug traces',
                 style: TextStyle(
                   fontSize: 13,
-                  color: RColors.textPrimary.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                   letterSpacing: 0.1,
                 ),
               ),
@@ -385,10 +300,10 @@ class _FeatureDivider extends StatelessWidget {
           padding:
               const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
           decoration: BoxDecoration(
-            color: RColors.surface,
+            color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-                color: Colors.white.withOpacity(0.08)),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -408,10 +323,9 @@ class _FeatureDivider extends StatelessWidget {
               Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 6),
-                child: Text('·',
-                    style: TextStyle(
-                        color: RColors.textSecondary
-                            .withOpacity(0.4))),
+              child: Text('·',
+                style: TextStyle(
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4))),
               ),
               Container(
                   width: 6,

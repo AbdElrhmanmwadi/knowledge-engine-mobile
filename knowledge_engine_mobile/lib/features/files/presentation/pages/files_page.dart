@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/widgets/loading_overlay.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../providers/files_provider.dart';
 import '../widgets/index_section.dart';
 import '../widgets/process_section.dart';
@@ -11,18 +14,7 @@ import '../widgets/status_log_widget.dart';
 import '../widgets/upload_section.dart';
 
 // ── Design tokens ────────────────────────────────────────────────────────────
-class FColors {
-  static const bg            = Color(0xFF0D0F14);
-  static const surface       = Color(0xFF161923);
-  static const card          = Color(0xFF1E2230);
-  static const accent        = Color(0xFF38EFC4); // teal — documents/files
-  static const accentSoft    = Color(0xFF0F6E56);
-  static const indigo        = Color(0xFF6C8EFF);
-  static const error         = Color(0xFFFF5C6B);
-  static const warning       = Color(0xFFFFB547);
-  static const textPrimary   = Color(0xFFF0F2FF);
-  static const textSecondary = Color(0xFF8891B0);
-}
+// Use centralized tokens from AppColors
 
 /// Files Page — Upload → Prepare → Index workflow.
 class FilesPage extends ConsumerStatefulWidget {
@@ -56,39 +48,37 @@ class _FilesPageState extends ConsumerState<FilesPage>
   Widget build(BuildContext context) {
     final state = ref.watch(filesStateProvider(widget.projectId));
 
-    return Theme(
-      data: _buildTheme(),
-      child: Scaffold(
-        backgroundColor: FColors.bg,
+    return Scaffold(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         body: LoadingOverlay(
           isLoading: state.isBusy,
           message: state.activeLoadingMessage,
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
-                backgroundColor: FColors.bg,
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                 expandedHeight: 210,
                 pinned: true,
                 elevation: 0,
-                title: const Text(
+                title: Text(
                   'Documents',
                   style: TextStyle(
                     fontFamily: 'Georgia',
                     fontSize: 18,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.3,
-                    color: FColors.textPrimary,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
                 centerTitle: false,
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.parallax,
-                  background: _FilesHero(
-                    projectId: widget.projectId,
-                    waveController: _waveController,
-                    currentStep: _currentStep(state),
-                  ),
-                ),
+                        flexibleSpace: FlexibleSpaceBar(
+                          collapseMode: CollapseMode.parallax,
+                          background: _FilesHero(
+                            projectId: widget.projectId,
+                            waveController: _waveController,
+                            currentStep: _currentStep(state),
+                          ),
+                        ),
               ),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
@@ -98,10 +88,10 @@ class _FilesPageState extends ConsumerState<FilesPage>
                     // Error banner
                     if (state.errorMessage != null) ...[
                       _AlertBanner(
-                        icon: Icons.error_outline_rounded,
-                        color: FColors.error,
-                        message: state.errorMessage!,
-                      ),
+                          icon: Icons.error_outline_rounded,
+                          color: Theme.of(context).colorScheme.error,
+                          message: state.errorMessage!,
+                        ),
                       const SizedBox(height: 14),
                     ],
 
@@ -124,7 +114,7 @@ class _FilesPageState extends ConsumerState<FilesPage>
             ],
           ),
         ),
-      ),
+      
     );
   }
 
@@ -135,83 +125,7 @@ class _FilesPageState extends ConsumerState<FilesPage>
     return 0;
   }
 
-  ThemeData _buildTheme() => ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: FColors.bg,
-        colorScheme: const ColorScheme.dark(
-          primary: FColors.accent,
-          secondary: FColors.indigo,
-          surface: FColors.surface,
-          error: FColors.error,
-        ),
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: FColors.card,
-          labelStyle: const TextStyle(
-              color: FColors.textSecondary, fontSize: 13),
-          hintStyle:
-              TextStyle(color: FColors.textSecondary.withOpacity(0.5)),
-          helperStyle: const TextStyle(
-              color: FColors.textSecondary, fontSize: 11),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                BorderSide(color: Colors.white.withOpacity(0.08)),
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                BorderSide(color: Colors.white.withOpacity(0.08)),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide:
-                const BorderSide(color: FColors.accent, width: 1.5),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(14),
-            borderSide: const BorderSide(color: FColors.error),
-          ),
-          contentPadding:
-              const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        ),
-        checkboxTheme: CheckboxThemeData(
-          fillColor: WidgetStateProperty.resolveWith((s) =>
-              s.contains(WidgetState.selected)
-                  ? FColors.accent
-                  : Colors.transparent),
-          checkColor: WidgetStateProperty.all(FColors.bg),
-          side: BorderSide(color: FColors.textSecondary.withOpacity(0.5)),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-        ),
-        expansionTileTheme: const ExpansionTileThemeData(
-          textColor: FColors.textPrimary,
-          iconColor: FColors.textSecondary,
-          collapsedTextColor: FColors.textSecondary,
-          collapsedIconColor: FColors.textSecondary,
-        ),
-        snackBarTheme: SnackBarThemeData(
-          backgroundColor: FColors.card,
-          contentTextStyle:
-              const TextStyle(color: FColors.textPrimary, fontSize: 13),
-          shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(12)),
-          behavior: SnackBarBehavior.floating,
-        ),
-        textTheme: const TextTheme(
-          titleLarge: TextStyle(
-              color: FColors.textPrimary, fontWeight: FontWeight.w600),
-          titleMedium: TextStyle(
-              color: FColors.textPrimary, fontWeight: FontWeight.w600),
-          titleSmall:
-              TextStyle(color: FColors.textSecondary, fontSize: 12),
-          bodyLarge: TextStyle(color: FColors.textPrimary),
-          bodyMedium:
-              TextStyle(color: FColors.textSecondary, fontSize: 13),
-          bodySmall:
-              TextStyle(color: FColors.textSecondary, fontSize: 11),
-        ),
-      );
+  // Page-specific theme removed; rely on AppTheme and Theme.of(context)
 }
 
 // ── Hero header ──────────────────────────────────────────────────────────────
@@ -237,20 +151,20 @@ class _FilesHero extends StatelessWidget {
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
               colors: [
-                const Color(0xFF0D0F14),
-                FColors.accentSoft.withOpacity(0.35),
-                FColors.indigo.withOpacity(0.1),
+                Theme.of(context).scaffoldBackgroundColor,
+                Theme.of(context).colorScheme.primary.withOpacity(0.35),
+                Theme.of(context).colorScheme.secondary.withOpacity(0.1),
               ],
             ),
           ),
         ),
         AnimatedBuilder(
           animation: waveController,
-          builder: (_, __) => CustomPaint(
+            builder: (_, __) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
-              color1: FColors.accent.withOpacity(0.16),
-              color2: FColors.indigo.withOpacity(0.1),
+              color1: Theme.of(context).colorScheme.primary.withOpacity(0.16),
+              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
             ),
           ),
         ),
@@ -268,15 +182,15 @@ class _FilesHero extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(
                         horizontal: 10, vertical: 4),
                     decoration: BoxDecoration(
-                      color: FColors.accent.withOpacity(0.14),
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                          color: FColors.accent.withOpacity(0.32)),
+                          color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
                     ),
                     child: Text(
                       'PROJECT $projectId',
-                      style: const TextStyle(
-                        color: FColors.accent,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.2,
@@ -289,21 +203,21 @@ class _FilesHero extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(
                           horizontal: 10, vertical: 4),
                       decoration: BoxDecoration(
-                        color: FColors.accent.withOpacity(0.14),
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                            color: FColors.accent.withOpacity(0.32)),
+                            color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
                       ),
-                      child: const Row(
+                      child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.check_rounded,
-                              color: FColors.accent, size: 11),
-                          SizedBox(width: 4),
+                              color: Theme.of(context).colorScheme.primary, size: 11),
+                          const SizedBox(width: 4),
                           Text(
                             'READY',
                             style: TextStyle(
-                              color: FColors.accent,
+                              color: Theme.of(context).colorScheme.primary,
                               fontSize: 10,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.2,
@@ -315,13 +229,13 @@ class _FilesHero extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 10),
-              const Text(
+              Text(
                 'Add your\ndocuments',
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26,
                   fontWeight: FontWeight.w700,
-                  color: FColors.textPrimary,
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
@@ -331,7 +245,7 @@ class _FilesHero extends StatelessWidget {
                 'Upload · prepare · index into knowledge base',
                 style: TextStyle(
                   fontSize: 13,
-                  color: FColors.textPrimary.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                 ),
               ),
             ],
@@ -402,9 +316,9 @@ class _StepTracker extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       decoration: BoxDecoration(
-        color: FColors.card,
+        color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
       ),
       child: Row(
         children: [
@@ -425,11 +339,11 @@ class _StepTracker extends StatelessWidget {
                     gradient: LinearGradient(
                       colors: [
                         i < current
-                            ? FColors.accent
-                            : FColors.textSecondary.withOpacity(0.2),
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.2),
                         (i + 1) <= current
-                            ? FColors.accent
-                            : FColors.textSecondary.withOpacity(0.2),
+                            ? Theme.of(context).colorScheme.primary
+                            : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.2),
                       ],
                     ),
                   ),
@@ -464,11 +378,9 @@ class _StepDot extends StatelessWidget {
     final active  = index == current;
     final pending = index > current;
 
-    final Color dotColor = done
-        ? FColors.accent
-        : active
-            ? FColors.accent
-            : FColors.textSecondary.withOpacity(0.3);
+    final Color dotColor = done || active
+      ? Theme.of(context).colorScheme.primary
+      : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.3);
 
     return Column(
       children: [
@@ -478,8 +390,8 @@ class _StepDot extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: done || active
-                ? FColors.accent.withOpacity(0.12)
-                : Colors.white.withOpacity(0.04),
+                ? Theme.of(context).colorScheme.primary.withOpacity(0.12)
+                : Theme.of(context).colorScheme.onSurface.withOpacity(0.04),
             border: Border.all(
               color: dotColor,
               width: active ? 1.5 : 1,
@@ -494,12 +406,12 @@ class _StepDot extends StatelessWidget {
         const SizedBox(height: 6),
         Text(
           data.label,
-          style: TextStyle(
+            style: TextStyle(
             color: pending
-                ? FColors.textSecondary.withOpacity(0.4)
+                ? Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.4)
                 : active
-                    ? FColors.accent
-                    : FColors.textSecondary,
+                    ? Theme.of(context).colorScheme.primary
+                    : Theme.of(context).textTheme.bodyMedium!.color,
             fontSize: 11,
             fontWeight: active ? FontWeight.w600 : FontWeight.w400,
           ),
