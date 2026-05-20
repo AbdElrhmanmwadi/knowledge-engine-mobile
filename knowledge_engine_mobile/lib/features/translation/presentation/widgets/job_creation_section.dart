@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:knowledge_engine_mobile/features/translation/presentation/pages/translate_page.dart';
-
 import '../../../../core/config/constants.dart';
 import '../providers/translation_provider.dart';
 import 'language_selector_widget.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:knowledge_engine_mobile/features/translation/presentation/pages/translate_page.dart';
 import 'package:knowledge_engine_mobile/features/translation/presentation/widgets/job_creation_section.dart';
 import 'package:knowledge_engine_mobile/features/voice/presentation/widgets/alert_banner.dart';
 
