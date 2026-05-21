@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OutputCard extends StatelessWidget {
   const OutputCard({
@@ -24,7 +25,7 @@ class OutputCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: card,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: isEmpty
               ? Colors.white.withOpacity(0.07)
@@ -36,17 +37,17 @@ class OutputCard extends StatelessWidget {
         children: [
           // Header
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 0.h),
             child: Row(
               children: [
-                Icon(icon, color: accentColor, size: 16),
-                const SizedBox(width: 8),
+                Icon(icon, color: accentColor, size: 16.r),
+                SizedBox(width: 8.w),
                 Text(
                   label,
                   style: TextStyle(
                     color: accentColor,
                     fontWeight: FontWeight.w700,
-                    fontSize: 12,
+                    fontSize: 12.sp,
                     letterSpacing: 0.8,
                   ),
                 ),
@@ -54,22 +55,22 @@ class OutputCard extends StatelessWidget {
                   const Spacer(),
                   Text(
                     '${content.length} chars',
-                    style: TextStyle(color: textSecondary, fontSize: 11),
+                    style: TextStyle(color: textSecondary, fontSize: 11.sp),
                   ),
                 ],
               ],
             ),
           ),
-          Divider(color: Colors.white.withOpacity(0.06), height: 20),
+          Divider(color: Colors.white.withOpacity(0.06), height: 20.h),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 16.h),
             child: SelectableText(
               isEmpty ? 'No output yet…' : content,
               style: TextStyle(
                 color: isEmpty
                     ? textSecondary.withOpacity(0.5)
                     : const Color(0xFFF0F2FF),
-                fontSize: 14,
+                fontSize: 14.sp,
                 height: 1.6,
                 fontStyle: isEmpty ? FontStyle.italic : FontStyle.normal,
               ),

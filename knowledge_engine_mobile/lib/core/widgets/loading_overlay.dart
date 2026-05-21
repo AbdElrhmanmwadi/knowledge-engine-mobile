@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Full-screen loading overlay widget
 class LoadingOverlay extends StatelessWidget {
@@ -28,7 +29,7 @@ class LoadingOverlay extends StatelessWidget {
                   children: [
                     const CircularProgressIndicator(),
                     if (message != null) ...[
-                      const SizedBox(height: 16),
+                      SizedBox(height: 16.h),
                       Text(
                         message!,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(

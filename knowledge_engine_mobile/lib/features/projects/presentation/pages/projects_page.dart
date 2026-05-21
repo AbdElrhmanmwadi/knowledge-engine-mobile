@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -75,14 +76,14 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                 // ── Collapsing hero ──────────────────────────────────
                 SliverAppBar(
                   backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  expandedHeight: 220,
+                  expandedHeight: 220.h,
                   pinned: true,
                   elevation: 0,
                   title: Text(
                     'Knowledge Engine',
                     style: TextStyle(
                       fontFamily: 'Georgia',
-                      fontSize: 18,
+                      fontSize: 18.sp,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.3,
                       color: Theme.of(context).textTheme.bodyLarge?.color,
@@ -100,8 +101,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
 
                 // ── Body ─────────────────────────────────────────────
                 SliverPadding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20, vertical: 12),
+                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                   sliver: SliverList(
                     delegate: SliverChildListDelegate([
                       // Error banner
@@ -110,12 +110,12 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                                     icon: Icons.error_outline_rounded,
                                     color: Theme.of(context).colorScheme.error,
                                     message: state.errorMessage!),
-                        const SizedBox(height: 14),
+                        SizedBox(height: 14.h),
                       ],
 
                       // ── Project ID input ─────────────────────────
                       _SectionLabel(label: 'Open Project'),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _ProjectInputCard(
                         controller: _controller,
                         state: state,
@@ -124,11 +124,11 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                             context.push('/dashboard', extra: id),
                       ),
 
-                      const SizedBox(height: 28),
+                      SizedBox(height: 28.h),
 
                       // ── Recent projects ──────────────────────────
                       _SectionLabel(label: 'Recent Projects'),
-                      const SizedBox(height: 12),
+                      SizedBox(height: 12.h),
                       _RecentProjectsList(
                         recentProjects: recentProjects,
                         notifier: notifier,
@@ -148,7 +148,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                         },
                       ),
 
-                      const SizedBox(height: 32),
+                      SizedBox(height: 32.h),
                     ]),
                   ),
                 ),
@@ -208,11 +208,10 @@ class _Hero extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
                       color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
                 ),
@@ -220,29 +219,29 @@ class _Hero extends StatelessWidget {
                   'KNOWLEDGE ENGINE',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Text(
                 'Your projects,\nat a glance',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 26,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Text(
                 'Enter a project ID or pick a recent one',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                 ),
               ),
@@ -305,10 +304,10 @@ class _ProjectInputCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: Colors.white.withOpacity(0.07)),
       ),
       child: Column(
@@ -319,7 +318,7 @@ class _ProjectInputCard extends StatelessWidget {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: TextStyle(
-                color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16, fontWeight: FontWeight.w500),
+                color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16.sp, fontWeight: FontWeight.w500),
             onChanged: notifier.updateProjectInput,
             onSubmitted: (_) => _submit(context),
             decoration: InputDecoration(
@@ -327,18 +326,18 @@ class _ProjectInputCard extends StatelessWidget {
               hintText: 'e.g. 42',
               errorText: state.validationError,
                 prefixIcon: Icon(Icons.folder_outlined,
-                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
+                  size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
                 suffixIcon: state.projectInput.trim().isNotEmpty
                   ? IconButton(
                     icon: Icon(Icons.close_rounded,
-                      size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
+                      size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
                     tooltip: 'Clear',
                     onPressed: () => notifier.updateProjectInput(''),
                   )
                   : null,
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
           SizedBox(
             width: double.infinity,
               child: FilledButton.icon(
@@ -349,18 +348,18 @@ class _ProjectInputCard extends StatelessWidget {
               disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.lg)),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              textStyle: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w600),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+              textStyle: TextStyle(
+                fontSize: 14.sp, fontWeight: FontWeight.w600),
               ),
               icon: state.isLoading
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
+                  ? SizedBox(
+                      width: 16.w,
+                      height: 16.h,
                   child: CircularProgressIndicator(
                     strokeWidth: 2, color: Colors.white),
                     )
-                  : const Icon(Icons.arrow_forward_rounded, size: 18),
+                  : Icon(Icons.arrow_forward_rounded, size: 18.r),
               label:
                   Text(state.isLoading ? 'Opening…' : 'Open Project'),
             ),
@@ -397,7 +396,7 @@ class _RecentProjectsList extends StatelessWidget {
     return recentProjects.when(
       loading: () => Center(
         child: Padding(
-          padding: const EdgeInsets.all(24),
+          padding: EdgeInsets.all(24.r),
           child: CircularProgressIndicator(
               strokeWidth: 2, color: Theme.of(context).colorScheme.primary),
         ),
@@ -410,8 +409,7 @@ class _RecentProjectsList extends StatelessWidget {
       data: (projects) {
         if (projects.isEmpty) {
                 return Container(
-            padding: const EdgeInsets.symmetric(
-                vertical: 32, horizontal: 20),
+            padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 20.w),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(AppRadius.lg),
@@ -422,19 +420,19 @@ class _RecentProjectsList extends StatelessWidget {
               children: [
                 Icon(Icons.folder_off_outlined,
                     color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
-                    size: 36),
-                const SizedBox(height: 10),
+                    size: 36.r),
+                SizedBox(height: 10.h),
                 Text(
                   'No recent projects yet',
                   style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
+                      color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 Text(
                   'Open a project above to see it here',
                   style: TextStyle(
                       color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
-                      fontSize: 11),
+                      fontSize: 11.sp),
                 ),
               ],
             ),
@@ -451,7 +449,7 @@ class _RecentProjectsList extends StatelessWidget {
                 onDelete: () => onDelete(projects[i]),
               ),
               if (i < projects.length - 1)
-                const SizedBox(height: 8),
+                SizedBox(height: 8.h),
             ],
           ],
         );
@@ -497,11 +495,10 @@ class _RecentProjectTile extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(
-              horizontal: 16, vertical: 14),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(16),
+            borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
                 color: color.withOpacity(0.18)),
           ),
@@ -509,18 +506,18 @@ class _RecentProjectTile extends StatelessWidget {
             children: [
               // Colour dot / folder icon
               Container(
-                width: 42,
-                height: 42,
+                width: 42.w,
+                height: 42.h,
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
                       color: color.withOpacity(0.25)),
                 ),
                 child: Icon(Icons.folder_rounded,
-                    color: color, size: 20),
+                    color: color, size: 20.r),
               ),
-              const SizedBox(width: 14),
+              SizedBox(width: 14.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,15 +527,15 @@ class _RecentProjectTile extends StatelessWidget {
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyLarge?.color,
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        fontSize: 14.sp,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2.h),
                     Text(
                       'Tap to open · swipe to delete',
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
-                        fontSize: 11,
+                        fontSize: 11.sp,
                       ),
                     ),
                   ],
@@ -546,7 +543,7 @@ class _RecentProjectTile extends StatelessWidget {
               ),
                 Icon(Icons.chevron_right_rounded,
                   color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
-                  size: 20),
+                  size: 20.r),
             ],
           ),
         ),
@@ -565,33 +562,33 @@ class _SwipeBackground extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.error.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Theme.of(context).colorScheme.error.withOpacity(0.3)),
       ),
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: EdgeInsets.symmetric(horizontal: 20.w),
       alignment: alignment,
     child: Row(
     mainAxisSize: MainAxisSize.min,
     children: isLeft
       ? [
         Icon(Icons.delete_outline_rounded,
-          color: Theme.of(context).colorScheme.error, size: 20),
-        const SizedBox(width: 6),
+          color: Theme.of(context).colorScheme.error, size: 20.r),
+        SizedBox(width: 6.w),
         Text('Delete',
           style: TextStyle(
             color: Theme.of(context).colorScheme.error,
             fontWeight: FontWeight.w600,
-            fontSize: 13)),
+            fontSize: 13.sp)),
         ]
       : [
         Text('Delete',
           style: TextStyle(
             color: Theme.of(context).colorScheme.error,
             fontWeight: FontWeight.w600,
-            fontSize: 13)),
-        const SizedBox(width: 6),
+            fontSize: 13.sp)),
+        SizedBox(width: 6.w),
         Icon(Icons.delete_outline_rounded,
-          color: Theme.of(context).colorScheme.error, size: 20),
+          color: Theme.of(context).colorScheme.error, size: 20.r),
         ],
       ),
     );
@@ -609,7 +606,7 @@ class _SectionLabel extends StatelessWidget {
       label.toUpperCase(),
       style: TextStyle(
         color: Theme.of(context).textTheme.bodyMedium?.color,
-        fontSize: 11,
+        fontSize: 11.sp,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.4,
       ),
@@ -627,21 +624,21 @@ class _AlertBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 16),
-          const SizedBox(width: 10),
+          Icon(icon, color: color, size: 16.r),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(message,
                 style: TextStyle(
-                    color: color, fontSize: 12, height: 1.45)),
+                    color: color, fontSize: 12.sp, height: 1.45)),
           ),
         ],
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:knowledge_engine_mobile/features/translation/presentation/widgets/job_creation_section.dart';
 import 'package:knowledge_engine_mobile/features/voice/presentation/widgets/alert_banner.dart';
@@ -29,32 +30,32 @@ class JobStatusSection extends ConsumerWidget {
         children: [
           Text(
             'Well track the latest translation request for you.',
-            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // ── Latest job badge ────────────────────────────────────
           if (latestJobId != null && latestJobId.trim().isNotEmpty)
             Container(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                  EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.confirmation_number_outlined,
-                      color: Theme.of(context).colorScheme.primary, size: 16),
-                  const SizedBox(width: 10),
+                      color: Theme.of(context).colorScheme.primary, size: 16.r),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Text(
                       latestJobId,
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontWeight: FontWeight.w600,
-                        fontSize: 13,
+                        fontSize: 13.sp,
                       ),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -65,43 +66,43 @@ class JobStatusSection extends ConsumerWidget {
           else
             Container(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                  EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.04),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.info_outline_rounded,
                       color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
-                      size: 15),
-                  const SizedBox(width: 10),
+                      size: 15.r),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Text(
                       'Create a translation job first to see its status here.',
                       style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12),
+                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 12.sp),
                     ),
                   ),
                 ],
               ),
             ),
 
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // ── Advanced / manual job ID ────────────────────────────
           _AdvancedExpansion(state: state, notifier: notifier),
 
           if (state.statusError != null) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             AlertBanner(
               icon: Icons.error_outline_rounded,
               color: Theme.of(context).colorScheme.error,
               message: state.statusError!,
             ),
           ],
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Refresh button ──────────────────────────────────────
           SizedBox(
@@ -115,24 +116,24 @@ class JobStatusSection extends ConsumerWidget {
                 foregroundColor: const Color(0xFF0D0F14),
                 disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.25),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                textStyle: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600),
+                  borderRadius: BorderRadius.circular(12.r)),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                textStyle: TextStyle(
+                  fontSize: 14.sp, fontWeight: FontWeight.w600),
                 ),
               icon: state.isCheckingStatus
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
+                  ?  SizedBox(
+                      width: 16.w,
+                      height: 16.h,
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Color(0xFF0D0F14)),
                     )
-                  : const Icon(Icons.refresh_rounded, size: 18),
+                  : Icon(Icons.refresh_rounded, size: 18.r),
               label: Text(
                   state.isCheckingStatus ? 'Checking…' : 'Refresh status'),
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // ── Auto-refresh controls ───────────────────────────────
           _AutoRefreshRow(
@@ -143,7 +144,7 @@ class JobStatusSection extends ConsumerWidget {
 
           // ── Status card ─────────────────────────────────────────
           if (state.hasVisibleStatusCard) ...[
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Row(
               children: [
                 if (state.canCheck)
@@ -161,7 +162,7 @@ class JobStatusSection extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             TranslationStatusCard(projectId: projectId),
           ],
         ],
@@ -182,39 +183,39 @@ class _AdvancedExpansion extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
       ),
       child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 14),
+        tilePadding: EdgeInsets.symmetric(horizontal: 14.w),
         childrenPadding:
-            const EdgeInsets.fromLTRB(14, 0, 14, 14),
+            EdgeInsets.fromLTRB(14.w, 0.h, 14.w, 14.h),
         shape: const Border(),
         collapsedShape: const Border(),
         leading: Icon(Icons.tune_rounded,
-            color: Theme.of(context).textTheme.bodyMedium?.color, size: 18),
+            color: Theme.of(context).textTheme.bodyMedium?.color, size: 18.r),
         title: Text(
           'Advanced',
           style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
           'Look up a different request by ID',
-          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
         ),
         children: [
           TextField(
             enabled: !(state.isBusy as bool),
             onChanged: notifier.updateJobStatusId,
-            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
             decoration: InputDecoration(
               labelText: 'Request ID',
               hintText: 'Optional — leave empty for latest',
               errorText: state.jobStatusIdError as String?,
               prefixIcon: Icon(Icons.tag_rounded,
-                  size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
+                  size: 16.r, color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
           ),
         ],
@@ -236,10 +237,10 @@ class _AutoRefreshRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Colors.white.withOpacity(0.07)),
       ),
       child: Column(
@@ -247,8 +248,8 @@ class _AutoRefreshRow extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.autorenew_rounded,
-                  size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
-              const SizedBox(width: 8),
+                  size: 16.r, color: Theme.of(context).textTheme.bodyMedium?.color),
+              SizedBox(width: 8.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,13 +258,13 @@ class _AutoRefreshRow extends StatelessWidget {
                       'Keep updating automatically',
                       style: TextStyle(
                           color: Theme.of(context).textTheme.bodyLarge?.color,
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w500),
                     ),
                     Text(
                       'Refresh every ${state.refreshIntervalSeconds}s until complete',
                       style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
                     ),
                   ],
                 ),
@@ -274,26 +275,26 @@ class _AutoRefreshRow extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           DropdownButtonFormField<int>(
             value: state.refreshIntervalSeconds as int,
             dropdownColor: Theme.of(context).cardColor,
-            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 13.sp),
             decoration: InputDecoration(
               labelText: 'Refresh interval',
               prefixIcon: Icon(Icons.timer_outlined,
-                  size: 16, color: Theme.of(context).textTheme.bodyMedium?.color),
+                  size: 16.r, color: Theme.of(context).textTheme.bodyMedium?.color),
               contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                  EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               filled: true,
               fillColor: Theme.of(context).cardColor,
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 borderSide:
                     BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 borderSide:
                     BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
               ),
@@ -336,21 +337,21 @@ class _TinyButton extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
         decoration: BoxDecoration(
           color: btnColor.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(8.r),
           border: Border.all(color: btnColor.withOpacity(0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: btnColor, size: 14),
-            const SizedBox(width: 5),
+            Icon(icon, color: btnColor, size: 14.r),
+            SizedBox(width: 5.w),
             Text(
               label,
               style: TextStyle(
-                  color: btnColor, fontSize: 12, fontWeight: FontWeight.w500),
+                  color: btnColor, fontSize: 12.sp, fontWeight: FontWeight.w500),
             ),
           ],
         ),

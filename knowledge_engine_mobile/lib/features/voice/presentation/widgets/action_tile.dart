@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActionTile extends StatelessWidget {
   const ActionTile({
@@ -24,23 +25,23 @@ class ActionTile extends StatelessWidget {
         opacity: disabled ? 0.38 : 1,
         duration: const Duration(milliseconds: 200),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
+          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
           decoration: BoxDecoration(
             color: color.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(18),
+            borderRadius: BorderRadius.circular(18.r),
             border: Border.all(color: color.withOpacity(0.25)),
           ),
           child: Column(
             children: [
-              Icon(icon, color: color, size: 28),
-              const SizedBox(height: 10),
+              Icon(icon, color: color, size: 28.r),
+              SizedBox(height: 10.h),
               Text(
                 label,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   color: color,
                   fontWeight: FontWeight.w600,
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   height: 1.3,
                 ),
               ),

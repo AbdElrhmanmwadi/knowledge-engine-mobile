@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -48,7 +49,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
       ),
       child: Column(
@@ -56,35 +57,34 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
         children: [
           // ── Header ───────────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 16, 8, 0),
+            padding: EdgeInsets.fromLTRB(18.w, 16.h, 8.w, 0.h),
             child: Row(
               children: [
                 Icon(Icons.terminal_rounded,
-                    color: Theme.of(context).textTheme.bodyMedium?.color, size: 15),
-                const SizedBox(width: 8),
+                    color: Theme.of(context).textTheme.bodyMedium?.color, size: 15.r),
+                SizedBox(width: 8.w),
                 Text(
                   'STATUS LOG',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.bodyMedium?.color,
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                   ),
                 ),
-                const SizedBox(width: 6),
+                SizedBox(width: 6.w),
                 if (logs.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 7, vertical: 2),
+                    padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
                     decoration: BoxDecoration(
                       color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.08),
-                      borderRadius: BorderRadius.circular(6),
+                      borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(
                       '${logs.length}',
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color,
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -111,7 +111,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                     },
                   ),
                 if (logs.isNotEmpty) ...[ 
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6.w),
                   _LogAction(
                     icon: Icons.delete_sweep_outlined,
                     label: 'Clear',
@@ -119,16 +119,16 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                     onTap: notifier.clearStatus,
                   ),
                 ],
-                const SizedBox(width: 10),
+                SizedBox(width: 10.w),
               ],
             ),
           ),
             Divider(
-              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 18),
+              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 18.h),
 
           // ── Log list ──────────────────────────────────────────────
           SizedBox(
-            height: 260,
+            height: 260.h,
             child: logs.isEmpty
                 ? Center(
                     child: Column(
@@ -136,21 +136,21 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                       children: [
                         Icon(Icons.hourglass_empty_rounded,
                             color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.3),
-                            size: 32),
-                        const SizedBox(height: 10),
+                            size: 32.r),
+                        SizedBox(height: 10.h),
                         Text(
                           'No activity yet.',
                           style: TextStyle(
                             color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
-                            fontSize: 13,
+                            fontSize: 13.sp,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        SizedBox(height: 4.h),
                         Text(
                           'Actions will appear here with timestamps.',
                           style: TextStyle(
                             color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.35),
-                            fontSize: 11,
+                            fontSize: 11.sp,
                           ),
                         ),
                       ],
@@ -158,10 +158,10 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                   )
                 : ListView.separated(
                     controller: _scroll,
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 16.h),
                     itemCount: logs.length,
                     separatorBuilder: (_, __) =>
-                        const SizedBox(height: 8),
+                        SizedBox(height: 8.h),
                     itemBuilder: (context, i) {
                       final entry = logs[i];
                       return _LogEntry(entry: entry);
@@ -199,10 +199,10 @@ class _LogEntry extends StatelessWidget {
     final color = _statusColor(context, entry.status as String);
 
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: EdgeInsets.all(12.r),
       decoration: BoxDecoration(
         color: Theme.of(context).canvasColor,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: color.withOpacity(0.18)),
       ),
       child: Column(
@@ -211,17 +211,16 @@ class _LogEntry extends StatelessWidget {
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 8, vertical: 3),
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
                   (entry.label as String).toUpperCase(),
                   style: TextStyle(
                     color: color,
-                    fontSize: 9,
+                    fontSize: 9.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.8,
                   ),
@@ -232,18 +231,18 @@ class _LogEntry extends StatelessWidget {
                 time,
                 style: TextStyle(
                   color: Theme.of(context).textTheme.bodyMedium?.color,
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   fontFamily: 'Courier',
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Text(
             entry.message as String,
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
-              fontSize: 12,
+              fontSize: 12.sp,
               height: 1.5,
             ),
           ),
@@ -272,21 +271,21 @@ class _LogAction extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+        padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 5.h),
         decoration: BoxDecoration(
           color: c.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(7.r),
           border: Border.all(color: c.withOpacity(0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: c, size: 13),
-            const SizedBox(width: 4),
+            Icon(icon, color: c, size: 13.r),
+            SizedBox(width: 4.w),
             Text(label,
                 style: TextStyle(
                     color: c,
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w500)),
           ],
         ),

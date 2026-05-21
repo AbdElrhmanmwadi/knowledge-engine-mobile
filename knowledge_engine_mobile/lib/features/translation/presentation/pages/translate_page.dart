@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/widgets/loading_overlay.dart';
 import '../providers/translation_provider.dart';
@@ -51,14 +52,14 @@ class _TranslatePageState extends ConsumerState<TranslatePage>
           slivers: [
             SliverAppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              expandedHeight: 210,
+              expandedHeight: 210.h,
               pinned: true,
               elevation: 0,
               title: Text(
                 'File Translation',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.3,
                   color: Theme.of(context).textTheme.bodyLarge?.color,
@@ -74,13 +75,13 @@ class _TranslatePageState extends ConsumerState<TranslatePage>
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   JobCreationSection(projectId: widget.projectId),
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   JobStatusSection(projectId: widget.projectId),
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32.h),
                 ]),
               ),
             ),
@@ -139,39 +140,39 @@ class _TranslateHero extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.35)),
                 ),
                 child: Text(
                   'PROJECT $projectId',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 11,
+                    fontSize: 11.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                   ),
                 ),
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Text(
                 'Translate project\nfiles',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 26,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Text(
                 'Create jobs · track progress · download results',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                   letterSpacing: 0.1,
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'wave_painter.dart';
 
@@ -66,13 +67,10 @@ class HeroHeader extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
-                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: accent.withOpacity(0.18),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                         color: accent.withOpacity(0.35),
                         width: 1,
@@ -82,19 +80,19 @@ class HeroHeader extends StatelessWidget {
                       'PROJECT $projectId',
                       style: TextStyle(
                         color: accent,
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.2,
                       ),
                     ),
                   ),
                   if (isRecording) ...[
-                    const SizedBox(width: 10),
+                    SizedBox(width: 10.w),
                     AnimatedBuilder(
                       animation: pulseController,
                       builder: (_, __) => Container(
-                        width: 8,
-                        height: 8,
+                        width: 8.w,
+                        height: 8.h,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: const Color(
@@ -103,12 +101,12 @@ class HeroHeader extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(width: 5),
-                    const Text(
+                    SizedBox(width: 5.w),
+                     Text(
                       'REC',
                       style: TextStyle(
                         color: Color(0xFFFF5C6B),
-                        fontSize: 11,
+                        fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.4,
                       ),
@@ -116,23 +114,23 @@ class HeroHeader extends StatelessWidget {
                   ],
                 ],
               ),
-              const SizedBox(height: 10),
-              const Text(
+              SizedBox(height: 10.h),
+               Text(
                 'Speak with your\nknowledge',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 26,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.w700,
                   color: Color(0xFFF0F2FF),
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Text(
                 'Transcribe recordings · voice chat · hear answers',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: const Color(0xFFF0F2FF).withOpacity(0.55),
                   letterSpacing: 0.1,
                 ),

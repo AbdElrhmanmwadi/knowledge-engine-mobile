@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -18,7 +19,7 @@ class AnswerDisplayWidget extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
       ),
       child: Column(
@@ -26,17 +27,17 @@ class AnswerDisplayWidget extends ConsumerWidget {
         children: [
           // ── Header ───────────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
+            padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 0.h),
             child: Row(
               children: [
                 Icon(Icons.auto_awesome_rounded,
-                    color: Theme.of(context).colorScheme.primary, size: 15),
-                const SizedBox(width: 8),
+                    color: Theme.of(context).colorScheme.primary, size: 15.r),
+                SizedBox(width: 8.w),
                 Text(
                   'AI ANSWER',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                   ),
@@ -50,25 +51,25 @@ class AnswerDisplayWidget extends ConsumerWidget {
               ],
             ),
           ),
-          Divider(color: Colors.white.withOpacity(0.06), height: 20),
+          Divider(color: Colors.white.withOpacity(0.06), height: 20.h),
 
           // ── Answer body ───────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 0),
+            padding: EdgeInsets.fromLTRB(18.w, 0.h, 18.w, 0.h),
             child: SelectableText(
               response.answer,
               style: TextStyle(
                 color: Theme.of(context).textTheme.bodyLarge?.color,
-                fontSize: 14,
+                fontSize: 14.sp,
                 height: 1.7,
               ),
             ),
           ),
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
 
           // ── Signal + actions ──────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 16),
+            padding: EdgeInsets.fromLTRB(18.w, 0.h, 18.w, 16.h),
             child: Row(
               children: [
                 _MiniPill(
@@ -88,7 +89,7 @@ class AnswerDisplayWidget extends ConsumerWidget {
                   ),
                 ),
                 if (state.hasDebugData) ...[
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   _IconAction(
                     icon: state.isDebugVisible
                         ? Icons.visibility_off_outlined
@@ -126,17 +127,17 @@ class _MiniPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: color.withOpacity(0.25)),
       ),
       child: Text(
         label,
         style: TextStyle(
           color: color,
-          fontSize: 11,
+          fontSize: 11.sp,
           fontWeight: FontWeight.w600,
         ),
       ),
@@ -162,21 +163,21 @@ class _IconAction extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 7),
+        padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
         decoration: BoxDecoration(
           color: color.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(9),
+          borderRadius: BorderRadius.circular(9.r),
           border: Border.all(color: color.withOpacity(0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, color: color, size: 14),
-            const SizedBox(width: 5),
+            Icon(icon, color: color, size: 14.r),
+            SizedBox(width: 5.w),
             Text(
               label,
               style: TextStyle(
-                  color: color, fontSize: 12, fontWeight: FontWeight.w500),
+                  color: color, fontSize: 12.sp, fontWeight: FontWeight.w500),
             ),
           ],
         ),

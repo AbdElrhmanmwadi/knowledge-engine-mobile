@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -71,7 +72,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
       backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+          padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 24.h),
           child: Column(
             children: [
               Align(
@@ -98,27 +99,27 @@ class _OnboardingPageState extends State<OnboardingPage> {
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       width: i == _index ? 22 : 8,
-                      height: 8,
-                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      height: 8.h,
+                      margin: EdgeInsets.symmetric(horizontal: 4.w),
                       decoration: BoxDecoration(
                         color: i == _index
                             ? colors.primary
                             : colors.onSurface.withOpacity(0.18),
-                        borderRadius: BorderRadius.circular(999),
+                        borderRadius: BorderRadius.circular(999.r),
                       ),
                     ),
                 ],
               ),
-              const SizedBox(height: 28),
+              SizedBox(height: 28.h),
               SizedBox(
                 width: double.infinity,
-                height: 52,
+                height: 52.h,
                 child: FilledButton(
                   onPressed: _saving ? null : _next,
                   child: _saving
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
+                      ? SizedBox(
+                          width: 20.w,
+                          height: 20.h,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(isLast ? 'Get Started' : 'Next'),
@@ -146,16 +147,16 @@ class _OnboardingPanel extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          width: 112,
-          height: 112,
+          width: 112.w,
+          height: 112.h,
           decoration: BoxDecoration(
             color: colors.primary.withOpacity(0.12),
-            borderRadius: BorderRadius.circular(28),
+            borderRadius: BorderRadius.circular(28.r),
             border: Border.all(color: colors.primary.withOpacity(0.24)),
           ),
-          child: Icon(slide.icon, size: 52, color: colors.primary),
+          child: Icon(slide.icon, size: 52.r, color: colors.primary),
         ),
-        const SizedBox(height: 36),
+        SizedBox(height: 36.h),
         Text(
           slide.title,
           textAlign: TextAlign.center,
@@ -163,9 +164,9 @@ class _OnboardingPanel extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
         ),
-        const SizedBox(height: 14),
+        SizedBox(height: 14.h),
         ConstrainedBox(
-          constraints: const BoxConstraints(maxWidth: 340),
+          constraints: BoxConstraints(maxWidth: 340.w),
           child: Text(
             slide.body,
             textAlign: TextAlign.center,

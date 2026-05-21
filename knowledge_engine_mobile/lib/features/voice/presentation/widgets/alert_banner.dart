@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AlertBanner extends StatelessWidget {
   const AlertBanner({
@@ -15,21 +16,21 @@ class AlertBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 18),
-          const SizedBox(width: 10),
+          Icon(icon, color: color, size: 18.r),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               message,
-              style: TextStyle(color: color, fontSize: 13, height: 1.45),
+              style: TextStyle(color: color, fontSize: 13.sp, height: 1.45),
             ),
           ),
         ],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../theme/app_theme.dart';
 
 /// Status badge widget for displaying status information
@@ -9,7 +10,7 @@ class StatusBadge extends StatelessWidget {
   final Color? textColor;
   final IconData? icon;
   final double fontSize;
-  final EdgeInsetsGeometry padding;
+  final EdgeInsetsGeometry? padding;
 
   const StatusBadge({
     Key? key,
@@ -19,7 +20,7 @@ class StatusBadge extends StatelessWidget {
     this.textColor,
     this.icon,
     this.fontSize = 14,
-    this.padding = const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+    this.padding,
   }) : super(key: key);
 
   Color get _backgroundColor =>
@@ -30,10 +31,10 @@ class StatusBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: padding,
+      padding: padding ?? EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
       decoration: BoxDecoration(
         color: _backgroundColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
@@ -41,16 +42,16 @@ class StatusBadge extends StatelessWidget {
           if (icon != null) ...[
             Icon(
               icon,
-              size: fontSize,
+              size: fontSize.r,
               color: _textColor,
             ),
-            const SizedBox(width: 4),
+            SizedBox(width: 4.w),
           ],
           Text(
             label,
             style: TextStyle(
               color: _textColor,
-              fontSize: fontSize,
+              fontSize: fontSize.sp,
               fontWeight: FontWeight.w600,
             ),
           ),

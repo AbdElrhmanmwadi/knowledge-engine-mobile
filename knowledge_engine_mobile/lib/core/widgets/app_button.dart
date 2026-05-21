@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Reusable app button widget with loading state
 class AppButton extends StatelessWidget {
@@ -41,8 +42,8 @@ class AppButton extends StatelessWidget {
 
     if (width != null || height != null) {
       return SizedBox(
-        width: width,
-        height: height,
+        width: width?.w,
+        height: height?.h,
         child: button,
       );
     }
@@ -55,14 +56,14 @@ class AppButton extends StatelessWidget {
       return Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(
-            width: 16,
-            height: 16,
+          SizedBox(
+            width: 16.w,
+            height: 16.h,
             child: CircularProgressIndicator(
               strokeWidth: 2,
             ),
           ),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Text(label),
         ],
       );
@@ -73,7 +74,7 @@ class AppButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(icon),
-          const SizedBox(width: 8),
+          SizedBox(width: 8.w),
           Text(label),
         ],
       );

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
@@ -87,7 +88,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
             // ── App bar ──────────────────────────────────────
             SliverAppBar(
               backgroundColor: bg,
-              expandedHeight: 220,
+              expandedHeight: 220.h,
               pinned: true,
               elevation: 0,
               flexibleSpace: FlexibleSpaceBar(
@@ -107,7 +108,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                 'Voice Studio',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.3,
                   color: textPrimary,
@@ -118,7 +119,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
 
             // ── Body ─────────────────────────────────────────
             SliverPadding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 8.h),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   // ── Alerts ───────────────────────────────
@@ -129,7 +130,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                       message:
                           'Microphone access is off. Enable it in system settings.',
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                   ],
                   if (state.actionError != null) ...[
                     AlertBanner(
@@ -137,12 +138,12 @@ class _VoicePageState extends ConsumerState<VoicePage>
                       color: error,
                       message: state.actionError!,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: 12.h),
                   ],
 
                   // ── Recording controls ───────────────────
                   SectionLabel(label: 'Audio Source'),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   RecordingCard(
                     state: state,
                     notifier: notifier,
@@ -155,11 +156,11 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     textSecondary: textSecondary,
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
 
                   // ── Settings ─────────────────────────────
                   SectionLabel(label: 'Settings'),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
@@ -167,33 +168,33 @@ class _VoicePageState extends ConsumerState<VoicePage>
                           controller: _languageController,
                           style: TextStyle(
                             color: textPrimary,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                           ),
                           decoration: InputDecoration(
                             labelText: 'Language',
                             hintText: 'e.g. en',
                             prefixIcon: Icon(
                               Icons.language_rounded,
-                              size: 18,
+                              size: 18.r,
                               color: textSecondary,
                             ),
                           ),
                           onChanged: notifier.updateLanguage,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: TextField(
                           controller: _limitController,
                           style: TextStyle(
                             color: textPrimary,
-                            fontSize: 14,
+                            fontSize: 14.sp,
                           ),
                           decoration: InputDecoration(
                             labelText: 'RAG limit',
                             prefixIcon: Icon(
                               Icons.manage_search_rounded,
-                              size: 18,
+                              size: 18.r,
                               color: textSecondary,
                             ),
                             errorText: state.voiceChatLimitError,
@@ -205,11 +206,11 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
 
                   // ── Actions ──────────────────────────────
                   SectionLabel(label: 'Actions'),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
@@ -221,7 +222,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                           onTap: () => notifier.runSpeechToText(),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: ActionTile(
                           icon: Icons.forum_rounded,
@@ -234,31 +235,31 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     ],
                   ),
 
-                  const SizedBox(height: 24),
+                  SizedBox(height: 24.h),
 
                   // ── TTS ──────────────────────────────────
                   SectionLabel(label: 'Text to Speech'),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   TextField(
                     controller: _ttsController,
                     minLines: 3,
                     maxLines: 6,
-                    style: TextStyle(color: textPrimary, fontSize: 14),
+                    style: TextStyle(color: textPrimary, fontSize: 14.sp),
                     decoration: InputDecoration(
                       labelText: 'Enter text to synthesize…',
                       alignLabelWithHint: true,
                       prefixIcon: Padding(
-                        padding: EdgeInsets.only(bottom: 60),
+                        padding: EdgeInsets.only(bottom: 60.h),
                         child: Icon(
                           Icons.text_fields_rounded,
-                          size: 18,
+                          size: 18.r,
                           color: textSecondary,
                         ),
                       ),
                     ),
                     onChanged: notifier.updateTtsText,
                   ),
-                  const SizedBox(height: 12),
+                  SizedBox(height: 12.h),
                   PlaybackBar(
                     state: state,
                     notifier: notifier,
@@ -268,7 +269,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     textSecondary: textSecondary,
                   ),
 
-                  const SizedBox(height: 28),
+                  SizedBox(height: 28.h),
 
                   // ── Transcript ───────────────────────────
                   OutputCard(
@@ -280,7 +281,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     textSecondary: textSecondary,
                   ),
 
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
                   // ── Answer ───────────────────────────────
                   OutputCard(
@@ -292,7 +293,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     textSecondary: textSecondary,
                   ),
 
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32.h),
                 ]),
               ),
             ),
@@ -302,4 +303,3 @@ class _VoicePageState extends ConsumerState<VoicePage>
     );
   }
 }
-

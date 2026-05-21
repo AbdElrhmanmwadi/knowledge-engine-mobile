@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/widgets/loading_overlay.dart';
@@ -56,14 +57,14 @@ class _AskPageState extends ConsumerState<AskPage>
             // ── Collapsing hero app bar ───────────────────────────
             SliverAppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-              expandedHeight: 210,
+              expandedHeight: 210.h,
               pinned: true,
               elevation: 0,
               title: Text(
                 'Ask & Search',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 18,
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.3,
                   color: Theme.of(context).textTheme.bodyLarge?.color,
@@ -81,8 +82,7 @@ class _AskPageState extends ConsumerState<AskPage>
 
             // ── Page body ─────────────────────────────────────────
             SliverPadding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 20, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
               sliver: SliverList(
                 delegate: SliverChildListDelegate([
                   // Search
@@ -107,7 +107,7 @@ class _AskPageState extends ConsumerState<AskPage>
                   _Gap(),
                   DebugSectionWidget(projectId: widget.projectId),
 
-                  const SizedBox(height: 32),
+                  SizedBox(height: 32.h),
                 ]),
               ),
             ),
@@ -172,29 +172,29 @@ class _AskHero extends StatelessWidget {
               Row(
                 children: [
                   _HeroBadge(label: 'SEARCH', color: Theme.of(context).colorScheme.secondary),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   _HeroBadge(label: 'ASK AI', color: Theme.of(context).colorScheme.primary),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   _HeroBadge(label: 'PROJECT $projectId', color: Theme.of(context).textTheme.bodyMedium?.color ?? Colors.grey),
                 ],
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Text(
                 'Search & ask across\nyour knowledge',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 26,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Text(
                 'Semantic search · RAG answers · debug traces',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                   letterSpacing: 0.1,
                 ),
@@ -215,17 +215,17 @@ class _HeroBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.14),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: color.withOpacity(0.32)),
       ),
       child: Text(
         label,
         style: TextStyle(
           color: color,
-          fontSize: 10,
+          fontSize: 10.sp,
           fontWeight: FontWeight.w700,
           letterSpacing: 1.1,
         ),
@@ -295,13 +295,13 @@ class _FeatureDivider extends StatelessWidget {
         Expanded(
             child: Divider(
                 color: leftColor.withOpacity(0.2), thickness: 1)),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Container(
           padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(20.r),
             border: Border.all(
                 color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
           ),
@@ -309,40 +309,40 @@ class _FeatureDivider extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                  width: 6,
-                  height: 6,
+                  width: 6.w,
+                  height: 6.h,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: leftColor)),
-              const SizedBox(width: 5),
+              SizedBox(width: 5.w),
               Text(leftLabel,
                   style: TextStyle(
                       color: leftColor,
-                      fontSize: 10,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.8)),
               Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 6),
+                    EdgeInsets.symmetric(horizontal: 6.w),
               child: Text('·',
                 style: TextStyle(
                   color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4))),
               ),
               Container(
-                  width: 6,
-                  height: 6,
+                  width: 6.w,
+                  height: 6.h,
                   decoration: BoxDecoration(
                       shape: BoxShape.circle, color: rightColor)),
-              const SizedBox(width: 5),
+              SizedBox(width: 5.w),
               Text(rightLabel,
                   style: TextStyle(
                       color: rightColor,
-                      fontSize: 10,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.8)),
             ],
           ),
         ),
-        const SizedBox(width: 10),
+        SizedBox(width: 10.w),
         Expanded(
             child: Divider(
                 color: rightColor.withOpacity(0.2), thickness: 1)),
@@ -354,5 +354,5 @@ class _FeatureDivider extends StatelessWidget {
 // ── Gap helper ───────────────────────────────────────────────────────────────
 class _Gap extends StatelessWidget {
   @override
-  Widget build(BuildContext context) => const SizedBox(height: 14);
+  Widget build(BuildContext context) => SizedBox(height: 14.h);
 }

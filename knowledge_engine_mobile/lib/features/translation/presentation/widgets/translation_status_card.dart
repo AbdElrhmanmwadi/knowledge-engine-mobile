@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -40,7 +41,7 @@ class TranslationStatusCard extends ConsumerWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: badgeColor.withOpacity(0.25),
           width: 1,
@@ -51,17 +52,17 @@ class TranslationStatusCard extends ConsumerWidget {
         children: [
           // ── Header ─────────────────────────────────────────────
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 16, 18, 0),
+            padding: EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 0.h),
             child: Row(
               children: [
                 Icon(_statusIcon(currentStatus),
-                    color: badgeColor, size: 16),
-                const SizedBox(width: 7),
+                    color: badgeColor, size: 16.r),
+                SizedBox(width: 7.w),
                 Text(
                   'TRANSLATION REQUEST',
                   style: TextStyle(
                     color: badgeColor,
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                   ),
@@ -73,10 +74,10 @@ class TranslationStatusCard extends ConsumerWidget {
             ),
           ),
             Divider(
-              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 20),
+              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 20.h),
 
           Padding(
-            padding: const EdgeInsets.fromLTRB(18, 0, 18, 18),
+            padding: EdgeInsets.fromLTRB(18.w, 0.h, 18.w, 18.h),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -85,27 +86,27 @@ class TranslationStatusCard extends ConsumerWidget {
                   'REQUEST ID',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.bodyMedium?.color,
-                    fontSize: 10,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 1,
                   ),
                 ),
-                const SizedBox(height: 4),
+                SizedBox(height: 4.h),
                 SelectableText(
                   jobId,
                   style: TextStyle(
                     color: Theme.of(context).textTheme.bodyLarge?.color,
                     fontWeight: FontWeight.w700,
-                    fontSize: 15,
+                    fontSize: 15.sp,
                     fontFamily: 'Courier',
                   ),
                 ),
-                const SizedBox(height: 14),
+                SizedBox(height: 14.h),
 
                 // ── Info pills ────────────────────────────────
                 Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
+                  spacing: 8.w,
+                  runSpacing: 8.h,
                   children: [
                     if (created != null)
                       _InfoPill(
@@ -124,24 +125,24 @@ class TranslationStatusCard extends ConsumerWidget {
 
                 // ── Created at ────────────────────────────────
                 if (createdAt != null) ...[
-                  const SizedBox(height: 10),
+                  SizedBox(height: 10.h),
                     Text(
                       'Created ${DateFormat('yyyy-MM-dd HH:mm:ss').format((createdAt as DateTime).toLocal())}',
                       style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
                     ),
                 ],
 
                 // ── Progress bar ──────────────────────────────
                 if (progress != null) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   Row(
                     children: [
                       Text(
                         'Progress',
                         style: TextStyle(
                           color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                          fontSize: 11,
+                          fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -150,19 +151,19 @@ class TranslationStatusCard extends ConsumerWidget {
                         '$progress%',
                         style: TextStyle(
                           color: badgeColor,
-                          fontSize: 12,
+                          fontSize: 12.sp,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   ClipRRect(
-                    borderRadius: BorderRadius.circular(99),
+                    borderRadius: BorderRadius.circular(99.r),
                     child: LinearProgressIndicator(
                       value: ((progress as int).clamp(0, 100) / 100)
                           .toDouble(),
-                      minHeight: 6,
+                      minHeight: 6.h,
                       backgroundColor:
                           badgeColor.withOpacity(0.15),
                       color: badgeColor,
@@ -173,7 +174,7 @@ class TranslationStatusCard extends ConsumerWidget {
                 // ── Result file ───────────────────────────────
                 if (resultFileId != null &&
                     (resultFileId as String).trim().isNotEmpty) ...[
-                  const SizedBox(height: 16),
+                  SizedBox(height: 16.h),
                   _ResultSection(
                     resultFileId: resultFileId,
                     resultAssetId: resultAssetId as String?,
@@ -207,7 +208,7 @@ class TranslationStatusCard extends ConsumerWidget {
                 if (isFailed &&
                     (errorMessage == null ||
                         (errorMessage as String).trim().isEmpty)) ...[
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                     _InlineBanner(
                       color: Theme.of(context).colorScheme.error,
                       icon: Icons.error_outline_rounded,
@@ -216,7 +217,7 @@ class TranslationStatusCard extends ConsumerWidget {
                 ],
                 if (errorMessage != null &&
                     (errorMessage as String).trim().isNotEmpty) ...[
-                  const SizedBox(height: 14),
+                  SizedBox(height: 14.h),
                     _InlineBanner(
                       color: Theme.of(context).colorScheme.error,
                       icon: Icons.error_outline_rounded,
@@ -225,22 +226,22 @@ class TranslationStatusCard extends ConsumerWidget {
                 ],
                 if (state.downloadError != null &&
                     state.downloadError!.trim().isNotEmpty) ...[
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Text(
                     state.downloadError!,
                       style: TextStyle(
-                          color: Theme.of(context).colorScheme.error, fontSize: 11),
+                          color: Theme.of(context).colorScheme.error, fontSize: 11.sp),
                   ),
                 ],
 
                 // ── Last refreshed ────────────────────────────
-                const SizedBox(height: 14),
+                SizedBox(height: 14.h),
                 Text(
                   state.lastRefreshTime == null
                       ? 'Not yet refreshed from backend.'
                       : 'Last refreshed: ${DateFormat('HH:mm:ss').format((state.lastRefreshTime as DateTime).toLocal())}',
                   style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+                      color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
                 ),
               ],
             ),
@@ -313,10 +314,10 @@ class _ResultSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
       ),
       child: Column(
@@ -325,64 +326,64 @@ class _ResultSection extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.check_circle_rounded,
-                  color: Theme.of(context).colorScheme.primary, size: 15),
-              const SizedBox(width: 6),
+                  color: Theme.of(context).colorScheme.primary, size: 15.r),
+              SizedBox(width: 6.w),
               Text(
                 'TRANSLATED FILE READY',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Text(
             'Result filename',
             style: TextStyle(
                 color: Theme.of(context).textTheme.bodyMedium?.color,
-                fontSize: 10,
+                fontSize: 10.sp,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.8),
           ),
-          const SizedBox(height: 4),
+          SizedBox(height: 4.h),
           SelectableText(
             resultFileId,
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
               fontWeight: FontWeight.w700,
-              fontSize: 13,
+              fontSize: 13.sp,
               fontFamily: 'Courier',
             ),
           ),
           if (resultAssetId != null &&
               resultAssetId!.trim().isNotEmpty) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Text(
               'Result asset ID',
               style: TextStyle(
                   color: Theme.of(context).textTheme.bodyMedium?.color,
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.8),
             ),
-            const SizedBox(height: 4),
+            SizedBox(height: 4.h),
             SelectableText(
               resultAssetId!,
               style: TextStyle(
                 color: Theme.of(context).textTheme.bodyLarge?.color,
                 fontWeight: FontWeight.w700,
-                fontSize: 13,
+                fontSize: 13.sp,
                 fontFamily: 'Courier',
               ),
             ),
           ],
-          const SizedBox(height: 14),
+          SizedBox(height: 14.h),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 8.w,
+            runSpacing: 8.h,
             children: [
               if (isCompleted)
                 FilledButton.icon(
@@ -392,20 +393,19 @@ class _ResultSection extends StatelessWidget {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppRadius.md)),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 10),
-                  textStyle: const TextStyle(
-                    fontSize: 12, fontWeight: FontWeight.w600),
+                  padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+                  textStyle: TextStyle(
+                    fontSize: 12.sp, fontWeight: FontWeight.w600),
                   ),
                   icon: isDownloading
                     ? SizedBox(
-                      width: 13,
-                      height: 13,
+                      width: 13.w,
+                      height: 13.h,
                       child: CircularProgressIndicator(
                         strokeWidth: 2,
                         color: Theme.of(context).colorScheme.onPrimary),
                     )
-                    : const Icon(Icons.download_rounded, size: 15),
+                    : Icon(Icons.download_rounded, size: 15.r),
                   label: Text(
                     isDownloading ? 'Downloading…' : 'Download'),
                 ),
@@ -418,7 +418,7 @@ class _ResultSection extends StatelessWidget {
             ],
           ),
           if (!isCompleted) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             _InlineBanner(
               color: Colors.amber,
               icon: Icons.hourglass_top_rounded,
@@ -447,11 +447,11 @@ class _CopyButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md)),
         padding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
+            EdgeInsets.symmetric(horizontal: 12.w, vertical: 9.h),
         textStyle:
-            const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
+            TextStyle(fontSize: 12.sp, fontWeight: FontWeight.w500),
       ),
-      icon: const Icon(Icons.copy_outlined, size: 13),
+      icon: Icon(Icons.copy_outlined, size: 13.r),
       label: Text(label),
     );
   }
@@ -469,17 +469,17 @@ class _StatusPill extends StatelessWidget {
         ? status
         : status[0].toUpperCase() + status.substring(1);
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(
         label,
         style: TextStyle(
           color: color,
-          fontSize: 11,
+          fontSize: 11.sp,
           fontWeight: FontWeight.w700,
         ),
       ),
@@ -495,17 +495,17 @@ class _InfoPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: Colors.amber.withOpacity(0.07),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: Colors.amber.withOpacity(0.2)),
       ),
       child: Text(
         '$label: $value',
         style: TextStyle(
           color: Colors.amber,
-          fontSize: 11,
+          fontSize: 11.sp,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -526,22 +526,22 @@ class _InlineBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.08),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
         border: Border.all(color: color.withOpacity(0.22)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 14),
-          const SizedBox(width: 8),
+          Icon(icon, color: color, size: 14.r),
+          SizedBox(width: 8.w),
           Expanded(
             child: Text(
               message,
               style: TextStyle(
-                  color: color, fontSize: 12, height: 1.4),
+                  color: color, fontSize: 12.sp, height: 1.4),
             ),
           ),
         ],

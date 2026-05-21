@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,7 +34,7 @@ class DebugSectionWidget extends ConsumerWidget {
             title: 'Full Prompt',
             content: response.fullPrompt!,
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
         ],
         if (chatHistory.isNotEmpty) ...[
           Row(
@@ -62,14 +63,14 @@ class DebugSectionWidget extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           for (var index = 0; index < chatHistory.length; index++) ...[
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12.r),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border: Border.all(color: Colors.grey.shade300),
               ),
               child: Column(
@@ -82,7 +83,7 @@ class DebugSectionWidget extends ConsumerWidget {
                           fontWeight: FontWeight.w700,
                         ),
                   ),
-                  const SizedBox(height: 6),
+                  SizedBox(height: 6.h),
                   SelectableText(
                     '${chatHistory[index]['content'] ?? ''}',
                     style: Theme.of(context).textTheme.bodyMedium,
@@ -90,7 +91,7 @@ class DebugSectionWidget extends ConsumerWidget {
                 ],
               ),
             ),
-            if (index < chatHistory.length - 1) const SizedBox(height: 10),
+            if (index < chatHistory.length - 1) SizedBox(height: 10.h),
           ],
         ],
       ],
@@ -151,13 +152,13 @@ class _DebugBlock extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.all(12),
+          padding: EdgeInsets.all(12.r),
           decoration: BoxDecoration(
             color: const Color(0xFFF6F8FB),
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(12.r),
             border: Border.all(color: Colors.grey.shade300),
           ),
           child: SelectableText(

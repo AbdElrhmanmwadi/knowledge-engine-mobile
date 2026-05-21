@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/constants.dart';
 import '../providers/translation_provider.dart';
@@ -51,16 +52,16 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
         children: [
           Text(
             'Submit a translation request for a file in project ${widget.projectId}.',
-            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── File ID field ──────────────────────────────────────────
           TextField(
             controller: _fileIdController,
             enabled: !state.isBusy,
             onChanged: notifier.updateFileId,
-            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
             decoration: InputDecoration(
               labelText: 'File ID',
               hintText: 'Latest uploaded file ID will appear here',
@@ -69,24 +70,24 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
                   : 'Auto-filled from the latest upload. Edit if needed.',
               errorText: state.fileIdError,
                 prefixIcon: Icon(Icons.insert_drive_file_outlined,
-                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
+                  size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Language selector ─────────────────────────────────────
           LanguageSelectorWidget(projectId: widget.projectId),
 
           // ── Error ─────────────────────────────────────────────────
           if (state.creationError != null) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             _AlertBanner(
               icon: Icons.error_outline_rounded,
               color: Theme.of(context).colorScheme.error,
               message: state.creationError!,
             ),
           ],
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Submit button ─────────────────────────────────────────
           SizedBox(
@@ -101,19 +102,19 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
                 disabledBackgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                textStyle: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                textStyle: TextStyle(
+                  fontSize: 14.sp, fontWeight: FontWeight.w600),
                 ),
               icon: state.isCreatingJob
                       ? SizedBox(
-                      width: 16,
-                      height: 16,
+                      width: 16.w,
+                      height: 16.h,
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Theme.of(context).colorScheme.onSecondary),
                     )
-                  : const Icon(Icons.playlist_add_check_circle_outlined,
-                      size: 18),
+                  : Icon(Icons.playlist_add_check_circle_outlined,
+                      size: 18.r),
               label:
                   Text(state.isCreatingJob ? 'Creating…' : 'Create Job'),
             ),
@@ -121,7 +122,7 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
 
           // ── Created job result ────────────────────────────────────
           if (createdJob != null) ...[
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _CreatedJobCard(job: createdJob),
           ],
         ],
@@ -139,10 +140,10 @@ class _CreatedJobCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.secondary.withOpacity(0.07),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.22)),
       ),
       child: Column(
@@ -151,32 +152,32 @@ class _CreatedJobCard extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.check_circle_rounded,
-                  color: Theme.of(context).colorScheme.secondary, size: 15),
-              const SizedBox(width: 6),
+                  color: Theme.of(context).colorScheme.secondary, size: 15.r),
+              SizedBox(width: 6.w),
               Text(
                 'JOB CREATED',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.2,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           SelectableText(
             job.jobId as String,
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
               fontWeight: FontWeight.w700,
-              fontSize: 15,
+              fontSize: 15.sp,
             ),
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           Wrap(
-            spacing: 8,
-            runSpacing: 6,
+            spacing: 8.w,
+            runSpacing: 6.h,
             children: [
               _MiniPill(label: 'Status', value: job.status as String),
               _MiniPill(label: 'Asset', value: job.assetId as String),
@@ -201,17 +202,17 @@ class _MiniPill extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.05),
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(8.r),
         border: Border.all(color: Colors.white.withOpacity(0.08)),
       ),
       child: Text(
         '$label: $value',
         style: TextStyle(
           color: Theme.of(context).textTheme.bodyMedium?.color,
-          fontSize: 11,
+          fontSize: 11.sp,
           fontWeight: FontWeight.w500,
         ),
       ),
@@ -236,10 +237,10 @@ class TSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
       ),
       child: Column(
@@ -247,13 +248,13 @@ class TSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: iconColor, size: 16),
-              const SizedBox(width: 8),
+              Icon(icon, color: iconColor, size: 16.r),
+              SizedBox(width: 8.w),
               Text(
                 label.toUpperCase(),
                 style: TextStyle(
                   color: iconColor,
-                  fontSize: 11,
+                  fontSize: 11.sp,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.2,
                 ),
@@ -262,7 +263,7 @@ class TSection extends StatelessWidget {
           ),
           Divider(
             color: Theme.of(context).dividerColor.withOpacity(0.06),
-            height: 20,
+            height: 20.h,
           ),
           child,
         ],
@@ -286,21 +287,21 @@ class _AlertBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 16),
-          const SizedBox(width: 10),
+          Icon(icon, color: color, size: 16.r),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(
               message,
-              style: TextStyle(color: color, fontSize: 12, height: 1.45),
+              style: TextStyle(color: color, fontSize: 12.sp, height: 1.45),
             ),
           ),
         ],

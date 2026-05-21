@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/constants.dart';
@@ -24,34 +25,34 @@ class SearchSection extends ConsumerWidget {
         children: [
           Text(
             'Run semantic search against the indexed chunks in project $projectId.',
-            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Query field ───────────────────────────────────────────
           TextField(
             enabled: !state.isBusy,
             textInputAction: TextInputAction.search,
-            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
             decoration: InputDecoration(
               labelText: 'Search query',
               hintText: 'Find relevant chunks or concepts…',
               filled: true,
               fillColor: Theme.of(context).cardColor,
               prefixIcon: Icon(Icons.search_rounded,
-                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
+                  size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide:
                     BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide:
                     BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide:
                     BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
               ),
@@ -59,38 +60,38 @@ class SearchSection extends ConsumerWidget {
             onChanged: notifier.updateSearchQuery,
             onSubmitted: (_) => notifier.performSearch(),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // ── Limit field ───────────────────────────────────────────
           TextField(
             enabled: !state.isBusy,
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
+            style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
             decoration: InputDecoration(
               labelText: 'Result limit',
               hintText: state.searchLimit.toString(),
               helperText:
                   'Range: ${ValidationConstants.minSearchLimit}–${ValidationConstants.maxSearchLimit}',
               helperStyle: TextStyle(
-                  color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+                  color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
               errorText: state.searchLimitError,
               filled: true,
               fillColor: Theme.of(context).cardColor,
               prefixIcon: Icon(Icons.format_list_numbered_rounded,
-                  size: 18, color: Theme.of(context).textTheme.bodyMedium?.color),
+                  size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide:
                     BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide:
                     BorderSide(color: Colors.white.withOpacity(0.08)),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(14.r),
                 borderSide:
                     BorderSide(color: Theme.of(context).colorScheme.primary, width: 1.5),
               ),
@@ -100,14 +101,14 @@ class SearchSection extends ConsumerWidget {
 
           // ── Error ─────────────────────────────────────────────────
           if (state.searchErrorMessage != null) ...[
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             RAlertBanner(
               icon: Icons.error_outline_rounded,
               color: Theme.of(context).colorScheme.error,
               message: state.searchErrorMessage!,
             ),
           ],
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Submit ────────────────────────────────────────────────
           SizedBox(
@@ -121,19 +122,19 @@ class SearchSection extends ConsumerWidget {
               foregroundColor: Colors.white,
               disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12)),
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              textStyle: const TextStyle(
-                fontSize: 14, fontWeight: FontWeight.w600),
+                borderRadius: BorderRadius.circular(12.r)),
+              padding: EdgeInsets.symmetric(vertical: 14.h),
+              textStyle: TextStyle(
+                fontSize: 14.sp, fontWeight: FontWeight.w600),
               ),
               icon: state.isSearching
-                  ? const SizedBox(
-                      width: 16,
-                      height: 16,
+                  ? SizedBox(
+                      width: 16.w,
+                      height: 16.h,
                       child: CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white),
                     )
-                  : const Icon(Icons.search_rounded, size: 18),
+                  : Icon(Icons.search_rounded, size: 18.r),
               label: Text(state.isSearching ? 'Searching…' : 'Search'),
             ),
           ),

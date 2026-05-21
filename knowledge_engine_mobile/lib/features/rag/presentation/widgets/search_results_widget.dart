@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/models/search_result_item.dart';
@@ -44,7 +45,7 @@ class SearchResultsWidget extends ConsumerWidget {
           ],
         ),
         if (response.searchResults.isNotEmpty) ...[
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           for (var index = 0; index < response.searchResults.length; index++) ...[
             _SearchResultCard(
               item: response.searchResults[index],
@@ -55,7 +56,7 @@ class SearchResultsWidget extends ConsumerWidget {
                   .toggleSearchResultExpansion(index),
             ),
             if (index < response.searchResults.length - 1)
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
           ],
         ],
       ],
@@ -82,10 +83,10 @@ class _SearchResultCard extends StatelessWidget {
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.all(14),
+      padding: EdgeInsets.all(14.r),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Colors.grey.shade300),
       ),
       child: Column(
@@ -99,15 +100,12 @@ class _SearchResultCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
               ),
-              const SizedBox(width: 10),
+              SizedBox(width: 10.w),
               Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 6,
-                ),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                 decoration: BoxDecoration(
                   color: scoreColor.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(999.r),
                 ),
                 child: Text(
                   item.score.toStringAsFixed(2),
@@ -125,31 +123,31 @@ class _SearchResultCard extends StatelessWidget {
                 ),
             ],
           ),
-          const SizedBox(height: 10),
+          SizedBox(height: 10.h),
           Text(
             item.text,
             maxLines: isExpanded ? null : 4,
             overflow: isExpanded ? null : TextOverflow.ellipsis,
             style: Theme.of(context).textTheme.bodyMedium,
           ),
-          const SizedBox(height: 8),
+          SizedBox(height: 8.h),
           TextButton.icon(
             onPressed: onToggle,
             icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
             label: Text(isExpanded ? 'Hide details' : 'Show details'),
           ),
           if (isExpanded && item.metaData.isNotEmpty) ...[
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             Text(
               'Metadata',
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),
             ),
-            const SizedBox(height: 8),
+            SizedBox(height: 8.h),
             for (final entry in item.metaData.entries)
               Padding(
-                padding: const EdgeInsets.only(bottom: 6),
+                padding: EdgeInsets.only(bottom: 6.h),
                 child: RichText(
                   text: TextSpan(
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -158,7 +156,7 @@ class _SearchResultCard extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${entry.key}: ',
-                        style: const TextStyle(fontWeight: FontWeight.w700),
+                        style: TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(text: '${entry.value}'),
                     ],

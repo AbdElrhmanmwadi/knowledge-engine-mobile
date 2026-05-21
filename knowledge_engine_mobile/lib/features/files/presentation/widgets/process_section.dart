@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -34,9 +35,9 @@ class ProcessSection extends ConsumerWidget {
               ? 'Upload a file first to unlock this step.'
               : 'Prepares your document for search and question answering.',
             style: TextStyle(
-              color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
+              color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
             ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Replace previous checkbox ───────────────────────────
           DarkCheckTile(
@@ -48,7 +49,7 @@ class ProcessSection extends ConsumerWidget {
             onChanged: (v) =>
                 notifier.toggleProcessDoReset(v ?? false),
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
 
           // ── Advanced settings ───────────────────────────────────
           _AdvancedPanel(
@@ -65,7 +66,7 @@ class ProcessSection extends ConsumerWidget {
                 disabled: state.isBusy,
                 onChanged: notifier.updateChunkSize,
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: 12.h),
               _DarkTextField(
                 label: 'Overlap size',
                 hint: state.overlapSize.toString(),
@@ -75,19 +76,19 @@ class ProcessSection extends ConsumerWidget {
                 disabled: state.isBusy,
                 onChanged: notifier.updateOverlapSize,
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Row(
                 children: [
                     Icon(Icons.lightbulb_outline_rounded,
-                      size: 13,
+                      size: 13.r,
                       color: Theme.of(context).textTheme.bodyMedium?.color),
-                  const SizedBox(width: 6),
+                  SizedBox(width: 6.w),
                   Expanded(
                     child: Text(
                       'Only change these if you know what you\'re optimising for.',
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
-                        fontSize: 11,
+                        fontSize: 11.sp,
                       ),
                     ),
                   ),
@@ -95,7 +96,7 @@ class ProcessSection extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Prepare button ──────────────────────────────────────
           SizedBox(
@@ -111,19 +112,19 @@ class ProcessSection extends ConsumerWidget {
                   Theme.of(context).colorScheme.primary.withOpacity(0.25),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                textStyle: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                textStyle: TextStyle(
+                  fontSize: 14.sp, fontWeight: FontWeight.w600),
                 ),
               icon: state.isProcessing
                     ? SizedBox(
-                      width: 16,
-                      height: 16,
+                      width: 16.w,
+                      height: 16.h,
                       child: CircularProgressIndicator(
                         strokeWidth: 2, color: Theme.of(context).colorScheme.onPrimary),
                     )
-                  : const Icon(
-                      Icons.auto_awesome_motion_outlined, size: 18),
+                  : Icon(
+                      Icons.auto_awesome_motion_outlined, size: 18.r),
               label: Text(state.isProcessing
                   ? 'Preparing…'
                   : 'Prepare document'),
@@ -132,7 +133,7 @@ class ProcessSection extends ConsumerWidget {
 
           // ── Process result ──────────────────────────────────────
           if (state.processResponse != null) ...[
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             _ProcessResult(response: state.processResponse!),
           ],
         ],
@@ -149,10 +150,10 @@ class _ProcessResult extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
       ),
       child: Column(
@@ -161,23 +162,23 @@ class _ProcessResult extends StatelessWidget {
           Row(
             children: [
               Icon(Icons.check_circle_rounded,
-                  color: Theme.of(context).colorScheme.primary, size: 14),
-              const SizedBox(width: 6),
+                  color: Theme.of(context).colorScheme.primary, size: 14.r),
+              SizedBox(width: 6.w),
               Text(
                 'PROCESSING COMPLETE',
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
-                  fontSize: 10,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                   letterSpacing: 1.1,
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          SizedBox(height: 12.h),
           Wrap(
-            spacing: 8,
-            runSpacing: 8,
+            spacing: 8.w,
+            runSpacing: 8.h,
             children: [
               _MetricChip(
                 label: 'Chunks inserted',
@@ -214,10 +215,10 @@ class _MetricChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor.withOpacity(0.04),
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
         border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.08)),
       ),
       child: Column(
@@ -226,14 +227,14 @@ class _MetricChip extends StatelessWidget {
           Text(
             label,
             style: TextStyle(
-                color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 10),
+                color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 10.sp),
           ),
-          const SizedBox(height: 3),
+          SizedBox(height: 3.h),
           SelectableText(
             value,
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w600,
               fontFamily: mono ? 'Courier' : null,
             ),
@@ -262,26 +263,26 @@ class _AdvancedPanel extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor.withOpacity(0.03),
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(12.r),
         border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
       ),
       child: ExpansionTile(
-        tilePadding: const EdgeInsets.symmetric(horizontal: 14),
-        childrenPadding: const EdgeInsets.fromLTRB(14, 0, 14, 14),
+        tilePadding: EdgeInsets.symmetric(horizontal: 14.w),
+        childrenPadding: EdgeInsets.fromLTRB(14.w, 0.h, 14.w, 14.h),
         shape: const Border(),
         collapsedShape: const Border(),
         leading: Icon(Icons.tune_rounded,
-            color: Theme.of(context).textTheme.bodyMedium?.color, size: 17),
+            color: Theme.of(context).textTheme.bodyMedium?.color, size: 17.r),
         title: Text(
           'Advanced',
           style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
-              fontSize: 13,
+              fontSize: 13.sp,
               fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
           'Default settings work for most files',
-          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+          style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
         ),
         initiallyExpanded: isExpanded,
         onExpansionChanged: isBusy ? null : onExpand,
@@ -311,12 +312,12 @@ class DarkCheckTile extends StatelessWidget {
     return GestureDetector(
       onTap: disabled ? null : () => onChanged(!value),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: value
               ? Theme.of(context).colorScheme.primary.withOpacity(0.07)
               : Theme.of(context).cardColor.withOpacity(0.03),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: value
                 ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
@@ -326,15 +327,15 @@ class DarkCheckTile extends StatelessWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 20,
-              height: 20,
+              width: 20.w,
+              height: 20.h,
               child: Checkbox(
                 value: value,
                 onChanged: disabled ? null : onChanged,
                 visualDensity: VisualDensity.compact,
               ),
             ),
-            const SizedBox(width: 12),
+            SizedBox(width: 12.w),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,12 +343,12 @@ class DarkCheckTile extends StatelessWidget {
                   Text(title,
                       style: TextStyle(
                           color: Theme.of(context).textTheme.bodyLarge?.color,
-                          fontSize: 13,
+                          fontSize: 13.sp,
                           fontWeight: FontWeight.w500)),
-                  const SizedBox(height: 2),
+                  SizedBox(height: 2.h),
                   Text(subtitle,
                       style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11)),
+                          color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp)),
                 ],
               ),
             ),
@@ -381,7 +382,7 @@ class _DarkTextField extends StatelessWidget {
       enabled: !disabled,
       keyboardType: TextInputType.number,
       inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14),
+      style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
       onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,

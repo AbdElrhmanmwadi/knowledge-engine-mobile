@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/widgets/loading_overlay.dart';
@@ -57,14 +58,14 @@ class _FilesPageState extends ConsumerState<FilesPage>
             slivers: [
               SliverAppBar(
                 backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                expandedHeight: 210,
+                expandedHeight: 210.h,
                 pinned: true,
                 elevation: 0,
                 title: Text(
                   'Documents',
                   style: TextStyle(
                     fontFamily: 'Georgia',
-                    fontSize: 18,
+                    fontSize: 18.sp,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.3,
                     color: Theme.of(context).textTheme.bodyLarge?.color,
@@ -81,8 +82,7 @@ class _FilesPageState extends ConsumerState<FilesPage>
                         ),
               ),
               SliverPadding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 20, vertical: 12),
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     // Error banner
@@ -92,22 +92,22 @@ class _FilesPageState extends ConsumerState<FilesPage>
                           color: Theme.of(context).colorScheme.error,
                           message: state.errorMessage!,
                         ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: 14.h),
                     ],
 
                     // Step progress tracker
                     _StepTracker(state: state),
-                    const SizedBox(height: 20),
+                    SizedBox(height: 20.h),
 
                     // Sections
                     UploadSection(projectId: widget.projectId),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     ProcessSection(projectId: widget.projectId),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     IndexSection(projectId: widget.projectId),
-                    const SizedBox(height: 14),
+                    SizedBox(height: 14.h),
                     StatusLogWidget(projectId: widget.projectId),
-                    const SizedBox(height: 32),
+                    SizedBox(height: 32.h),
                   ]),
                 ),
               ),
@@ -179,11 +179,10 @@ class _FilesHero extends StatelessWidget {
               Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 4),
+                    padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                     decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
                           color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
                     ),
@@ -191,20 +190,19 @@ class _FilesHero extends StatelessWidget {
                       'PROJECT $projectId',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
-                        fontSize: 10,
+                        fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.2,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  SizedBox(width: 8.w),
                   if (currentStep == 3)
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 4),
+                      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
                         color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
                             color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
                       ),
@@ -212,13 +210,13 @@ class _FilesHero extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(Icons.check_rounded,
-                              color: Theme.of(context).colorScheme.primary, size: 11),
-                          const SizedBox(width: 4),
+                              color: Theme.of(context).colorScheme.primary, size: 11.r),
+                          SizedBox(width: 4.w),
                           Text(
                             'READY',
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
-                              fontSize: 10,
+                              fontSize: 10.sp,
                               fontWeight: FontWeight.w700,
                               letterSpacing: 1.2,
                             ),
@@ -228,23 +226,23 @@ class _FilesHero extends StatelessWidget {
                     ),
                 ],
               ),
-              const SizedBox(height: 10),
+              SizedBox(height: 10.h),
               Text(
                 'Add your\ndocuments',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: 26,
+                  fontSize: 26.sp,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),
               ),
-              const SizedBox(height: 6),
+              SizedBox(height: 6.h),
               Text(
                 'Upload · prepare · index into knowledge base',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: 13.sp,
                   color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                 ),
               ),
@@ -314,10 +312,10 @@ class _StepTracker extends StatelessWidget {
                 : 0;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(16.r),
         border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
       ),
       child: Row(
@@ -334,7 +332,7 @@ class _StepTracker extends StatelessWidget {
               Expanded(
                 child: Container(
                   height: 1.5,
-                  margin: const EdgeInsets.only(bottom: 18),
+                  margin: EdgeInsets.only(bottom: 18.h),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -385,8 +383,8 @@ class _StepDot extends StatelessWidget {
     return Column(
       children: [
         Container(
-          width: 36,
-          height: 36,
+          width: 36.w,
+          height: 36.h,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: done || active
@@ -399,11 +397,11 @@ class _StepDot extends StatelessWidget {
           ),
           child: Icon(
             done ? Icons.check_rounded : data.icon,
-            size: 16,
+            size: 16.r,
             color: dotColor,
           ),
         ),
-        const SizedBox(height: 6),
+        SizedBox(height: 6.h),
         Text(
           data.label,
             style: TextStyle(
@@ -412,7 +410,7 @@ class _StepDot extends StatelessWidget {
                 : active
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).textTheme.bodyMedium!.color,
-            fontSize: 11,
+            fontSize: 11.sp,
             fontWeight: active ? FontWeight.w600 : FontWeight.w400,
           ),
         ),
@@ -432,21 +430,21 @@ class _AlertBanner extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
         color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, color: color, size: 16),
-          const SizedBox(width: 10),
+          Icon(icon, color: color, size: 16.r),
+          SizedBox(width: 10.w),
           Expanded(
             child: Text(message,
                 style:
-                    TextStyle(color: color, fontSize: 12, height: 1.45)),
+                    TextStyle(color: color, fontSize: 12.sp, height: 1.45)),
           ),
         ],
       ),

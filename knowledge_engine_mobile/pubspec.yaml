@@ -48,6 +48,7 @@ dependencies:
 
   # UI Icons
   cupertino_icons: ^1.0.8
+  flutter_screenutil: ^5.9.3
   file_picker: ^11.0.2
   path_provider: ^2.1.4
   open_filex: ^4.7.0

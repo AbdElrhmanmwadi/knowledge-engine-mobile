@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path/path.dart' as p;
 
 import '../providers/voice_provider.dart';
@@ -30,10 +31,10 @@ class RecordingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: EdgeInsets.all(20.r),
       decoration: BoxDecoration(
         color: card,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: isRecording
               ? error.withOpacity(0.4)
@@ -59,8 +60,8 @@ class RecordingCard extends StatelessWidget {
               AnimatedBuilder(
                 animation: pulseController,
                 builder: (_, child) => Container(
-                  width: 56,
-                  height: 56,
+                  width: 56.w,
+                  height: 56.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isRecording
@@ -77,7 +78,7 @@ class RecordingCard extends StatelessWidget {
                     icon: Icon(
                       isRecording ? Icons.stop_rounded : Icons.mic_rounded,
                       color: error,
-                      size: 24,
+                      size: 24.r,
                     ),
                     onPressed: state.isBusy
                         ? null
@@ -87,7 +88,7 @@ class RecordingCard extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 16),
+              SizedBox(width: 16.w),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,22 +98,22 @@ class RecordingCard extends StatelessWidget {
                       style: TextStyle(
                         color: isRecording ? error : const Color(0xFFF0F2FF),
                         fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                        fontSize: 15.sp,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    SizedBox(height: 2.h),
                     Text(
                       isRecording
                           ? 'Press stop when done'
                           : 'Or pick an audio file below',
-                      style: TextStyle(color: textSecondary, fontSize: 12),
+                      style: TextStyle(color: textSecondary, fontSize: 12.sp),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
           // Pick file button
           OutlinedButton.icon(
             onPressed: state.isBusy ? null : () => notifier.pickAudioFile(),
@@ -120,34 +121,34 @@ class RecordingCard extends StatelessWidget {
               foregroundColor: accent,
               side: BorderSide(color: accent.withOpacity(0.4)),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(10.r),
               ),
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-              textStyle: const TextStyle(fontSize: 13),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              textStyle: TextStyle(fontSize: 13.sp),
             ),
-            icon: const Icon(Icons.audio_file_outlined, size: 16),
+            icon: Icon(Icons.audio_file_outlined, size: 16.r),
             label: const Text('Pick audio file'),
           ),
           if (state.selectedAudioPath != null) ...[
-            const SizedBox(height: 10),
+            SizedBox(height: 10.h),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
               decoration: BoxDecoration(
                 color: accent.withOpacity(0.08),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(color: accent.withOpacity(0.2)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.check_circle_rounded, color: teal, size: 14),
-                  const SizedBox(width: 6),
+                  Icon(Icons.check_circle_rounded, color: teal, size: 14.r),
+                  SizedBox(width: 6.w),
                   Flexible(
                     child: Text(
                       p.basename(state.selectedAudioPath!),
                       style: TextStyle(
                         color: teal,
-                        fontSize: 12,
+                        fontSize: 12.sp,
                         fontWeight: FontWeight.w500,
                       ),
                       overflow: TextOverflow.ellipsis,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/files_provider.dart';
@@ -33,36 +34,36 @@ class IndexSection extends ConsumerWidget {
               ? 'Finish preparing the document first.'
               : 'Makes your prepared document available for search and answers.',
             style: TextStyle(
-              color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13),
+              color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
             ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Full rebuild checkbox (inside advanced) ─────────────
           Container(
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor.withOpacity(0.03),
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(12.r),
               border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
             ),
             child: ExpansionTile(
-              tilePadding: const EdgeInsets.symmetric(horizontal: 14),
+              tilePadding: EdgeInsets.symmetric(horizontal: 14.w),
               childrenPadding:
-                  const EdgeInsets.fromLTRB(14, 0, 14, 14),
+                  EdgeInsets.fromLTRB(14.w, 0.h, 14.w, 14.h),
               shape: const Border(),
               collapsedShape: const Border(),
               leading: Icon(Icons.tune_rounded,
-                  color: Theme.of(context).textTheme.bodyMedium?.color, size: 17),
+                  color: Theme.of(context).textTheme.bodyMedium?.color, size: 17.r),
               title: Text(
                 'Advanced',
                 style: TextStyle(
                     color: Theme.of(context).textTheme.bodyLarge?.color,
-                    fontSize: 13,
+                    fontSize: 13.sp,
                     fontWeight: FontWeight.w500),
               ),
               subtitle: Text(
                 'Only needed for full rebuilds',
                 style:
-                    TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11),
+                    TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
               ),
               children: [
                 DarkCheckTile(
@@ -77,7 +78,7 @@ class IndexSection extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          SizedBox(height: 16.h),
 
           // ── Index button ────────────────────────────────────────
           SizedBox(
@@ -93,18 +94,18 @@ class IndexSection extends ConsumerWidget {
                   Theme.of(context).colorScheme.primary.withOpacity(0.25),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md)),
-                padding: const EdgeInsets.symmetric(vertical: 14),
-                textStyle: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w600),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                textStyle: TextStyle(
+                  fontSize: 14.sp, fontWeight: FontWeight.w600),
                 ),
                 icon: state.isIndexing
                   ? SizedBox(
-                    width: 16,
-                    height: 16,
+                    width: 16.w,
+                    height: 16.h,
                     child: CircularProgressIndicator(
                       strokeWidth: 2, color: Theme.of(context).colorScheme.onPrimary),
                   )
-                  : const Icon(Icons.publish_rounded, size: 18),
+                  : Icon(Icons.publish_rounded, size: 18.r),
               label:
                   Text(state.isIndexing ? 'Indexing…' : 'Update knowledge base'),
             ),
@@ -112,21 +113,20 @@ class IndexSection extends ConsumerWidget {
 
           // ── Index result ────────────────────────────────────────
           if (state.indexResponse != null) ...[
-            const SizedBox(height: 16),
+            SizedBox(height: 16.h),
             Container(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 14, vertical: 12),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(12.r),
                 border:
                     Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.check_circle_rounded,
-                      color: Theme.of(context).colorScheme.primary, size: 16),
-                  const SizedBox(width: 10),
+                      color: Theme.of(context).colorScheme.primary, size: 16.r),
+                  SizedBox(width: 10.w),
                   Expanded(
                     child: Text(
                       state.indexResponse!.indexedCount == null
@@ -134,7 +134,7 @@ class IndexSection extends ConsumerWidget {
                           : '${state.indexResponse!.indexedCount} chunks pushed to the vector database.',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
-                        fontSize: 13,
+                        fontSize: 13.sp,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
