@@ -2,6 +2,10 @@ import 'dart:io';
 
 class AppConfig {
   /// Backend base URL configuration
+  static const String configuredBaseUrl = String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: '',
+  );
   static const String defaultBaseUrl = 'http://10.0.2.2:8000';
   static const String prodBaseUrl = 'http://localhost:8000';
   static const String devBaseUrl = 'http://10.0.2.2:8000';
@@ -12,7 +16,11 @@ class AppConfig {
       return overrideUrl;
     }
 
-    // For Android emulator, use 10.0.2.2; for physical device, use localhost
+    if (configuredBaseUrl.isNotEmpty) {
+      return configuredBaseUrl;
+    }
+
+    // For Android emulator, use 10.0.2.2. Use API_BASE_URL for physical devices.
     if (Platform.isAndroid) {
       return devBaseUrl;
     } else if (Platform.isIOS) {
