@@ -47,3 +47,25 @@ app.*.map.json
 # md file 
 flutter_srs.md
 plan.md
+
+# Ignore local SDK and secrets
+local.properties
+.gradle/
+android/local.properties
+
+# Android keystore and signing files
+*.jks
+*.keystore
+key.properties
+keystore.properties
+
+# Firebase / Google services
+google-services.json
+GoogleService-Info.plist
+
+# Environment files
+.env
+.env.*
+
+# VS Code workspace settings (optional to ignore)
+.vscode/
