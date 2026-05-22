@@ -36,8 +36,6 @@ class _DashboardPageState extends State<DashboardPage>
 
   @override
   Widget build(BuildContext context) {
-    final layout = _DashboardLayout.fromContext(context);
-
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       body: CustomScrollView(
@@ -45,7 +43,7 @@ class _DashboardPageState extends State<DashboardPage>
           // ── Hero app bar ────────────────────────────────────────
           SliverAppBar(
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-            expandedHeight: layout.heroHeight,
+            expandedHeight: 230.h,
             pinned: true,
             elevation: 0,
             leading: IconButton(
@@ -57,9 +55,9 @@ class _DashboardPageState extends State<DashboardPage>
               'Workspace',
               style: TextStyle(
                 fontFamily: 'Georgia',
-                fontSize: layout.appBarTitleSize,
+                fontSize: 18.sp,
                 fontWeight: FontWeight.w600,
-                letterSpacing: 0,
+                letterSpacing: 0.3,
                 color: Theme.of(context).textTheme.bodyLarge?.color,
               ),
             ),
@@ -73,31 +71,26 @@ class _DashboardPageState extends State<DashboardPage>
             ),
           ),
 
-          // ── Body ────────────────────────────────────────────────
+          // ── Body ───────────────────────────────────────────────
           SliverPadding(
-            padding: EdgeInsets.symmetric(
-              horizontal: layout.horizontalPadding,
-              vertical: layout.sectionSpacing,
-            ),
-            sliver: SliverToBoxAdapter(
-              child: Center(
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(maxWidth: 1120.w),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Section label
-                      const _Label('What would you like to do?'),
-                      SizedBox(height: layout.itemSpacing),
+            padding:
+                 EdgeInsets.symmetric(horizontal: 20.w, vertical: 16.h),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                // Section label
+                const _Label('What would you like to do?'),
+                 SizedBox(height: 14.h),
 
-                      // Feature cards grid
-                      _FeatureGrid(projectId: widget.projectId),
+                // Feature cards grid (2 cols)
+                _FeatureGrid(projectId: widget.projectId),
 
-                      SizedBox(height: layout.sectionSpacing),
-                    ],
-                  ),
-                ),
-              ),
+                 SizedBox(height: 24.h),
+
+
+
+
+                 SizedBox(height: 32.h),
+              ]),
             ),
           ),
         ],
@@ -117,8 +110,6 @@ class _DashboardHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final layout = _DashboardLayout.fromContext(context);
-
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -149,19 +140,19 @@ class _DashboardHero extends StatelessWidget {
         ),
         // Content
         Positioned(
-          bottom: layout.heroBottomPadding,
-          left: layout.horizontalPadding,
-          right: layout.horizontalPadding,
+          bottom: 28,
+          left: 20,
+          right: 20,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
               // Project badge
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
-                  borderRadius: BorderRadius.circular(20.r),
+                  borderRadius: BorderRadius.circular(20),
                   border:
                       Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
                 ),
@@ -169,29 +160,29 @@ class _DashboardHero extends StatelessWidget {
                   'PROJECT #$projectId',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
-                    fontSize: layout.badgeFontSize,
+                    fontSize: 10,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 1.2,
                   ),
                 ),
               ),
-              SizedBox(height: layout.smallSpacing),
+              const SizedBox(height: 10),
               Text(
                 'Your project\nis ready',
                 style: TextStyle(
                   fontFamily: 'Georgia',
-                  fontSize: layout.heroTitleSize,
+                  fontSize: 26,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context).textTheme.bodyLarge?.color,
                   height: 1.2,
-                  letterSpacing: 0,
+                  letterSpacing: -0.3,
                 ),
               ),
-              SizedBox(height: layout.tinySpacing),
+              const SizedBox(height: 6),
               Text(
                 'Pick what you want to do next.',
                 style: TextStyle(
-                  fontSize: layout.bodyFontSize,
+                  fontSize: 13,
                   color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
                 ),
               ),
@@ -245,7 +236,6 @@ class _FeatureGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final layout = _DashboardLayout.fromContext(context);
     final features = [
       _Feature(
         title: 'Documents',
@@ -277,25 +267,24 @@ class _FeatureGrid extends StatelessWidget {
       ),
     ];
 
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final columns = layout.featureColumnsFor(constraints.maxWidth);
-
-        return GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: features.length,
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: columns,
-            crossAxisSpacing: layout.cardSpacing,
-            mainAxisSpacing: layout.cardSpacing,
-            mainAxisExtent: layout.cardHeightFor(columns),
-          ),
-          itemBuilder: (context, index) {
-            return _FeatureCard(feature: features[index]);
-          },
-        );
-      },
+    return Column(
+      children: [
+        Row(
+          children: [
+            Expanded(child: _FeatureCard(feature: features[0])),
+            const SizedBox(width: 12),
+            Expanded(child: _FeatureCard(feature: features[1])),
+          ],
+        ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(child: _FeatureCard(feature: features[2])),
+            const SizedBox(width: 12),
+            Expanded(child: _FeatureCard(feature: features[3])),
+          ],
+        ),
+      ],
     );
   }
 }
@@ -329,8 +318,6 @@ class _FeatureCardState extends State<_FeatureCard> {
   @override
   Widget build(BuildContext context) {
     final f = widget.feature;
-    final layout = _DashboardLayout.fromContext(context);
-
     return GestureDetector(
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) {
@@ -340,10 +327,12 @@ class _FeatureCardState extends State<_FeatureCard> {
       onTapCancel: () => setState(() => _pressed = false),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 120),
-        padding: EdgeInsets.all(layout.cardPadding),
+        padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: _pressed ? f.color.withOpacity(0.12) : Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(20.r),
+          color: _pressed
+            ? f.color.withOpacity(0.12)
+            : Theme.of(context).cardColor,
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: _pressed
                 ? f.color.withOpacity(0.4)
@@ -365,53 +354,51 @@ class _FeatureCardState extends State<_FeatureCard> {
           children: [
             // Icon
             Container(
-              width: layout.iconBoxSize,
-              height: layout.iconBoxSize,
+              width: 44,
+              height: 44,
               decoration: BoxDecoration(
                 color: f.color.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(13.r),
-                border: Border.all(color: f.color.withOpacity(0.25)),
+                borderRadius: BorderRadius.circular(13),
+                border:
+                    Border.all(color: f.color.withOpacity(0.25)),
               ),
-              child: Icon(f.icon, color: f.color, size: layout.iconSize),
+              child:
+                  Icon(f.icon, color: f.color, size: 22),
             ),
-            SizedBox(height: layout.itemSpacing),
+            const SizedBox(height: 14),
             Text(
               f.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Theme.of(context).textTheme.bodyLarge?.color,
-                fontSize: layout.cardTitleSize,
+                fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
             ),
-            SizedBox(height: layout.tinySpacing),
+            const SizedBox(height: 4),
             Text(
               f.description,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
               style: TextStyle(
                 color: Theme.of(context).textTheme.bodyMedium?.color,
-                fontSize: layout.cardDescriptionSize,
+                fontSize: 11,
                 height: 1.4,
               ),
             ),
-            const Spacer(),
+            const SizedBox(height: 12),
             // Arrow indicator
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Container(
-                  width: layout.arrowBoxSize,
-                  height: layout.arrowBoxSize,
+                  width: 24,
+                  height: 24,
                   decoration: BoxDecoration(
                     color: f.color.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(
                     Icons.arrow_forward_rounded,
                     color: f.color,
-                    size: layout.arrowIconSize,
+                    size: 14,
                   ),
                 ),
               ],
@@ -430,88 +417,14 @@ class _Label extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final layout = _DashboardLayout.fromContext(context);
-
     return Text(
       text.toUpperCase(),
       style: TextStyle(
         color: Theme.of(context).textTheme.bodyMedium?.color,
-        fontSize: layout.labelFontSize,
+        fontSize: 11,
         fontWeight: FontWeight.w700,
         letterSpacing: 1.4,
       ),
     );
-  }
-}
-
-class _DashboardLayout {
-  const _DashboardLayout._(this.screenWidth);
-
-  factory _DashboardLayout.fromContext(BuildContext context) {
-    return _DashboardLayout._(MediaQuery.sizeOf(context).width);
-  }
-
-  final double screenWidth;
-
-  bool get _isTablet => screenWidth >= 600;
-  bool get _isWide => screenWidth >= 1024;
-
-  double get horizontalPadding => _responsiveWidth(16, 28, 40);
-  double get heroHeight => _responsiveHeight(220, 260, 300);
-  double get heroBottomPadding => _responsiveHeight(24, 32, 40);
-  double get sectionSpacing => _responsiveHeight(16, 22, 28);
-  double get cardSpacing => _responsiveWidth(12, 16, 18);
-  double get cardPadding => _responsiveRadius(16, 18, 20);
-  double get smallSpacing => _responsiveHeight(10, 12, 14);
-  double get itemSpacing => _responsiveHeight(12, 14, 16);
-  double get tinySpacing => _responsiveHeight(4, 6, 6);
-
-  double get appBarTitleSize => _responsiveFont(18, 19, 20);
-  double get badgeFontSize => _responsiveFont(10, 11, 11);
-  double get heroTitleSize => _responsiveFont(26, 32, 38);
-  double get bodyFontSize => _responsiveFont(13, 14, 15);
-  double get labelFontSize => _responsiveFont(11, 12, 12);
-  double get cardTitleSize => _responsiveFont(14, 15, 16);
-  double get cardDescriptionSize => _responsiveFont(11, 12, 13);
-
-  double get iconBoxSize => _responsiveRadius(42, 46, 50);
-  double get iconSize => _responsiveRadius(21, 23, 25);
-  double get arrowBoxSize => _responsiveRadius(24, 26, 28);
-  double get arrowIconSize => _responsiveRadius(14, 15, 16);
-
-  int featureColumnsFor(double availableWidth) {
-    if (availableWidth >= 980) return 4;
-    if (availableWidth >= 520) return 2;
-    return 1;
-  }
-
-  double cardHeightFor(int columns) {
-    if (columns == 1) return (_isTablet ? 156 : 148).h;
-    if (columns == 2) return (_isTablet ? 172 : 164).h;
-    return (_isWide ? 178 : 168).h;
-  }
-
-  double _responsiveWidth(double mobile, double tablet, double wide) {
-    if (_isWide) return wide.w;
-    if (_isTablet) return tablet.w;
-    return mobile.w;
-  }
-
-  double _responsiveHeight(double mobile, double tablet, double wide) {
-    if (_isWide) return wide.h;
-    if (_isTablet) return tablet.h;
-    return mobile.h;
-  }
-
-  double _responsiveRadius(double mobile, double tablet, double wide) {
-    if (_isWide) return wide.r;
-    if (_isTablet) return tablet.r;
-    return mobile.r;
-  }
-
-  double _responsiveFont(double mobile, double tablet, double wide) {
-    if (_isWide) return wide.sp;
-    if (_isTablet) return tablet.sp;
-    return mobile.sp;
   }
 }
