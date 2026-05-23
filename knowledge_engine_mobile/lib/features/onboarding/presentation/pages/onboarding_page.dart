@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../l10n/l10n.dart';
 
 class OnboardingPage extends StatefulWidget {
   const OnboardingPage({super.key});
@@ -12,28 +13,11 @@ class OnboardingPage extends StatefulWidget {
 
 class _OnboardingPageState extends State<OnboardingPage> {
   static const _storageKey = 'hasSeenOnboarding';
+  static const _slideCount = 3;
 
   final _controller = PageController();
   int _index = 0;
   bool _saving = false;
-
-  final _slides = const [
-    _OnboardingSlide(
-      icon: Icons.auto_stories_rounded,
-      title: 'Organize knowledge',
-      body: 'Create project spaces for documents, questions, translations, and voice notes.',
-    ),
-    _OnboardingSlide(
-      icon: Icons.manage_search_rounded,
-      title: 'Ask with context',
-      body: 'Upload files, index them, and get answers grounded in your own material.',
-    ),
-    _OnboardingSlide(
-      icon: Icons.translate_rounded,
-      title: 'Work across formats',
-      body: 'Move between search, translation, and audio workflows from one focused workspace.',
-    ),
-  ];
 
   @override
   void dispose() {
@@ -51,7 +35,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
   }
 
   void _next() {
-    if (_index == _slides.length - 1) {
+    if (_index == _slideCount - 1) {
       _finish();
       return;
     }
@@ -66,7 +50,25 @@ class _OnboardingPageState extends State<OnboardingPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colors = theme.colorScheme;
-    final isLast = _index == _slides.length - 1;
+    final l10n = context.l10n;
+    final slides = [
+      _OnboardingSlide(
+        icon: Icons.auto_stories_rounded,
+        title: l10n.onboardingOrganizeTitle,
+        body: l10n.onboardingOrganizeBody,
+      ),
+      _OnboardingSlide(
+        icon: Icons.manage_search_rounded,
+        title: l10n.onboardingAskTitle,
+        body: l10n.onboardingAskBody,
+      ),
+      _OnboardingSlide(
+        icon: Icons.translate_rounded,
+        title: l10n.onboardingFormatsTitle,
+        body: l10n.onboardingFormatsBody,
+      ),
+    ];
+    final isLast = _index == slides.length - 1;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
@@ -79,23 +81,23 @@ class _OnboardingPageState extends State<OnboardingPage> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: _saving ? null : _finish,
-                  child: const Text('Skip'),
+                  child: Text(l10n.skip),
                 ),
               ),
               Expanded(
                 child: PageView.builder(
                   controller: _controller,
-                  itemCount: _slides.length,
+                  itemCount: slides.length,
                   onPageChanged: (value) => setState(() => _index = value),
                   itemBuilder: (context, index) => _OnboardingPanel(
-                    slide: _slides[index],
+                    slide: slides[index],
                   ),
                 ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  for (var i = 0; i < _slides.length; i++)
+                  for (var i = 0; i < slides.length; i++)
                     AnimatedContainer(
                       duration: const Duration(milliseconds: 180),
                       width: i == _index ? 22 : 8,
@@ -122,7 +124,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                           height: 20.h,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : Text(isLast ? 'Get Started' : 'Next'),
+                      : Text(isLast ? l10n.getStarted : l10n.next),
                 ),
               ),
             ],

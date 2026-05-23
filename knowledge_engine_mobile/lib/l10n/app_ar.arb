@@ -1,0 +1,69 @@
+{
+  "@@locale": "ar",
+  "appTitle": "محرك المعرفة",
+  "error": "خطأ",
+  "errorWithMessage": "خطأ: {message}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "goToProjects": "الانتقال إلى المشاريع",
+  "routeNotFound": "المسار غير موجود: {location}",
+  "@routeNotFound": {
+    "placeholders": {
+      "location": {}
+    }
+  },
+  "language": "اللغة",
+  "systemLanguage": "لغة النظام",
+  "english": "الإنجليزية",
+  "arabic": "العربية",
+  "themeLight": "فاتح",
+  "themeDark": "داكن",
+  "themeSystem": "النظام",
+  "skip": "تخطي",
+  "next": "التالي",
+  "getStarted": "ابدأ",
+  "onboardingOrganizeTitle": "نظّم المعرفة",
+  "onboardingOrganizeBody": "أنشئ مساحات مشاريع للمستندات والأسئلة والترجمات والملاحظات الصوتية.",
+  "onboardingAskTitle": "اسأل بسياق",
+  "onboardingAskBody": "ارفع الملفات وفهرسها واحصل على إجابات مبنية على موادك.",
+  "onboardingFormatsTitle": "اعمل عبر صيغ متعددة",
+  "onboardingFormatsBody": "تنقل بين البحث والترجمة والصوت من مساحة عمل واحدة مركزة.",
+  "openProject": "فتح مشروع",
+  "recentProjects": "المشاريع الأخيرة",
+  "projectId": "معرّف المشروع",
+  "projectIdHint": "مثال: 42",
+  "clear": "مسح",
+  "opening": "جارٍ الفتح...",
+  "knowledgeEngineUpper": "محرك المعرفة",
+  "projectsHeroTitle": "مشاريعك\nفي لمحة",
+  "projectsHeroSubtitle": "أدخل معرّف مشروع أو اختر مشروعًا حديثًا",
+  "couldNotDeleteProject": "تعذر حذف المشروع {id}.",
+  "@couldNotDeleteProject": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadingRecentProjects": "حدث خطأ أثناء تحميل المشاريع الأخيرة: {message}",
+  "@errorLoadingRecentProjects": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "noRecentProjects": "لا توجد مشاريع حديثة بعد",
+  "openProjectAbove": "افتح مشروعًا أعلاه ليظهر هنا",
+  "projectNumber": "المشروع رقم {id}",
+  "@projectNumber": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToOpenSwipeToDelete": "اضغط للفتح · اسحب للحذف",
+  "delete": "حذف"
+}

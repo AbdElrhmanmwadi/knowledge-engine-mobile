@@ -152,8 +152,8 @@ class _FilesHero extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).scaffoldBackgroundColor,
-                Theme.of(context).colorScheme.primary.withOpacity(0.35),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.35),
+                Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
               ],
             ),
           ),
@@ -163,8 +163,8 @@ class _FilesHero extends StatelessWidget {
             builder: (_, __) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withOpacity(0.16),
-              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),
+              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
             ),
           ),
         ),
@@ -181,10 +181,10 @@ class _FilesHero extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                          color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
+                          color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.32)),
                     ),
                     child: Text(
                       'PROJECT $projectId',
@@ -201,10 +201,10 @@ class _FilesHero extends StatelessWidget {
                     Container(
                       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
+                        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
                         borderRadius: BorderRadius.circular(20.r),
                         border: Border.all(
-                            color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
+                            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.32)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,

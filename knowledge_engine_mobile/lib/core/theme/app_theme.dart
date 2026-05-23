@@ -70,6 +70,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.light,
       fontFamily: 'Poppins',
+      fontFamilyFallback: const ['Roboto', 'Arial'],
       primaryColor: primaryColor,
       scaffoldBackgroundColor: backgroundColor,
       colorScheme: ColorScheme.light(
@@ -278,6 +279,7 @@ class AppTheme {
       useMaterial3: true,
       brightness: Brightness.dark,
       fontFamily: 'Poppins',
+      fontFamilyFallback: const ['Roboto', 'Arial'],
       primaryColor: primaryColor,
       scaffoldBackgroundColor: darkBg,
       colorScheme: ColorScheme.dark(

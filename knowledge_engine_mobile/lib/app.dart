@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'core/localization/locale_controller.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
+import 'l10n/l10n.dart';
 import 'features/onboarding/presentation/pages/onboarding_page.dart';
 import 'features/projects/presentation/pages/projects_page.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
@@ -18,6 +21,18 @@ final onboardingCompletedProvider = FutureProvider<bool>((ref) async {
   return prefs.getBool('hasSeenOnboarding') ?? false;
 });
 
+const _supportedLocales = [
+  Locale('en'),
+  Locale('ar'),
+];
+
+const _localizationsDelegates = [
+  AppLocalizations.delegate,
+  GlobalMaterialLocalizations.delegate,
+  GlobalWidgetsLocalizations.delegate,
+  GlobalCupertinoLocalizations.delegate,
+];
+
 /// Main application widget with routing configuration
 class KnowledgeEngineApp extends ConsumerWidget {
   const KnowledgeEngineApp({Key? key}) : super(key: key);
@@ -25,11 +40,15 @@ class KnowledgeEngineApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
+    final locale = ref.watch(localeProvider);
     final onboardingCompleted = ref.watch(onboardingCompletedProvider);
 
     if (onboardingCompleted.isLoading) {
       return MaterialApp(
         title: 'Knowledge Engine',
+        locale: locale,
+        localizationsDelegates: _localizationsDelegates,
+        supportedLocales: _supportedLocales,
         theme: AppTheme.lightTheme(),
         darkTheme: AppTheme.darkTheme(),
         themeMode: themeMode,
@@ -45,6 +64,10 @@ class KnowledgeEngineApp extends ConsumerWidget {
 
     return MaterialApp.router(
       title: 'Knowledge Engine',
+      locale: locale,
+      onGenerateTitle: (context) => context.l10n.appTitle,
+      localizationsDelegates: _localizationsDelegates,
+      supportedLocales: _supportedLocales,
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode,
@@ -118,16 +141,16 @@ GoRouter createRouter({required bool hasSeenOnboarding}) => GoRouter(
     ),
   ],
   errorBuilder: (context, state) => Scaffold(
-    appBar: AppBar(title: const Text('Error')),
+    appBar: AppBar(title: Text(context.l10n.error)),
     body: Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text('Route not found: ${state.matchedLocation}'),
+          Text(context.l10n.routeNotFound(state.matchedLocation)),
           SizedBox(height: 16.h),
           ElevatedButton(
             onPressed: () => context.go('/projects'),
-            child: const Text('Go to Projects'),
+            child: Text(context.l10n.goToProjects),
           ),
         ],
       ),

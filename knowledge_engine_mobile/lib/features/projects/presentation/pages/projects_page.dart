@@ -5,10 +5,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/localization/language_toggle.dart';
 import '../../../../core/theme/theme_toggle.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../l10n/l10n.dart';
 
 import '../providers/projects_notifier.dart';
 import '../providers/recent_projects_provider.dart';
@@ -51,13 +52,14 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
     final stateAsync    = ref.watch(projectsNotifierProvider);
     final notifier      = ref.read(projectsNotifierProvider.notifier);
     final recentProjects = ref.watch(recentProjectsProvider);
+    final l10n = context.l10n;
 
     return stateAsync.when(
         loading: () => _shell(context, child: Center(
           child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
         )),
         error: (e, _) => _shell(context, child: Center(
-          child: Text('Error: $e', style: TextStyle(color: Theme.of(context).colorScheme.error)),
+          child: Text(l10n.errorWithMessage(e.toString()), style: TextStyle(color: Theme.of(context).colorScheme.error)),
         )),
         data: (state) {
           // Sync controller
@@ -80,7 +82,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                   pinned: true,
                   elevation: 0,
                   title: Text(
-                    'Knowledge Engine',
+                    l10n.appTitle,
                     style: TextStyle(
                       fontFamily: 'Georgia',
                       fontSize: 18.sp,
@@ -91,6 +93,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                   ),
                   centerTitle: false,
                   actions: const [
+                    LanguageToggleButton(),
                     ThemeToggleButton(),
                   ],
                   flexibleSpace: FlexibleSpaceBar(
@@ -114,7 +117,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                       ],
 
                       // ── Project ID input ─────────────────────────
-                      _SectionLabel(label: 'Open Project'),
+                      _SectionLabel(label: l10n.openProject),
                       SizedBox(height: 12.h),
                       _ProjectInputCard(
                         controller: _controller,
@@ -127,7 +130,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                       SizedBox(height: 28.h),
 
                       // ── Recent projects ──────────────────────────
-                      _SectionLabel(label: 'Recent Projects'),
+                      _SectionLabel(label: l10n.recentProjects),
                       SizedBox(height: 12.h),
                       _RecentProjectsList(
                         recentProjects: recentProjects,
@@ -141,7 +144,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                             ScaffoldMessenger.of(context)
                                 .showSnackBar(SnackBar(
                               content: Text(
-                                  'Couldn\'t delete Project $id.'),
+                                  l10n.couldNotDeleteProject(id)),
                             ));
                           }
                           return ok;
@@ -216,7 +219,7 @@ class _Hero extends StatelessWidget {
                       color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
                 ),
                 child: Text(
-                  'KNOWLEDGE ENGINE',
+                  context.l10n.knowledgeEngineUpper,
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 10.sp,
@@ -227,7 +230,7 @@ class _Hero extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                'Your projects,\nat a glance',
+                context.l10n.projectsHeroTitle,
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26.sp,
@@ -239,7 +242,7 @@ class _Hero extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Text(
-                'Enter a project ID or pick a recent one',
+                context.l10n.projectsHeroSubtitle,
                 style: TextStyle(
                   fontSize: 13.sp,
                   color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
@@ -322,8 +325,8 @@ class _ProjectInputCard extends StatelessWidget {
             onChanged: notifier.updateProjectInput,
             onSubmitted: (_) => _submit(context),
             decoration: InputDecoration(
-              labelText: 'Project ID',
-              hintText: 'e.g. 42',
+              labelText: context.l10n.projectId,
+              hintText: context.l10n.projectIdHint,
               errorText: state.validationError,
                 prefixIcon: Icon(Icons.folder_outlined,
                   size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
@@ -331,7 +334,7 @@ class _ProjectInputCard extends StatelessWidget {
                   ? IconButton(
                     icon: Icon(Icons.close_rounded,
                       size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
-                    tooltip: 'Clear',
+                    tooltip: context.l10n.clear,
                     onPressed: () => notifier.updateProjectInput(''),
                   )
                   : null,
@@ -361,7 +364,7 @@ class _ProjectInputCard extends StatelessWidget {
                     )
                   : Icon(Icons.arrow_forward_rounded, size: 18.r),
               label:
-                  Text(state.isLoading ? 'Opening…' : 'Open Project'),
+                  Text(state.isLoading ? context.l10n.opening : context.l10n.openProject),
             ),
           ),
         ],
@@ -404,7 +407,7 @@ class _RecentProjectsList extends StatelessWidget {
       error: (e, _) => _AlertBanner(
         icon: Icons.error_outline_rounded,
         color: Theme.of(context).colorScheme.error,
-        message: 'Error loading recent projects: $e',
+        message: context.l10n.errorLoadingRecentProjects(e.toString()),
       ),
       data: (projects) {
         if (projects.isEmpty) {
@@ -423,13 +426,13 @@ class _RecentProjectsList extends StatelessWidget {
                     size: 36.r),
                 SizedBox(height: 10.h),
                 Text(
-                  'No recent projects yet',
+                  context.l10n.noRecentProjects,
                   style: TextStyle(
                       color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
                 ),
                 SizedBox(height: 4.h),
                 Text(
-                  'Open a project above to see it here',
+                  context.l10n.openProjectAbove,
                   style: TextStyle(
                       color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
                       fontSize: 11.sp),
@@ -523,7 +526,7 @@ class _RecentProjectTile extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Project #$projectId',
+                      context.l10n.projectNumber(projectId),
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyLarge?.color,
                         fontWeight: FontWeight.w600,
@@ -532,7 +535,7 @@ class _RecentProjectTile extends StatelessWidget {
                     ),
                     SizedBox(height: 2.h),
                     Text(
-                      'Tap to open · swipe to delete',
+                      context.l10n.tapToOpenSwipeToDelete,
                       style: TextStyle(
                         color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
                         fontSize: 11.sp,
@@ -574,14 +577,14 @@ class _SwipeBackground extends StatelessWidget {
         Icon(Icons.delete_outline_rounded,
           color: Theme.of(context).colorScheme.error, size: 20.r),
         SizedBox(width: 6.w),
-        Text('Delete',
+        Text(context.l10n.delete,
           style: TextStyle(
             color: Theme.of(context).colorScheme.error,
             fontWeight: FontWeight.w600,
             fontSize: 13.sp)),
         ]
       : [
-        Text('Delete',
+        Text(context.l10n.delete,
           style: TextStyle(
             color: Theme.of(context).colorScheme.error,
             fontWeight: FontWeight.w600,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../l10n/l10n.dart';
 import 'theme_controller.dart';
 
 class ThemeToggleButton extends ConsumerWidget {
@@ -24,9 +25,9 @@ class ThemeToggleButton extends ConsumerWidget {
         ),
         onSelected: (m) => notifier.setTheme(m),
         itemBuilder: (_) => [
-          PopupMenuItem(value: ThemeMode.light, child: Text('Light')),
-          PopupMenuItem(value: ThemeMode.dark, child: Text('Dark')),
-          PopupMenuItem(value: ThemeMode.system, child: Text('System')),
+          PopupMenuItem(value: ThemeMode.light, child: Text(context.l10n.themeLight)),
+          PopupMenuItem(value: ThemeMode.dark, child: Text(context.l10n.themeDark)),
+          PopupMenuItem(value: ThemeMode.system, child: Text(context.l10n.themeSystem)),
         ],
       ),
     );

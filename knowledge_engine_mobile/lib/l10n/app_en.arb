@@ -1,0 +1,69 @@
+{
+  "@@locale": "en",
+  "appTitle": "Knowledge Engine",
+  "error": "Error",
+  "errorWithMessage": "Error: {message}",
+  "@errorWithMessage": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "goToProjects": "Go to Projects",
+  "routeNotFound": "Route not found: {location}",
+  "@routeNotFound": {
+    "placeholders": {
+      "location": {}
+    }
+  },
+  "language": "Language",
+  "systemLanguage": "System language",
+  "english": "English",
+  "arabic": "Arabic",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "themeSystem": "System",
+  "skip": "Skip",
+  "next": "Next",
+  "getStarted": "Get Started",
+  "onboardingOrganizeTitle": "Organize knowledge",
+  "onboardingOrganizeBody": "Create project spaces for documents, questions, translations, and voice notes.",
+  "onboardingAskTitle": "Ask with context",
+  "onboardingAskBody": "Upload files, index them, and get answers grounded in your own material.",
+  "onboardingFormatsTitle": "Work across formats",
+  "onboardingFormatsBody": "Move between search, translation, and audio workflows from one focused workspace.",
+  "openProject": "Open Project",
+  "recentProjects": "Recent Projects",
+  "projectId": "Project ID",
+  "projectIdHint": "e.g. 42",
+  "clear": "Clear",
+  "opening": "Opening...",
+  "knowledgeEngineUpper": "KNOWLEDGE ENGINE",
+  "projectsHeroTitle": "Your projects,\nat a glance",
+  "projectsHeroSubtitle": "Enter a project ID or pick a recent one",
+  "couldNotDeleteProject": "Couldn't delete Project {id}.",
+  "@couldNotDeleteProject": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "errorLoadingRecentProjects": "Error loading recent projects: {message}",
+  "@errorLoadingRecentProjects": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "noRecentProjects": "No recent projects yet",
+  "openProjectAbove": "Open a project above to see it here",
+  "projectNumber": "Project #{id}",
+  "@projectNumber": {
+    "placeholders": {
+      "id": {
+        "type": "int"
+      }
+    }
+  },
+  "tapToOpenSwipeToDelete": "Tap to open · swipe to delete",
+  "delete": "Delete"
+}
