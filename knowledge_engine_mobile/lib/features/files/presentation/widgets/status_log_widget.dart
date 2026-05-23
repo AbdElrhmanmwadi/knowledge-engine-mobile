@@ -3,12 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import '../../../../l10n/l10n.dart';
 
 import '../providers/files_provider.dart';
-import '../pages/files_page.dart';    // uses AppTheme
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_radius.dart';
+ 
 
 class StatusLogWidget extends ConsumerStatefulWidget {
   const StatusLogWidget({super.key, required this.projectId});
@@ -50,7 +48,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.07)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -64,7 +62,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                     color: Theme.of(context).textTheme.bodyMedium?.color, size: 15.r),
                 SizedBox(width: 8.w),
                 Text(
-                  'STATUS LOG',
+                  context.l10n.statusLog,
                   style: TextStyle(
                     color: Theme.of(context).textTheme.bodyMedium?.color,
                     fontSize: 10.sp,
@@ -77,7 +75,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 2.h),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.08),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(
@@ -94,7 +92,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                 if (logs.isNotEmpty)
                   _LogAction(
                     icon: Icons.copy_outlined,
-                    label: 'Copy',
+                    label: context.l10n.copy,
                     onTap: () async {
                       final text = logs.map((e) {
                         final t = DateFormat('HH:mm:ss')
@@ -105,16 +103,16 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                           ClipboardData(text: text));
                       if (!mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text('Status log copied.')),
+                        SnackBar(
+                            content: Text(context.l10n.statusLogCopied)),
                       );
                     },
                   ),
                 if (logs.isNotEmpty) ...[ 
                   SizedBox(width: 6.w),
-                  _LogAction(
+                    _LogAction(
                     icon: Icons.delete_sweep_outlined,
-                    label: 'Clear',
+                    label: context.l10n.clear,
                     color: Theme.of(context).colorScheme.error,
                     onTap: notifier.clearStatus,
                   ),
@@ -124,7 +122,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
             ),
           ),
             Divider(
-              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 18.h),
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.06), height: 18.h),
 
           // ── Log list ──────────────────────────────────────────────
           SizedBox(
@@ -135,21 +133,21 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Icon(Icons.hourglass_empty_rounded,
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.3),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.3),
                             size: 32.r),
                         SizedBox(height: 10.h),
                         Text(
-                          'No activity yet.',
+                          context.l10n.noActivityYet,
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                             fontSize: 13.sp,
                           ),
                         ),
                         SizedBox(height: 4.h),
                         Text(
-                          'Actions will appear here with timestamps.',
+                          context.l10n.actionsWillAppear,
                           style: TextStyle(
-                            color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.35),
+                            color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.35),
                             fontSize: 11.sp,
                           ),
                         ),
@@ -203,7 +201,7 @@ class _LogEntry extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).canvasColor,
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: color.withOpacity(0.18)),
+        border: Border.all(color: color.withValues(alpha: 0.18)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,7 +211,7 @@ class _LogEntry extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.12),
+                  color: color.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(6.r),
                 ),
                 child: Text(
@@ -273,9 +271,9 @@ class _LogAction extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 5.h),
         decoration: BoxDecoration(
-          color: c.withOpacity(0.08),
+          color: c.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(7.r),
-          border: Border.all(color: c.withOpacity(0.2)),
+          border: Border.all(color: c.withValues(alpha: 0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

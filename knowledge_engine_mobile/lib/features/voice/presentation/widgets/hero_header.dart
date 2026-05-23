@@ -38,8 +38,8 @@ class HeroHeader extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 const Color(0xFF0D0F14),
-                accentSoft.withOpacity(0.35),
-                teal.withOpacity(0.12),
+                accentSoft.withValues(alpha: 0.35),
+                teal.withValues(alpha: 0.12),
               ],
             ),
           ),
@@ -50,8 +50,8 @@ class HeroHeader extends StatelessWidget {
           builder: (_, __) => CustomPaint(
             painter: WavePainter(
               progress: waveController.value,
-              color1: accent.withOpacity(isRecording ? 0.45 : 0.18),
-              color2: teal.withOpacity(isRecording ? 0.3 : 0.1),
+              color1: accent.withValues(alpha: isRecording ? 0.45 : 0.18),
+              color2: teal.withValues(alpha: isRecording ? 0.3 : 0.1),
             ),
           ),
         ),
@@ -69,10 +69,10 @@ class HeroHeader extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                     decoration: BoxDecoration(
-                      color: accent.withOpacity(0.18),
+                      color: accent.withValues(alpha: 0.18),
                       borderRadius: BorderRadius.circular(20.r),
                       border: Border.all(
-                        color: accent.withOpacity(0.35),
+                        color: accent.withValues(alpha: 0.35),
                         width: 1,
                       ),
                     ),
@@ -97,7 +97,7 @@ class HeroHeader extends StatelessWidget {
                           shape: BoxShape.circle,
                           color: const Color(
                             0xFFFF5C6B,
-                          ).withOpacity(0.5 + 0.5 * pulseController.value),
+                          ).withValues(alpha: 0.5 + 0.5 * pulseController.value),
                         ),
                       ),
                     ),
@@ -131,7 +131,7 @@ class HeroHeader extends StatelessWidget {
                 'Transcribe recordings · voice chat · hear answers',
                 style: TextStyle(
                   fontSize: 13.sp,
-                  color: const Color(0xFFF0F2FF).withOpacity(0.55),
+                  color: const Color(0xFFF0F2FF).withValues(alpha: 0.55),
                   letterSpacing: 0.1,
                 ),
               ),

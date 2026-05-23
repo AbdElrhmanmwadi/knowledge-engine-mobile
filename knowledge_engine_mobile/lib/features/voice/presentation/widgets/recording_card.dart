@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path/path.dart' as p;
 
 import '../providers/voice_provider.dart';
+import '../../../../l10n/l10n.dart';
 
 class RecordingCard extends StatelessWidget {
   const RecordingCard({
@@ -37,14 +38,14 @@ class RecordingCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: isRecording
-              ? error.withOpacity(0.4)
-              : Colors.white.withOpacity(0.07),
+              ? error.withValues(alpha: 0.4)
+              : Colors.white.withValues(alpha: 0.07),
           width: isRecording ? 1.5 : 1,
         ),
         boxShadow: isRecording
             ? [
                 BoxShadow(
-                  color: error.withOpacity(0.12),
+                  color: error.withValues(alpha: 0.12),
                   blurRadius: 20,
                   spreadRadius: 2,
                 ),
@@ -65,12 +66,12 @@ class RecordingCard extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: isRecording
-                        ? error.withOpacity(0.15 + 0.1 * pulseController.value)
-                        : error.withOpacity(0.12),
+                        ? error.withValues(alpha: 0.15 + 0.1 * pulseController.value)
+                        : error.withValues(alpha: 0.12),
                     border: Border.all(
                       color: isRecording
-                          ? error.withOpacity(0.6 + 0.4 * pulseController.value)
-                          : error.withOpacity(0.35),
+                          ? error.withValues(alpha: 0.6 + 0.4 * pulseController.value)
+                          : error.withValues(alpha: 0.35),
                       width: 1.5,
                     ),
                   ),
@@ -94,7 +95,7 @@ class RecordingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isRecording ? 'Recording…' : 'Tap to record',
+                      isRecording ? context.l10n.recording : context.l10n.tapToRecord,
                       style: TextStyle(
                         color: isRecording ? error : const Color(0xFFF0F2FF),
                         fontWeight: FontWeight.w600,
@@ -104,8 +105,8 @@ class RecordingCard extends StatelessWidget {
                     SizedBox(height: 2.h),
                     Text(
                       isRecording
-                          ? 'Press stop when done'
-                          : 'Or pick an audio file below',
+                          ? context.l10n.pressStopWhenDone
+                          : context.l10n.orPickAnAudioFileBelow,
                       style: TextStyle(color: textSecondary, fontSize: 12.sp),
                     ),
                   ],
@@ -119,7 +120,7 @@ class RecordingCard extends StatelessWidget {
             onPressed: state.isBusy ? null : () => notifier.pickAudioFile(),
             style: OutlinedButton.styleFrom(
               foregroundColor: accent,
-              side: BorderSide(color: accent.withOpacity(0.4)),
+              side: BorderSide(color: accent.withValues(alpha: 0.4)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.r),
               ),
@@ -127,16 +128,16 @@ class RecordingCard extends StatelessWidget {
               textStyle: TextStyle(fontSize: 13.sp),
             ),
             icon: Icon(Icons.audio_file_outlined, size: 16.r),
-            label: const Text('Pick audio file'),
+            label: Text(context.l10n.pickAudioFile),
           ),
           if (state.selectedAudioPath != null) ...[
             SizedBox(height: 10.h),
             Container(
               padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
               decoration: BoxDecoration(
-                color: accent.withOpacity(0.08),
+                color: accent.withValues(alpha: 0.08),
                 borderRadius: BorderRadius.circular(8.r),
-                border: Border.all(color: accent.withOpacity(0.2)),
+                border: Border.all(color: accent.withValues(alpha: 0.2)),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,

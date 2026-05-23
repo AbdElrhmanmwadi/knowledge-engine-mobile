@@ -186,8 +186,8 @@ class _Hero extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).scaffoldBackgroundColor,
-                Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
               ],
             ),
           ),
@@ -197,8 +197,8 @@ class _Hero extends StatelessWidget {
             builder: (_, __) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withOpacity(0.16),
-              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.09),
+              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),
+              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.09),
             ),
           ),
         ),
@@ -213,10 +213,10 @@ class _Hero extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.32)),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.32)),
                 ),
                 child: Text(
                   context.l10n.knowledgeEngineUpper,
@@ -245,7 +245,7 @@ class _Hero extends StatelessWidget {
                 context.l10n.projectsHeroSubtitle,
                 style: TextStyle(
                   fontSize: 13.sp,
-                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -281,9 +281,9 @@ class _WavePainter extends CustomPainter {
     }
 
     wave(color1, 14, 0.55, 0.0);
-    wave(color1.withOpacity(0.5), 9, 1.0, 0.5);
+    wave(color1.withValues(alpha: 0.5), 9, 1.0, 0.5);
     wave(color2, 18, 0.4, 1.0);
-    wave(color2.withOpacity(0.4), 6, 1.2, 1.5);
+    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
   }
 
   @override
@@ -311,7 +311,7 @@ class _ProjectInputCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,7 +348,7 @@ class _ProjectInputCard extends StatelessWidget {
               style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(AppRadius.lg)),
               padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -417,12 +417,12 @@ class _RecentProjectsList extends StatelessWidget {
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(AppRadius.lg),
               border: Border.all(
-                  color: Theme.of(context).dividerColor.withOpacity(0.07)),
+                  color: Theme.of(context).dividerColor.withValues(alpha: 0.07)),
             ),
             child: Column(
               children: [
                 Icon(Icons.folder_off_outlined,
-                    color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
+                    color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                     size: 36.r),
                 SizedBox(height: 10.h),
                 Text(
@@ -434,7 +434,7 @@ class _RecentProjectsList extends StatelessWidget {
                 Text(
                   context.l10n.openProjectAbove,
                   style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                       fontSize: 11.sp),
                 ),
               ],
@@ -503,7 +503,7 @@ class _RecentProjectTile extends StatelessWidget {
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16.r),
             border: Border.all(
-                color: color.withOpacity(0.18)),
+                color: color.withValues(alpha: 0.18)),
           ),
           child: Row(
             children: [
@@ -512,10 +512,10 @@ class _RecentProjectTile extends StatelessWidget {
                 width: 42.w,
                 height: 42.h,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
-                      color: color.withOpacity(0.25)),
+                      color: color.withValues(alpha: 0.25)),
                 ),
                 child: Icon(Icons.folder_rounded,
                     color: color, size: 20.r),
@@ -537,7 +537,7 @@ class _RecentProjectTile extends StatelessWidget {
                     Text(
                       context.l10n.tapToOpenSwipeToDelete,
                       style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                         fontSize: 11.sp,
                       ),
                     ),
@@ -545,7 +545,7 @@ class _RecentProjectTile extends StatelessWidget {
                 ),
               ),
                 Icon(Icons.chevron_right_rounded,
-                  color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.4),
+                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                   size: 20.r),
             ],
           ),
@@ -564,9 +564,9 @@ class _SwipeBackground extends StatelessWidget {
     final isLeft = alignment == Alignment.centerLeft;
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.error.withOpacity(0.15),
+        color: Theme.of(context).colorScheme.error.withValues(alpha: 0.15),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Theme.of(context).colorScheme.error.withOpacity(0.3)),
+        border: Border.all(color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3)),
       ),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       alignment: alignment,
@@ -629,9 +629,9 @@ class _AlertBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

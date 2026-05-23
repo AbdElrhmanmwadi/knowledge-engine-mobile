@@ -5,6 +5,7 @@ import '../../../../core/config/constants.dart';
 import '../providers/translation_provider.dart';
 import 'language_selector_widget.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../l10n/l10n.dart';
 
 class JobCreationSection extends ConsumerStatefulWidget {
   const JobCreationSection({super.key, required this.projectId});
@@ -44,14 +45,14 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
     }
 
     return TSection(
-      label: 'Create Job',
+      label: context.l10n.createJob,
       icon: Icons.add_circle_outline_rounded,
       iconColor: Theme.of(context).colorScheme.secondary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Submit a translation request for a file in project ${widget.projectId}.',
+            context.l10n.submitTranslationRequest(widget.projectId),
             style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
           SizedBox(height: 16.h),
@@ -63,11 +64,11 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
             onChanged: notifier.updateFileId,
             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
             decoration: InputDecoration(
-              labelText: 'File ID',
-              hintText: 'Latest uploaded file ID will appear here',
+              labelText: context.l10n.fileId,
+              hintText: context.l10n.fileId,
               helperText: state.fileIdInput.trim().isEmpty
-                  ? 'Upload a file first — the ID will auto-fill.'
-                  : 'Auto-filled from the latest upload. Edit if needed.',
+                  ? context.l10n.noFileSelectedYet
+                  : context.l10n.fileId,
               errorText: state.fileIdError,
                 prefixIcon: Icon(Icons.insert_drive_file_outlined,
                   size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
@@ -99,7 +100,7 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
                 style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.secondary,
                 foregroundColor: Theme.of(context).colorScheme.onSecondary,
-                disabledBackgroundColor: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
+                disabledBackgroundColor: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.3),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md)),
                 padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -115,8 +116,8 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
                     )
                   : Icon(Icons.playlist_add_check_circle_outlined,
                       size: 18.r),
-              label:
-                  Text(state.isCreatingJob ? 'Creating…' : 'Create Job'),
+                label:
+                  Text(state.isCreatingJob ? context.l10n.creating : context.l10n.createJob),
             ),
           ),
 
@@ -142,9 +143,9 @@ class _CreatedJobCard extends StatelessWidget {
       width: double.infinity,
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary.withOpacity(0.07),
+        color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.22)),
+        border: Border.all(color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +156,7 @@ class _CreatedJobCard extends StatelessWidget {
                   color: Theme.of(context).colorScheme.secondary, size: 15.r),
               SizedBox(width: 6.w),
               Text(
-                'JOB CREATED',
+                context.l10n.jobCreatedHeader,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.secondary,
                   fontSize: 10.sp,
@@ -179,10 +180,10 @@ class _CreatedJobCard extends StatelessWidget {
             spacing: 8.w,
             runSpacing: 6.h,
             children: [
-              _MiniPill(label: 'Status', value: job.status as String),
-              _MiniPill(label: 'Asset', value: job.assetId as String),
+              _MiniPill(label: context.l10n.statusLabel, value: job.status as String),
+              _MiniPill(label: context.l10n.assetLabel, value: job.assetId as String),
               _MiniPill(
-                label: 'Route',
+                label: context.l10n.routeLabel,
                 value:
                     '${LanguageCodes.getLanguageName(job.sourceLang as String)} → ${LanguageCodes.getLanguageName(job.targetLang as String)}',
               ),
@@ -204,9 +205,9 @@ class _MiniPill extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.05),
+        color: Colors.white.withValues(alpha: 0.05),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.white.withOpacity(0.08)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.08)),
       ),
       child: Text(
         '$label: $value',
@@ -241,7 +242,7 @@ class TSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.07)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,7 +263,7 @@ class TSection extends StatelessWidget {
             ],
           ),
           Divider(
-            color: Theme.of(context).dividerColor.withOpacity(0.06),
+            color: Theme.of(context).dividerColor.withValues(alpha: 0.06),
             height: 20.h,
           ),
           child,
@@ -289,9 +290,9 @@ class _AlertBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

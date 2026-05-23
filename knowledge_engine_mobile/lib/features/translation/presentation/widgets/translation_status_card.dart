@@ -43,7 +43,7 @@ class TranslationStatusCard extends ConsumerWidget {
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
-          color: badgeColor.withOpacity(0.25),
+          color: badgeColor.withValues(alpha: 0.25),
           width: 1,
         ),
       ),
@@ -74,7 +74,7 @@ class TranslationStatusCard extends ConsumerWidget {
             ),
           ),
             Divider(
-              color: Theme.of(context).dividerColor.withOpacity(0.06), height: 20.h),
+              color: Theme.of(context).dividerColor.withValues(alpha: 0.06), height: 20.h),
 
           Padding(
             padding: EdgeInsets.fromLTRB(18.w, 0.h, 18.w, 18.h),
@@ -141,7 +141,7 @@ class TranslationStatusCard extends ConsumerWidget {
                       Text(
                         'Progress',
                         style: TextStyle(
-                          color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                          color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                           fontSize: 11.sp,
                           fontWeight: FontWeight.w600,
                         ),
@@ -165,7 +165,7 @@ class TranslationStatusCard extends ConsumerWidget {
                           .toDouble(),
                       minHeight: 6.h,
                       backgroundColor:
-                          badgeColor.withOpacity(0.15),
+                          badgeColor.withValues(alpha: 0.15),
                       color: badgeColor,
                     ),
                   ),
@@ -316,9 +316,9 @@ class _ResultSection extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,7 +443,7 @@ class _CopyButton extends StatelessWidget {
       onPressed: onTap,
       style: OutlinedButton.styleFrom(
         foregroundColor: Theme.of(context).textTheme.bodyMedium?.color,
-        side: BorderSide(color: Theme.of(context).dividerColor.withOpacity(0.12)),
+        side: BorderSide(color: Theme.of(context).dividerColor.withValues(alpha: 0.12)),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(AppRadius.md)),
         padding:
@@ -471,9 +471,9 @@ class _StatusPill extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Text(
         label,
@@ -497,9 +497,9 @@ class _InfoPill extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
       decoration: BoxDecoration(
-        color: Colors.amber.withOpacity(0.07),
+        color: Colors.amber.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(8.r),
-        border: Border.all(color: Colors.amber.withOpacity(0.2)),
+        border: Border.all(color: Colors.amber.withValues(alpha: 0.2)),
       ),
       child: Text(
         '$label: $value',
@@ -528,9 +528,9 @@ class _InlineBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.08),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: color.withOpacity(0.22)),
+        border: Border.all(color: color.withValues(alpha: 0.22)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../providers/voice_provider.dart';
+import '../../../../l10n/l10n.dart';
 
 class PlaybackBar extends StatelessWidget {
   const PlaybackBar({
@@ -28,7 +29,7 @@ class PlaybackBar extends StatelessWidget {
       decoration: BoxDecoration(
         color: card,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
       ),
       child: Row(
         children: [
@@ -49,7 +50,7 @@ class PlaybackBar extends StatelessWidget {
                 ),
               ),
               icon: Icon(Icons.record_voice_over_rounded, size: 16.r),
-              label: const Text('Synthesize'),
+              label: Text(context.l10n.synthesize),
             ),
           ),
           SizedBox(width: 10.w),
@@ -62,7 +63,7 @@ class PlaybackBar extends StatelessWidget {
                       : () => notifier.playLastTtsOrVoiceReply()),
             style: OutlinedButton.styleFrom(
               foregroundColor: teal,
-              side: BorderSide(color: teal.withOpacity(0.45)),
+              side: BorderSide(color: teal.withValues(alpha: 0.45)),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10.r),
               ),
@@ -75,12 +76,12 @@ class PlaybackBar extends StatelessWidget {
                   : Icons.play_circle_outline_rounded,
               size: 18.r,
             ),
-            label: Text(state.isPlayingAudio ? 'Stop' : 'Play'),
+            label: Text(state.isPlayingAudio ? context.l10n.stop : context.l10n.play),
           ),
           SizedBox(width: 8.w),
           // Voice reply only
           Tooltip(
-            message: 'Play last voice-chat reply only',
+            message: context.l10n.playLastVoiceReplyTooltip,
             child: IconButton(
               onPressed: state.isBusy
                   ? null

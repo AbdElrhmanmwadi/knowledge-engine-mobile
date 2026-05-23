@@ -7,6 +7,7 @@ import 'package:knowledge_engine_mobile/features/voice/presentation/widgets/aler
 import '../providers/translation_provider.dart';
 // for _TSection, _AlertBanner
 import 'translation_status_card.dart';
+import '../../../../l10n/l10n.dart';
 
 class JobStatusSection extends ConsumerWidget {
   const JobStatusSection({super.key, required this.projectId});
@@ -22,14 +23,14 @@ class JobStatusSection extends ConsumerWidget {
     final latestJobId = state.createdJobResponse?.jobId;
 
     return TSection(
-      label: 'Translation Status',
+      label: context.l10n.translationStatus,
       icon: Icons.track_changes_rounded,
       iconColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Well track the latest translation request for you.',
+            context.l10n.trackLatestTranslation,
             style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
           SizedBox(height: 14.h),
@@ -40,9 +41,9 @@ class JobStatusSection extends ConsumerWidget {
               padding:
                   EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.07),
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
+                border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.22)),
               ),
               child: Row(
                 children: [
@@ -68,14 +69,14 @@ class JobStatusSection extends ConsumerWidget {
               padding:
                   EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.04),
+                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04),
                 borderRadius: BorderRadius.circular(12.r),
-                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
+                border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.07)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.info_outline_rounded,
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.6),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                       size: 15.r),
                   SizedBox(width: 10.w),
                   Expanded(
@@ -114,7 +115,7 @@ class JobStatusSection extends ConsumerWidget {
                 style: FilledButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: const Color(0xFF0D0F14),
-                disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                disabledBackgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12.r)),
                 padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -130,7 +131,7 @@ class JobStatusSection extends ConsumerWidget {
                     )
                   : Icon(Icons.refresh_rounded, size: 18.r),
               label: Text(
-                  state.isCheckingStatus ? 'Checking…' : 'Refresh status'),
+                state.isCheckingStatus ? context.l10n.checking : context.l10n.refreshStatus),
             ),
           ),
           SizedBox(height: 14.h),
@@ -182,9 +183,9 @@ class _AdvancedExpansion extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onSurface.withOpacity(0.03),
+        color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.07)),
       ),
       child: ExpansionTile(
         tilePadding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -195,14 +196,14 @@ class _AdvancedExpansion extends StatelessWidget {
         leading: Icon(Icons.tune_rounded,
             color: Theme.of(context).textTheme.bodyMedium?.color, size: 18.r),
         title: Text(
-          'Advanced',
+          context.l10n.advanced,
           style: TextStyle(
               color: Theme.of(context).textTheme.bodyLarge?.color,
               fontSize: 13.sp,
               fontWeight: FontWeight.w500),
         ),
         subtitle: Text(
-          'Look up a different request by ID',
+          context.l10n.lookUpById,
           style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
         ),
         children: [
@@ -239,9 +240,9 @@ class _AutoRefreshRow extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.03),
+        color: Colors.white.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
       ),
       child: Column(
         children: [
@@ -255,14 +256,14 @@ class _AutoRefreshRow extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Keep updating automatically',
+                      context.l10n.keepUpdatingAutomatically,
                       style: TextStyle(
                           color: Theme.of(context).textTheme.bodyLarge?.color,
                           fontSize: 13.sp,
                           fontWeight: FontWeight.w500),
                     ),
                     Text(
-                      'Refresh every ${state.refreshIntervalSeconds}s until complete',
+                      context.l10n.refreshEverySeconds(state.refreshIntervalSeconds.toString()),
                       style: TextStyle(
                           color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
                     ),
@@ -291,19 +292,19 @@ class _AutoRefreshRow extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
                 borderSide:
-                    BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
+                    BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(12.r),
                 borderSide:
-                    BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.08)),
+                    BorderSide(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08)),
               ),
             ),
             items: refreshOptions
                 .map(
                   (s) => DropdownMenuItem<int>(
                     value: s,
-                    child: Text('$s seconds'),
+                    child: Text(context.l10n.secondsWithCount(s)),
                   ),
                 )
                 .toList(growable: false),
@@ -339,9 +340,9 @@ class _TinyButton extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 7.h),
         decoration: BoxDecoration(
-          color: btnColor.withOpacity(0.08),
+          color: btnColor.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(8.r),
-          border: Border.all(color: btnColor.withOpacity(0.2)),
+          border: Border.all(color: btnColor.withValues(alpha: 0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

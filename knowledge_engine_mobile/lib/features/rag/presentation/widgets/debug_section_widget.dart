@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../providers/rag_provider.dart';
+import '../../../../l10n/l10n.dart';
 
 class DebugSectionWidget extends ConsumerWidget {
   const DebugSectionWidget({
@@ -27,11 +28,11 @@ class DebugSectionWidget extends ConsumerWidget {
     final chatHistory = response.chatHistory ?? const <Map<String, dynamic>>[];
 
     return AppCard(
-      title: 'Debug Info',
+      title: context.l10n.debugInfo,
       children: [
         if (response.fullPrompt != null && response.fullPrompt!.trim().isNotEmpty) ...[
           _DebugBlock(
-            title: 'Full Prompt',
+            title: context.l10n.fullPrompt,
             content: response.fullPrompt!,
           ),
           SizedBox(height: 12.h),
@@ -59,7 +60,7 @@ class DebugSectionWidget extends ConsumerWidget {
                   'Chat history copied to clipboard.',
                 ),
                 icon: const Icon(Icons.copy_outlined),
-                label: const Text('Copy'),
+                label: Text(context.l10n.copy),
               ),
             ],
           ),
@@ -138,17 +139,17 @@ class _DebugBlock extends StatelessWidget {
               ),
             ),
             TextButton.icon(
-              onPressed: () async {
+                onPressed: () async {
                 await Clipboard.setData(ClipboardData(text: content));
                 if (!context.mounted) {
                   return;
                 }
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Prompt copied to clipboard.')),
+                  SnackBar(content: Text(context.l10n.promptCopied)),
                 );
               },
               icon: const Icon(Icons.copy_outlined),
-              label: const Text('Copy'),
+              label: Text(context.l10n.copy),
             ),
           ],
         ),

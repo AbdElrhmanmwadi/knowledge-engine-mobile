@@ -20,7 +20,7 @@ class AnswerDisplayWidget extends ConsumerWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.22)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,7 +51,7 @@ class AnswerDisplayWidget extends ConsumerWidget {
               ],
             ),
           ),
-          Divider(color: Colors.white.withOpacity(0.06), height: 20.h),
+          Divider(color: Colors.white.withValues(alpha: 0.06), height: 20.h),
 
           // ── Answer body ───────────────────────────────────────────
           Padding(
@@ -129,9 +129,9 @@ class _MiniPill extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: color.withOpacity(0.25)),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
       ),
       child: Text(
         label,
@@ -165,9 +165,9 @@ class _IconAction extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.08),
+          color: color.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(9.r),
-          border: Border.all(color: color.withOpacity(0.2)),
+          border: Border.all(color: color.withValues(alpha: 0.2)),
         ),
         child: Row(
           mainAxisSize: MainAxisSize.min,

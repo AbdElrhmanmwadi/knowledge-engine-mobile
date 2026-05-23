@@ -5,14 +5,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/widgets/loading_overlay.dart';
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/theme/app_radius.dart';
+
 import '../providers/files_provider.dart';
 import '../widgets/index_section.dart';
 import '../widgets/process_section.dart';
 import '../widgets/status_log_widget.dart';
 import '../widgets/upload_section.dart';
+import '../../../../l10n/l10n.dart';
 
 // ── Design tokens ────────────────────────────────────────────────────────────
 // Use centralized tokens from AppColors
@@ -62,7 +61,7 @@ class _FilesPageState extends ConsumerState<FilesPage>
                 pinned: true,
                 elevation: 0,
                 title: Text(
-                  'Documents',
+                  context.l10n.documents,
                   style: TextStyle(
                     fontFamily: 'Georgia',
                     fontSize: 18.sp,
@@ -186,8 +185,8 @@ class _FilesHero extends StatelessWidget {
                       border: Border.all(
                           color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.32)),
                     ),
-                    child: Text(
-                      'PROJECT $projectId',
+                      child: Text(
+                        context.l10n.projectBadge(projectId),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontSize: 10.sp,
@@ -213,7 +212,7 @@ class _FilesHero extends StatelessWidget {
                               color: Theme.of(context).colorScheme.primary, size: 11.r),
                           SizedBox(width: 4.w),
                           Text(
-                            'READY',
+                context.l10n.ready,
                             style: TextStyle(
                               color: Theme.of(context).colorScheme.primary,
                               fontSize: 10.sp,
@@ -228,7 +227,7 @@ class _FilesHero extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                'Add your\ndocuments',
+                context.l10n.addYourDocuments,
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26.sp,
@@ -240,10 +239,10 @@ class _FilesHero extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Text(
-                'Upload · prepare · index into knowledge base',
+                context.l10n.uploadPrepareIndexSubtitle,
                 style: TextStyle(
                   fontSize: 13.sp,
-                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -281,9 +280,9 @@ class _WavePainter extends CustomPainter {
     }
 
     wave(color1, 14, 0.55, 0.0);
-    wave(color1.withOpacity(0.5), 9, 1.0, 0.5);
+    wave(color1.withValues(alpha: 0.5), 9, 1.0, 0.5);
     wave(color2, 18, 0.4, 1.0);
-    wave(color2.withOpacity(0.4), 6, 1.2, 1.5);
+    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
   }
 
   @override
@@ -298,9 +297,9 @@ class _StepTracker extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final steps = [
-      _StepData(label: 'Upload', icon: Icons.upload_file_rounded),
-      _StepData(label: 'Prepare', icon: Icons.auto_awesome_motion_outlined),
-      _StepData(label: 'Index', icon: Icons.publish_rounded),
+      _StepData(label: context.l10n.stepUpload, icon: Icons.upload_file_rounded),
+      _StepData(label: context.l10n.stepPrepare, icon: Icons.auto_awesome_motion_outlined),
+      _StepData(label: context.l10n.stepIndex, icon: Icons.publish_rounded),
     ];
 
     final current = state.indexResponse != null
@@ -316,7 +315,7 @@ class _StepTracker extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.07)),
       ),
       child: Row(
         children: [
@@ -338,10 +337,10 @@ class _StepTracker extends StatelessWidget {
                       colors: [
                         i < current
                             ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.2),
+                            : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.2),
                         (i + 1) <= current
                             ? Theme.of(context).colorScheme.primary
-                            : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.2),
+                            : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.2),
                       ],
                     ),
                   ),
@@ -378,7 +377,7 @@ class _StepDot extends StatelessWidget {
 
     final Color dotColor = done || active
       ? Theme.of(context).colorScheme.primary
-      : Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.3);
+      : Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.3);
 
     return Column(
       children: [
@@ -388,8 +387,8 @@ class _StepDot extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: done || active
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.12)
-                : Theme.of(context).colorScheme.onSurface.withOpacity(0.04),
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.12)
+                : Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.04),
             border: Border.all(
               color: dotColor,
               width: active ? 1.5 : 1,
@@ -406,7 +405,7 @@ class _StepDot extends StatelessWidget {
           data.label,
             style: TextStyle(
             color: pending
-                ? Theme.of(context).textTheme.bodyMedium!.color!.withOpacity(0.4)
+                ? Theme.of(context).textTheme.bodyMedium!.color!.withValues(alpha: 0.4)
                 : active
                     ? Theme.of(context).colorScheme.primary
                     : Theme.of(context).textTheme.bodyMedium!.color,
@@ -432,9 +431,9 @@ class _AlertBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

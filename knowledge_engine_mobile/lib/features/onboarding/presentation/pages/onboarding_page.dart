@@ -106,7 +106,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       decoration: BoxDecoration(
                         color: i == _index
                             ? colors.primary
-                            : colors.onSurface.withOpacity(0.18),
+                            : colors.onSurface.withValues(alpha: 0.18),
                         borderRadius: BorderRadius.circular(999.r),
                       ),
                     ),
@@ -152,9 +152,9 @@ class _OnboardingPanel extends StatelessWidget {
           width: 112.w,
           height: 112.h,
           decoration: BoxDecoration(
-            color: colors.primary.withOpacity(0.12),
+            color: colors.primary.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(28.r),
-            border: Border.all(color: colors.primary.withOpacity(0.24)),
+            border: Border.all(color: colors.primary.withValues(alpha: 0.24)),
           ),
           child: Icon(slide.icon, size: 52.r, color: colors.primary),
         ),
@@ -173,7 +173,7 @@ class _OnboardingPanel extends StatelessWidget {
             slide.body,
             textAlign: TextAlign.center,
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.68),
+              color: theme.textTheme.bodyMedium?.color?.withValues(alpha: 0.68),
               height: 1.55,
             ),
           ),

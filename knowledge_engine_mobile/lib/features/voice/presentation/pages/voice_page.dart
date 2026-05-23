@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/loading_overlay.dart';
+import '../../../../l10n/l10n.dart';
 import '../providers/voice_provider.dart';
 import '../widgets/recording_card.dart';
 import '../widgets/hero_header.dart';
@@ -71,7 +72,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
     final bg = theme.scaffoldBackgroundColor;
     final accent = AppTheme.accentColor;
     final teal = AppTheme.voiceColor;
-    final accentSoft = accent.withOpacity(0.08);
+    final accentSoft = accent.withValues(alpha: 0.08);
     final card = AppTheme.surfaceColor;
     final textPrimary = AppTheme.textPrimary;
     final textSecondary = AppTheme.textSecondary;
@@ -105,7 +106,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                 ),
               ),
               title: Text(
-                'Voice Studio',
+                context.l10n.voiceTitle,
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 18.sp,
@@ -127,8 +128,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     AlertBanner(
                       icon: Icons.mic_off_rounded,
                       color: warning,
-                      message:
-                          'Microphone access is off. Enable it in system settings.',
+                      message: context.l10n.micAccessOff,
                     ),
                     SizedBox(height: 12.h),
                   ],
@@ -142,7 +142,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                   ],
 
                   // ── Recording controls ───────────────────
-                  SectionLabel(label: 'Audio Source'),
+                  SectionLabel(label: context.l10n.audioSource),
                   SizedBox(height: 12.h),
                   RecordingCard(
                     state: state,
@@ -159,7 +159,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                   SizedBox(height: 24.h),
 
                   // ── Settings ─────────────────────────────
-                  SectionLabel(label: 'Settings'),
+                  SectionLabel(label: context.l10n.settings),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
@@ -170,9 +170,9 @@ class _VoicePageState extends ConsumerState<VoicePage>
                             color: textPrimary,
                             fontSize: 14.sp,
                           ),
-                          decoration: InputDecoration(
-                            labelText: 'Language',
-                            hintText: 'e.g. en',
+                            decoration: InputDecoration(
+                            labelText: context.l10n.language,
+                            hintText: context.l10n.languageExample,
                             prefixIcon: Icon(
                               Icons.language_rounded,
                               size: 18.r,
@@ -190,8 +190,8 @@ class _VoicePageState extends ConsumerState<VoicePage>
                             color: textPrimary,
                             fontSize: 14.sp,
                           ),
-                          decoration: InputDecoration(
-                            labelText: 'RAG limit',
+                            decoration: InputDecoration(
+                            labelText: context.l10n.ragLimit,
                             prefixIcon: Icon(
                               Icons.manage_search_rounded,
                               size: 18.r,
@@ -209,14 +209,14 @@ class _VoicePageState extends ConsumerState<VoicePage>
                   SizedBox(height: 24.h),
 
                   // ── Actions ──────────────────────────────
-                  SectionLabel(label: 'Actions'),
+                  SectionLabel(label: context.l10n.actions),
                   SizedBox(height: 12.h),
                   Row(
                     children: [
                       Expanded(
                         child: ActionTile(
                           icon: Icons.transcribe_rounded,
-                          label: 'Speech\nto Text',
+                          label: context.l10n.speechToText,
                           color: accent,
                           disabled: state.isBusy || !state.hasAudioFile,
                           onTap: () => notifier.runSpeechToText(),
@@ -226,7 +226,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                       Expanded(
                         child: ActionTile(
                           icon: Icons.forum_rounded,
-                          label: 'Voice\nChat',
+                          label: context.l10n.voiceChat,
                           color: teal,
                           disabled: state.isBusy || !state.hasAudioFile,
                           onTap: () => notifier.runVoiceChat(),
@@ -238,7 +238,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                   SizedBox(height: 24.h),
 
                   // ── TTS ──────────────────────────────────
-                  SectionLabel(label: 'Text to Speech'),
+                  SectionLabel(label: context.l10n.textToSpeech),
                   SizedBox(height: 12.h),
                   TextField(
                     controller: _ttsController,
@@ -246,7 +246,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                     maxLines: 6,
                     style: TextStyle(color: textPrimary, fontSize: 14.sp),
                     decoration: InputDecoration(
-                      labelText: 'Enter text to synthesize…',
+                      labelText: context.l10n.ttsHint,
                       alignLabelWithHint: true,
                       prefixIcon: Padding(
                         padding: EdgeInsets.only(bottom: 60.h),
@@ -273,7 +273,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
 
                   // ── Transcript ───────────────────────────
                   OutputCard(
-                    label: 'Transcript',
+                    label: context.l10n.transcript,
                     icon: Icons.article_outlined,
                     content: state.transcript,
                     accentColor: accent,
@@ -285,7 +285,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
 
                   // ── Answer ───────────────────────────────
                   OutputCard(
-                    label: 'Answer',
+                    label: context.l10n.answerLabel,
                     icon: Icons.auto_awesome_rounded,
                     content: state.answer,
                     accentColor: teal,

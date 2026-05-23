@@ -5,11 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/files_provider.dart';
-import '../pages/files_page.dart';    // uses AppTheme now
 import 'upload_section.dart'; // FSection
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../l10n/l10n.dart';
 
 class ProcessSection extends ConsumerWidget {
   const ProcessSection({super.key, required this.projectId});
@@ -23,7 +21,7 @@ class ProcessSection extends ConsumerWidget {
 
     return FSection(
       stepNumber: 2,
-      label: 'Prepare Document',
+      label: context.l10n.prepareDocument,
       icon: Icons.auto_awesome_motion_outlined,
       isComplete: state.processResponse != null,
       isLocked: locked,
@@ -32,23 +30,23 @@ class ProcessSection extends ConsumerWidget {
         children: [
             Text(
             locked
-              ? 'Upload a file first to unlock this step.'
-              : 'Prepares your document for search and question answering.',
+              ? context.l10n.uploadFirstToUnlock
+              : context.l10n.preparesYourDocument,
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
             ),
           SizedBox(height: 16.h),
 
           // ── Replace previous checkbox ───────────────────────────
-          DarkCheckTile(
+            DarkCheckTile(
             value: state.processDoReset,
             disabled: state.isBusy,
-            title: 'Replace previous preparation',
+            title: context.l10n.replacePreviousPreparation,
             subtitle:
-                'Use this if you re-uploaded or changed the file.',
+              context.l10n.replacePreviousSubtitle,
             onChanged: (v) =>
-                notifier.toggleProcessDoReset(v ?? false),
-          ),
+              notifier.toggleProcessDoReset(v ?? false),
+            ),
           SizedBox(height: 12.h),
 
           // ── Advanced settings ───────────────────────────────────
@@ -58,20 +56,20 @@ class ProcessSection extends ConsumerWidget {
             onExpand: notifier.toggleAdvancedOptions,
             children: [
               _DarkTextField(
-                label: 'Chunk size',
+                label: context.l10n.chunkSize,
                 hint: state.chunkSize.toString(),
                 helper:
-                    'Range: ${ValidationConstants.minChunkSize}–${ValidationConstants.maxChunkSize}',
+                    context.l10n.rangeLimit(ValidationConstants.minChunkSize.toString(), ValidationConstants.maxChunkSize.toString()),
                 errorText: state.chunkSizeError,
                 disabled: state.isBusy,
                 onChanged: notifier.updateChunkSize,
               ),
               SizedBox(height: 12.h),
               _DarkTextField(
-                label: 'Overlap size',
+                label: context.l10n.overlapSize,
                 hint: state.overlapSize.toString(),
                 helper:
-                    'Range: ${ValidationConstants.minOverlapSize}–${ValidationConstants.maxOverlapSize}',
+                    context.l10n.rangeLimit(ValidationConstants.minOverlapSize.toString(), ValidationConstants.maxOverlapSize.toString()),
                 errorText: state.overlapSizeError,
                 disabled: state.isBusy,
                 onChanged: notifier.updateOverlapSize,
@@ -85,9 +83,9 @@ class ProcessSection extends ConsumerWidget {
                   SizedBox(width: 6.w),
                   Expanded(
                     child: Text(
-                      'Only change these if you know what you\'re optimising for.',
+                        context.l10n.onlyChangeIfKnow,
                       style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7),
+                        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
                         fontSize: 11.sp,
                       ),
                     ),
@@ -109,7 +107,7 @@ class ProcessSection extends ConsumerWidget {
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 disabledBackgroundColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md)),
                 padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -125,9 +123,9 @@ class ProcessSection extends ConsumerWidget {
                     )
                   : Icon(
                       Icons.auto_awesome_motion_outlined, size: 18.r),
-              label: Text(state.isProcessing
-                  ? 'Preparing…'
-                  : 'Prepare document'),
+                label: Text(state.isProcessing
+                  ? context.l10n.preparing
+                  : context.l10n.prepareDocumentLabel),
             ),
           ),
 
@@ -152,9 +150,9 @@ class _ProcessResult extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(14.r),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,7 +163,7 @@ class _ProcessResult extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary, size: 14.r),
               SizedBox(width: 6.w),
               Text(
-                'PROCESSING COMPLETE',
+                context.l10n.processingComplete,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontSize: 10.sp,
@@ -181,11 +179,11 @@ class _ProcessResult extends StatelessWidget {
             runSpacing: 8.h,
             children: [
               _MetricChip(
-                label: 'Chunks inserted',
+                label: context.l10n.chunksInserted,
                 value: response.insertedChunks.toString(),
               ),
               _MetricChip(
-                label: 'Files processed',
+                label: context.l10n.filesProcessed,
                 value: response.processedFiles.toString(),
               ),
               if (response.fileId != null)
@@ -217,9 +215,9 @@ class _MetricChip extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor.withOpacity(0.04),
+        color: Theme.of(context).cardColor.withValues(alpha: 0.04),
         borderRadius: BorderRadius.circular(10.r),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.08)),
+        border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.08)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -262,9 +260,9 @@ class _AdvancedPanel extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor.withOpacity(0.03),
+        color: Theme.of(context).cardColor.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
+        border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.07)),
       ),
       child: ExpansionTile(
         tilePadding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -315,13 +313,13 @@ class DarkCheckTile extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: value
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.07)
-              : Theme.of(context).cardColor.withOpacity(0.03),
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.07)
+              : Theme.of(context).cardColor.withValues(alpha: 0.03),
           borderRadius: BorderRadius.circular(12.r),
           border: Border.all(
             color: value
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
-                : Theme.of(context).dividerColor.withOpacity(0.07),
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.25)
+                : Theme.of(context).dividerColor.withValues(alpha: 0.07),
           ),
         ),
         child: Row(

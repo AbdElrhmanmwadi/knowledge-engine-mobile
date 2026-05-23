@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/widgets/loading_overlay.dart';
+import '../../../../l10n/l10n.dart';
 import '../providers/translation_provider.dart';
 import '../widgets/job_creation_section.dart';
 import '../widgets/job_status_section.dart';
@@ -56,7 +57,7 @@ class _TranslatePageState extends ConsumerState<TranslatePage>
               pinned: true,
               elevation: 0,
               title: Text(
-                'File Translation',
+                context.l10n.fileTranslationTitle,
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 18.sp,
@@ -90,7 +91,6 @@ class _TranslatePageState extends ConsumerState<TranslatePage>
       ),
     );
   }
-
 }
 
 // ── Hero header ────────────────────────────────────────────────────────────
@@ -115,19 +115,19 @@ class _TranslateHero extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).scaffoldBackgroundColor,
-                Theme.of(context).colorScheme.primary.withOpacity(0.3),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.08),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+                Theme.of(context).colorScheme.secondary.withValues(alpha: 0.08),
               ],
             ),
           ),
         ),
         AnimatedBuilder(
           animation: waveController,
-            builder: (_, __) => CustomPaint(
+          builder: (_, __) => CustomPaint(
             painter: _TranslateWavePainter(
               progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withOpacity(0.18),
-              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
+              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
             ),
           ),
         ),
@@ -142,12 +142,12 @@ class _TranslateHero extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.15),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(20.r),
-                  border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.35)),
+                  border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.35)),
                 ),
                 child: Text(
-                  'PROJECT $projectId',
+                  context.l10n.projectBadge(projectId),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 11.sp,
@@ -158,7 +158,7 @@ class _TranslateHero extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                'Translate project\nfiles',
+                context.l10n.translateHeroTitle,
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26.sp,
@@ -170,10 +170,10 @@ class _TranslateHero extends StatelessWidget {
               ),
               SizedBox(height: 6.h),
               Text(
-                'Create jobs · track progress · download results',
+                context.l10n.translateHeroSubtitle,
                 style: TextStyle(
                   fontSize: 13.sp,
-                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.5),
                   letterSpacing: 0.1,
                 ),
               ),
@@ -215,9 +215,9 @@ class _TranslateWavePainter extends CustomPainter {
     }
 
     wave(color1, 16, 0.6, 0);
-    wave(color1.withOpacity(0.5), 10, 1.0, 0.5);
+    wave(color1.withValues(alpha: 0.5), 10, 1.0, 0.5);
     wave(color2, 20, 0.4, 0.9);
-    wave(color2.withOpacity(0.4), 7, 1.3, 1.3);
+    wave(color2.withValues(alpha: 0.4), 7, 1.3, 1.3);
   }
 
   @override

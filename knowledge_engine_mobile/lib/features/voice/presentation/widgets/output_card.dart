@@ -28,8 +28,8 @@ class OutputCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20.r),
         border: Border.all(
           color: isEmpty
-              ? Colors.white.withOpacity(0.07)
-              : accentColor.withOpacity(0.2),
+              ? Colors.white.withValues(alpha: 0.07)
+              : accentColor.withValues(alpha: 0.2),
         ),
       ),
       child: Column(
@@ -61,14 +61,14 @@ class OutputCard extends StatelessWidget {
               ],
             ),
           ),
-          Divider(color: Colors.white.withOpacity(0.06), height: 20.h),
+          Divider(color: Colors.white.withValues(alpha: 0.06), height: 20.h),
           Padding(
             padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 16.h),
             child: SelectableText(
               isEmpty ? 'No output yet…' : content,
               style: TextStyle(
                 color: isEmpty
-                    ? textSecondary.withOpacity(0.5)
+                    ? textSecondary.withValues(alpha: 0.5)
                     : const Color(0xFFF0F2FF),
                 fontSize: 14.sp,
                 height: 1.6,

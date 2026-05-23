@@ -6,6 +6,7 @@ import '../../../../core/models/search_result_item.dart';
 import '../../../../core/theme/app_theme.dart';
 import '../../../../core/widgets/app_card.dart';
 import '../providers/rag_provider.dart';
+import '../../../../l10n/l10n.dart';
 
 class SearchResultsWidget extends ConsumerWidget {
   const SearchResultsWidget({
@@ -25,21 +26,21 @@ class SearchResultsWidget extends ConsumerWidget {
     }
 
     return AppCard(
-      title: 'Search Results',
+      title: context.l10n.searchResultsTitle,
       children: [
         Row(
           children: [
             Expanded(
               child: Text(
                 response.searchResults.isEmpty
-                    ? 'No matching chunks were returned.'
-                    : '${response.searchResults.length} result(s) for "${response.query}".',
+                    ? context.l10n.noMatchingChunks
+                    : context.l10n.resultsForQuery(response.searchResults.length.toString(), response.query ?? ''),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),
             if (response.executionTimeMs != null)
               Text(
-                '${response.executionTimeMs} ms',
+                context.l10n.ms(response.executionTimeMs.toString()),
                 style: Theme.of(context).textTheme.bodySmall,
               ),
           ],
@@ -104,7 +105,7 @@ class _SearchResultCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
                 decoration: BoxDecoration(
-                  color: scoreColor.withOpacity(0.12),
+                  color: scoreColor.withValues(alpha: 0.12),
                   borderRadius: BorderRadius.circular(999.r),
                 ),
                 child: Text(
@@ -134,12 +135,12 @@ class _SearchResultCard extends StatelessWidget {
           TextButton.icon(
             onPressed: onToggle,
             icon: Icon(isExpanded ? Icons.expand_less : Icons.expand_more),
-            label: Text(isExpanded ? 'Hide details' : 'Show details'),
+            label: Text(isExpanded ? context.l10n.hideDetails : context.l10n.showDetails),
           ),
           if (isExpanded && item.metaData.isNotEmpty) ...[
             SizedBox(height: 8.h),
             Text(
-              'Metadata',
+              context.l10n.metadata,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                   ),

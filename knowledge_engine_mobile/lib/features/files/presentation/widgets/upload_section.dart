@@ -4,10 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/files_provider.dart';
-import '../pages/files_page.dart';    // uses AppTheme
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../l10n/l10n.dart';
 
 class UploadSection extends ConsumerWidget {
   const UploadSection({super.key, required this.projectId});
@@ -20,14 +18,14 @@ class UploadSection extends ConsumerWidget {
 
     return FSection(
       stepNumber: 1,
-      label: 'Upload File',
+      label: context.l10n.uploadFile,
       icon: Icons.upload_file_rounded,
       isComplete: state.fileId != null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Choose a supported file and upload it to project ${state.currentProjectId}.',
+            context.l10n.chooseSupportedFileInstruction(state.currentProjectId),
             style: TextStyle(
                 color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
@@ -43,7 +41,7 @@ class UploadSection extends ConsumerWidget {
                     style: OutlinedButton.styleFrom(
                     foregroundColor: Theme.of(context).colorScheme.primary,
                     side: BorderSide(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.45)),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.45)),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md)),
                     padding: EdgeInsets.symmetric(vertical: 13.h),
@@ -51,7 +49,7 @@ class UploadSection extends ConsumerWidget {
                       fontSize: 13.sp, fontWeight: FontWeight.w500),
                     ),
                   icon: Icon(Icons.attach_file_rounded, size: 16.r),
-                  label: const Text('Choose file'),
+                  label: Text(context.l10n.chooseFile),
                 ),
               ),
               SizedBox(width: 10.w),
@@ -64,7 +62,7 @@ class UploadSection extends ConsumerWidget {
                     backgroundColor: Theme.of(context).colorScheme.primary,
                     foregroundColor: Theme.of(context).colorScheme.onPrimary,
                     disabledBackgroundColor:
-                      Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                      Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(AppRadius.md)),
                     padding: EdgeInsets.symmetric(vertical: 13.h),
@@ -79,8 +77,8 @@ class UploadSection extends ConsumerWidget {
                             strokeWidth: 2, color: Theme.of(context).colorScheme.onPrimary),
                         )
                       : Icon(Icons.cloud_upload_outlined, size: 16.r),
-                  label: Text(
-                      state.isUploading ? 'Uploading…' : 'Upload'),
+                    label: Text(
+                      state.isUploading ? context.l10n.uploading : context.l10n.upload),
                 ),
               ),
             ],
@@ -102,7 +100,7 @@ class UploadSection extends ConsumerWidget {
                       value: state.uploadProgress.clamp(0.0, 1.0),
                       minHeight: 5.h,
                         backgroundColor:
-                          Theme.of(context).colorScheme.primary.withOpacity(0.12),
+                          Theme.of(context).colorScheme.primary.withValues(alpha: 0.12),
                         color: Theme.of(context).colorScheme.primary,
                     ),
                   ),
@@ -139,10 +137,10 @@ class UploadSection extends ConsumerWidget {
               return Container(
                 padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.07),
                   borderRadius: BorderRadius.circular(7.r),
                   border: Border.all(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
                 ),
                 child: Text(
                   ext,
@@ -174,13 +172,13 @@ class _SelectedFileTile extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
       decoration: BoxDecoration(
         color: has
-          ? Theme.of(context).colorScheme.primary.withOpacity(0.07)
-          : Theme.of(context).cardColor.withOpacity(0.03),
+          ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.07)
+          : Theme.of(context).cardColor.withValues(alpha: 0.03),
         borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(
           color: has
-            ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
-            : Theme.of(context).dividerColor.withOpacity(0.07),
+            ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.25)
+            : Theme.of(context).dividerColor.withValues(alpha: 0.07),
         ),
       ),
       child: Row(
@@ -195,7 +193,7 @@ class _SelectedFileTile extends StatelessWidget {
           SizedBox(width: 10.w),
           Expanded(
             child: Text(
-              has ? fileName! : 'No file selected yet.',
+              has ? fileName! : context.l10n.noFileSelectedYet,
               style: TextStyle(
                 color: has
                     ? Theme.of(context).textTheme.bodyLarge?.color
@@ -227,9 +225,9 @@ class _ResultBadge extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 11.h),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.07),
         borderRadius: BorderRadius.circular(AppRadius.md),
-        border: Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.22)),
+        border: Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.22)),
       ),
       child: Row(
         children: [
@@ -282,7 +280,7 @@ class FSection extends StatelessWidget {
     final Color color = isComplete
         ? Theme.of(context).colorScheme.primary
         : isLocked
-            ? (Theme.of(context).textTheme.bodyMedium?.color ?? Theme.of(context).colorScheme.onSurface).withOpacity(0.4)
+            ? (Theme.of(context).textTheme.bodyMedium?.color ?? Theme.of(context).colorScheme.onSurface).withValues(alpha: 0.4)
             : Theme.of(context).colorScheme.primary;
 
     return AnimatedOpacity(
@@ -295,8 +293,8 @@ class FSection extends StatelessWidget {
           borderRadius: BorderRadius.circular(20.r),
           border: Border.all(
             color: isComplete
-                ? Theme.of(context).colorScheme.primary.withOpacity(0.25)
-                : Theme.of(context).dividerColor.withOpacity(0.07),
+                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.25)
+                : Theme.of(context).dividerColor.withValues(alpha: 0.07),
             width: isComplete ? 1.2 : 1,
           ),
         ),
@@ -311,8 +309,8 @@ class FSection extends StatelessWidget {
                   height: 26.h,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color.withOpacity(0.12),
-                    border: Border.all(color: color.withOpacity(0.4)),
+                    color: color.withValues(alpha: 0.12),
+                    border: Border.all(color: color.withValues(alpha: 0.4)),
                   ),
                   alignment: Alignment.center,
                   child: isComplete
@@ -344,7 +342,7 @@ class FSection extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.h),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(6.r),
                     ),
                     child: Text(
@@ -360,7 +358,7 @@ class FSection extends StatelessWidget {
               ],
             ),
             Divider(
-                color: Theme.of(context).dividerColor.withOpacity(0.06), height: 20.h),
+                color: Theme.of(context).dividerColor.withValues(alpha: 0.06), height: 20.h),
             child,
           ],
         ),

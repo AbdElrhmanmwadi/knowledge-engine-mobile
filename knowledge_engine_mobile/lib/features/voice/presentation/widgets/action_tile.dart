@@ -27,9 +27,9 @@ class ActionTile extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 16.w),
           decoration: BoxDecoration(
-            color: color.withOpacity(0.1),
+            color: color.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(18.r),
-            border: Border.all(color: color.withOpacity(0.25)),
+            border: Border.all(color: color.withValues(alpha: 0.25)),
           ),
           child: Column(
             children: [

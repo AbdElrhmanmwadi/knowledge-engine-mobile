@@ -3,12 +3,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers/files_provider.dart';
-import '../pages/files_page.dart';    // uses AppTheme
 import 'upload_section.dart'; // FSection
 import 'process_section.dart'; // _DarkCheckTile, _AdvancedPanel
-import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../l10n/l10n.dart';
 
 class IndexSection extends ConsumerWidget {
   const IndexSection({super.key, required this.projectId});
@@ -22,7 +20,7 @@ class IndexSection extends ConsumerWidget {
 
     return FSection(
       stepNumber: 3,
-      label: 'Update Knowledge Base',
+      label: context.l10n.updateKnowledgeBase,
       icon: Icons.publish_rounded,
       isComplete: state.indexResponse != null,
       isLocked: locked,
@@ -31,8 +29,8 @@ class IndexSection extends ConsumerWidget {
         children: [
             Text(
             locked
-              ? 'Finish preparing the document first.'
-              : 'Makes your prepared document available for search and answers.',
+              ? context.l10n.finishPreparingDocument
+              : context.l10n.makeDocumentAvailable,
             style: TextStyle(
               color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
             ),
@@ -41,9 +39,9 @@ class IndexSection extends ConsumerWidget {
           // ── Full rebuild checkbox (inside advanced) ─────────────
           Container(
             decoration: BoxDecoration(
-              color: Theme.of(context).cardColor.withOpacity(0.03),
+              color: Theme.of(context).cardColor.withValues(alpha: 0.03),
               borderRadius: BorderRadius.circular(12.r),
-              border: Border.all(color: Theme.of(context).dividerColor.withOpacity(0.07)),
+              border: Border.all(color: Theme.of(context).dividerColor.withValues(alpha: 0.07)),
             ),
             child: ExpansionTile(
               tilePadding: EdgeInsets.symmetric(horizontal: 14.w),
@@ -91,7 +89,7 @@ class IndexSection extends ConsumerWidget {
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
                 disabledBackgroundColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.25),
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(AppRadius.md)),
                 padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -117,10 +115,10 @@ class IndexSection extends ConsumerWidget {
             Container(
               padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.primary.withOpacity(0.07),
+                color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.07),
                 borderRadius: BorderRadius.circular(12.r),
                 border:
-                    Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.2)),
+                    Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2)),
               ),
               child: Row(
                 children: [

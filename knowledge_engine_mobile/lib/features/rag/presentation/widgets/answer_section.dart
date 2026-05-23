@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/rag_provider.dart';
+import '../../../../l10n/l10n.dart';
 class AnswerSection extends ConsumerWidget {
   const AnswerSection({super.key, required this.projectId});
   final int projectId;
@@ -15,14 +16,14 @@ class AnswerSection extends ConsumerWidget {
     final notifier = ref.read(ragNotifierProvider(projectId).notifier);
 
     return RSection(
-      label: 'Ask AI',
+      label: context.l10n.askAi,
       icon: Icons.auto_awesome_rounded,
       iconColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Ask a question about the indexed knowledge in project $projectId.',
+            context.l10n.askQuestionAboutProject(projectId),
             style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
           SizedBox(height: 16.h),
@@ -34,8 +35,8 @@ class AnswerSection extends ConsumerWidget {
             maxLines: 6,
             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
             decoration: InputDecoration(
-              labelText: 'Your question',
-              hintText: 'Ask anything about your uploaded knowledge…',
+              labelText: context.l10n.yourQuestion,
+              hintText: context.l10n.askHint,
               alignLabelWithHint: true,
               filled: true,
               fillColor: Theme.of(context).cardColor,
@@ -47,12 +48,12 @@ class AnswerSection extends ConsumerWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
@@ -70,11 +71,10 @@ class AnswerSection extends ConsumerWidget {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
-            decoration: InputDecoration(
-              labelText: 'Retrieved chunks limit',
+              decoration: InputDecoration(
+              labelText: context.l10n.retrievedChunksLimit,
               hintText: state.answerLimit.toString(),
-              helperText:
-                  'Range: ${ValidationConstants.minRagLimit}–${ValidationConstants.maxRagLimit}',
+              helperText: context.l10n.rangeLimit(ValidationConstants.minRagLimit.toString(), ValidationConstants.maxRagLimit.toString()),
               helperStyle:
                 TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
               errorText: state.answerLimitError,
@@ -85,12 +85,12 @@ class AnswerSection extends ConsumerWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
@@ -121,7 +121,7 @@ class AnswerSection extends ConsumerWidget {
               style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r)),
               padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -136,7 +136,7 @@ class AnswerSection extends ConsumerWidget {
                           strokeWidth: 2, color: Colors.white),
                     )
                   : Icon(Icons.auto_awesome_rounded, size: 18.r),
-              label: Text(state.isAnswering ? 'Thinking…' : 'Ask'),
+              label: Text(state.isAnswering ? context.l10n.thinking : context.l10n.ask),
             ),
           ),
         ],
@@ -166,7 +166,7 @@ class RSection extends StatelessWidget {
       decoration: BoxDecoration(
         color: Theme.of(context).cardColor,
         borderRadius: BorderRadius.circular(20.r),
-        border: Border.all(color: Colors.white.withOpacity(0.07)),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.07)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -186,7 +186,7 @@ class RSection extends StatelessWidget {
               ),
             ],
           ),
-          Divider(color: Colors.white.withOpacity(0.06), height: 20.h),
+          Divider(color: Colors.white.withValues(alpha: 0.06), height: 20.h),
           child,
         ],
       ),
@@ -211,9 +211,9 @@ class RAlertBanner extends StatelessWidget {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
+        color: color.withValues(alpha: 0.1),
         borderRadius: BorderRadius.circular(12.r),
-        border: Border.all(color: color.withOpacity(0.3)),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,

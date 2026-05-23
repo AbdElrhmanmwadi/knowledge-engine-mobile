@@ -32,9 +32,9 @@ class WavePainter extends CustomPainter {
     }
 
     drawWave(color1, 18, 0.7, 0);
-    drawWave(color1.withOpacity(0.5), 12, 1.1, 0.4);
+    drawWave(color1.withValues(alpha: 0.5), 12, 1.1, 0.4);
     drawWave(color2, 22, 0.5, 0.8);
-    drawWave(color2.withOpacity(0.4), 8, 1.4, 1.2);
+    drawWave(color2.withValues(alpha: 0.4), 8, 1.4, 1.2);
   }
 
   @override

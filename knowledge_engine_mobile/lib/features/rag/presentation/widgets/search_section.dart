@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/constants.dart';
 import '../providers/rag_provider.dart';
 import 'answer_section.dart'; // RSection, RAlertBanner
+import '../../../../l10n/l10n.dart';
 
 
 class SearchSection extends ConsumerWidget {
@@ -17,14 +18,14 @@ class SearchSection extends ConsumerWidget {
     final notifier  = ref.read(ragNotifierProvider(projectId).notifier);
 
     return RSection(
-      label: 'Search Knowledge',
+      label: context.l10n.searchKnowledge,
       icon: Icons.manage_search_rounded,
       iconColor: Theme.of(context).colorScheme.primary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Run semantic search against the indexed chunks in project $projectId.',
+            context.l10n.searchRunAgainstProject(projectId),
             style: TextStyle(color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
           ),
           SizedBox(height: 16.h),
@@ -35,8 +36,8 @@ class SearchSection extends ConsumerWidget {
             textInputAction: TextInputAction.search,
             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
             decoration: InputDecoration(
-              labelText: 'Search query',
-              hintText: 'Find relevant chunks or concepts…',
+              labelText: context.l10n.searchQuery,
+              hintText: context.l10n.searchHint,
               filled: true,
               fillColor: Theme.of(context).cardColor,
               prefixIcon: Icon(Icons.search_rounded,
@@ -44,12 +45,12 @@ class SearchSection extends ConsumerWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
@@ -68,11 +69,10 @@ class SearchSection extends ConsumerWidget {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 14.sp),
-            decoration: InputDecoration(
-              labelText: 'Result limit',
+              decoration: InputDecoration(
+              labelText: context.l10n.resultLimit,
               hintText: state.searchLimit.toString(),
-              helperText:
-                  'Range: ${ValidationConstants.minSearchLimit}–${ValidationConstants.maxSearchLimit}',
+              helperText: context.l10n.rangeLimit(ValidationConstants.minSearchLimit.toString(), ValidationConstants.maxSearchLimit.toString()),
               helperStyle: TextStyle(
                   color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
               errorText: state.searchLimitError,
@@ -83,12 +83,12 @@ class SearchSection extends ConsumerWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
                 borderSide:
-                    BorderSide(color: Colors.white.withOpacity(0.08)),
+                    BorderSide(color: Colors.white.withValues(alpha: 0.08)),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(14.r),
@@ -120,7 +120,7 @@ class SearchSection extends ConsumerWidget {
               style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
-              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12.r)),
               padding: EdgeInsets.symmetric(vertical: 14.h),
@@ -135,7 +135,7 @@ class SearchSection extends ConsumerWidget {
                           strokeWidth: 2, color: Colors.white),
                     )
                   : Icon(Icons.search_rounded, size: 18.r),
-              label: Text(state.isSearching ? 'Searching…' : 'Search'),
+              label: Text(state.isSearching ? context.l10n.searching : context.l10n.search),
             ),
           ),
         ],

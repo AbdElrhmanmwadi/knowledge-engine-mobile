@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../l10n/l10n.dart';
 
 // Local design tokens removed — use Theme / AppColors instead
 
@@ -52,7 +53,7 @@ class _DashboardPageState extends State<DashboardPage>
               onPressed: () => context.go('/projects'),
             ),
             title: Text(
-              'Workspace',
+              context.l10n.workspaceTitle,
               style: TextStyle(
                 fontFamily: 'Georgia',
                 fontSize: 18.sp,
@@ -78,7 +79,7 @@ class _DashboardPageState extends State<DashboardPage>
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 // Section label
-                const _Label('What would you like to do?'),
+                _Label(context.l10n.dashboardPrompt),
                  SizedBox(height: 14.h),
 
                 // Feature cards grid (2 cols)
@@ -121,8 +122,8 @@ class _DashboardHero extends StatelessWidget {
               end: Alignment.bottomRight,
               colors: [
                 Theme.of(context).scaffoldBackgroundColor,
-                Theme.of(context).colorScheme.primary.withOpacity(0.22),
-                Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+                Theme.of(context).colorScheme.primary.withValues(alpha: 0.22),
+                Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
               ],
             ),
           ),
@@ -133,8 +134,8 @@ class _DashboardHero extends StatelessWidget {
           builder: (_, __) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withOpacity(0.15),
-              color2: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
             ),
           ),
         ),
@@ -151,13 +152,13 @@ class _DashboardHero extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withOpacity(0.14),
+                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(20),
                   border:
-                      Border.all(color: Theme.of(context).colorScheme.primary.withOpacity(0.3)),
+                      Border.all(color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3)),
                 ),
                 child: Text(
-                  'PROJECT #$projectId',
+                  context.l10n.projectBadge(projectId),
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                     fontSize: 10,
@@ -168,7 +169,7 @@ class _DashboardHero extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                'Your project\nis ready',
+                context.l10n.projectReadyTitle,
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26,
@@ -180,10 +181,10 @@ class _DashboardHero extends StatelessWidget {
               ),
               const SizedBox(height: 6),
               Text(
-                'Pick what you want to do next.',
+                context.l10n.projectReadySubtitle,
                 style: TextStyle(
                   fontSize: 13,
-                  color: Theme.of(context).textTheme.bodyLarge?.color?.withOpacity(0.5),
+                  color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -220,9 +221,9 @@ class _WavePainter extends CustomPainter {
     }
 
     wave(color1, 14, 0.55, 0.0);
-    wave(color1.withOpacity(0.5), 8, 1.0, 0.5);
+    wave(color1.withValues(alpha: 0.5), 8, 1.0, 0.5);
     wave(color2, 18, 0.4, 1.0);
-    wave(color2.withOpacity(0.4), 6, 1.2, 1.5);
+    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
   }
 
   @override
@@ -238,29 +239,29 @@ class _FeatureGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     final features = [
       _Feature(
-        title: 'Documents',
-        description: 'Upload & index files',
+        title: context.l10n.documents,
+        description: context.l10n.featureDocumentsDesc,
         icon: Icons.folder_open_rounded,
         color: Theme.of(context).colorScheme.secondary,
         onTap: () => context.push('/files', extra: projectId),
       ),
       _Feature(
-        title: 'Ask AI',
-        description: 'Search & get answers',
+        title: context.l10n.askRightLabel,
+        description: context.l10n.featureAskDesc,
         icon: Icons.auto_awesome_rounded,
         color: Theme.of(context).colorScheme.primary,
         onTap: () => context.push('/ask', extra: projectId),
       ),
       _Feature(
-        title: 'Voice',
-        description: 'Speak, transcribe, listen',
+        title: context.l10n.featureVoiceTitle,
+        description: context.l10n.featureVoiceDesc,
         icon: Icons.mic_rounded,
         color: Theme.of(context).colorScheme.tertiary ?? Theme.of(context).colorScheme.primary,
         onTap: () => context.push('/voice', extra: projectId),
       ),
       _Feature(
-        title: 'Translate',
-        description: 'Translate & download',
+        title: context.l10n.translateHeroTitle,
+        description: context.l10n.featureTranslateDesc,
         icon: Icons.translate_rounded,
         color: Theme.of(context).colorScheme.tertiaryContainer ?? Theme.of(context).colorScheme.secondary,
         onTap: () => context.push('/translate', extra: projectId),
@@ -330,19 +331,19 @@ class _FeatureCardState extends State<_FeatureCard> {
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
           color: _pressed
-            ? f.color.withOpacity(0.12)
+            ? f.color.withValues(alpha: 0.12)
             : Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: _pressed
-                ? f.color.withOpacity(0.4)
-                : f.color.withOpacity(0.18),
+                ? f.color.withValues(alpha: 0.4)
+                : f.color.withValues(alpha: 0.18),
             width: _pressed ? 1.5 : 1,
           ),
           boxShadow: _pressed
               ? [
                   BoxShadow(
-                    color: f.color.withOpacity(0.1),
+                    color: f.color.withValues(alpha: 0.1),
                     blurRadius: 16,
                     spreadRadius: 1,
                   )
@@ -357,10 +358,10 @@ class _FeatureCardState extends State<_FeatureCard> {
               width: 44,
               height: 44,
               decoration: BoxDecoration(
-                color: f.color.withOpacity(0.12),
+                color: f.color.withValues(alpha: 0.12),
                 borderRadius: BorderRadius.circular(13),
                 border:
-                    Border.all(color: f.color.withOpacity(0.25)),
+                    Border.all(color: f.color.withValues(alpha: 0.25)),
               ),
               child:
                   Icon(f.icon, color: f.color, size: 22),
@@ -392,7 +393,7 @@ class _FeatureCardState extends State<_FeatureCard> {
                   width: 24,
                   height: 24,
                   decoration: BoxDecoration(
-                    color: f.color.withOpacity(0.1),
+                    color: f.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(

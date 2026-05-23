@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/constants.dart';
 import '../providers/translation_provider.dart';
+import '../../../../l10n/l10n.dart';
 
 class LanguageSelectorWidget extends ConsumerWidget {
   const LanguageSelectorWidget({super.key, required this.projectId});
@@ -18,7 +19,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
 
     final sourceDropdown = _buildDropdown(
       context: context,
-      label: 'Source language',
+      label: context.l10n.sourceLanguage,
       value: state.sourceLang,
       items: items,
       disabled: state.isBusy,
@@ -29,7 +30,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
 
     final targetDropdown = _buildDropdown(
       context: context,
-      label: 'Target language',
+      label: context.l10n.targetLanguage,
       value: state.targetLang,
       items: items,
       disabled: state.isBusy,
@@ -47,7 +48,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
             Icon(Icons.translate_rounded, size: 14.r, color: Theme.of(context).colorScheme.secondary),
             SizedBox(width: 6.w),
             Text(
-              'LANGUAGES',
+              context.l10n.languagesLabel,
               style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary,
                 fontSize: 10.sp,
@@ -70,7 +71,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Icon(Icons.arrow_forward_rounded,
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                       size: 18.r),
                   ),
                   Expanded(child: targetDropdown),
@@ -84,7 +85,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
                 SizedBox(height: 10.h),
                 Center(
                   child: Icon(Icons.arrow_downward_rounded,
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                       size: 18.r),
                 ),
                 SizedBox(height: 10.h),
@@ -99,9 +100,9 @@ class LanguageSelectorWidget extends ConsumerWidget {
         Container(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.secondary.withOpacity(0.06),
+            color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.06),
             borderRadius: BorderRadius.circular(10.r),
-            border: Border.all(color: Theme.of(context).colorScheme.secondary.withOpacity(0.18)),
+            border: Border.all(color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.18)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
@@ -133,7 +134,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
     required ValueChanged<String?> onChanged,
   }) {
     return DropdownButtonFormField<String>(
-      value: value,
+      initialValue: value,
       dropdownColor: Theme.of(context).cardColor,
       style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 13.sp),
       icon: Icon(Icons.keyboard_arrow_down_rounded,
@@ -146,11 +147,11 @@ class LanguageSelectorWidget extends ConsumerWidget {
         fillColor: Theme.of(context).cardColor,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14.r),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14.r),
-          borderSide: BorderSide(color: Colors.white.withOpacity(0.08)),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.08)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(14.r),
