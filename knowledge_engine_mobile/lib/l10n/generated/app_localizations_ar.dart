@@ -144,7 +144,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ready => 'جاهز';
 
   @override
-  String get addYourDocuments => 'أضف\\nمستنداتك';
+  String addYourDocuments(Object projectId) {
+    return 'أضف$projectIdمستنداتك';
+  }
 
   @override
   String get uploadPrepareIndexSubtitle =>
@@ -192,7 +194,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get askRightLabel => 'اسأل الذكاء الاصطناعي';
 
   @override
-  String get askHeroTitle => 'ابحث واسأل عبر\\nمعرفتك';
+  String askHeroTitle(Object projectId) {
+    return 'ابحث واسأل عبر$projectIdمعرفتك';
+  }
 
   @override
   String get askHeroSubtitle => 'البحث الدلالي · إجابات RAG · آثار التصحيح';
@@ -219,7 +223,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get featureTranslateDesc => 'ترجم وحمل';
 
   @override
-  String get projectReadyTitle => 'مشروعك\\nجاهز';
+  String projectReadyTitle(Object projectId) {
+    return 'مشروعك$projectIdجاهز';
+  }
 
   @override
   String get projectReadySubtitle => 'اختر ما تريد فعله بعد.';
@@ -244,10 +250,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get actions => 'الإجراءات';
 
   @override
-  String get speechToText => 'النص\\nمن الكلام';
+  String speechToText(Object projectId) {
+    return 'النص$projectIdمن الكلام';
+  }
 
   @override
-  String get voiceChat => 'دردشة\\nصوتية';
+  String voiceChat(Object projectId) {
+    return 'دردشة$projectIdصوتية';
+  }
 
   @override
   String get textToSpeech => 'نص إلى كلام';
@@ -265,7 +275,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get fileTranslationTitle => 'ترجمة الملفات';
 
   @override
-  String get translateHeroTitle => 'ترجم\\nملفات المشروع';
+  String translateHeroTitle(Object projectId) {
+    return 'ترجم$projectIdملفات المشروع';
+  }
 
   @override
   String get translateHeroSubtitle =>

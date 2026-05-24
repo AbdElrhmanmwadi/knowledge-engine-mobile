@@ -216,7 +216,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                       Expanded(
                         child: ActionTile(
                           icon: Icons.transcribe_rounded,
-                          label: context.l10n.speechToText,
+                          label: context.l10n.speechToText(widget.projectId),
                           color: accent,
                           disabled: state.isBusy || !state.hasAudioFile,
                           onTap: () => notifier.runSpeechToText(),
@@ -226,7 +226,7 @@ class _VoicePageState extends ConsumerState<VoicePage>
                       Expanded(
                         child: ActionTile(
                           icon: Icons.forum_rounded,
-                          label: context.l10n.voiceChat,
+                          label: context.l10n.voiceChat(widget.projectId),
                           color: teal,
                           disabled: state.isBusy || !state.hasAudioFile,
                           onTap: () => notifier.runVoiceChat(),

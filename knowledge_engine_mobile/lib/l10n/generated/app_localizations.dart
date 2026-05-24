@@ -341,8 +341,8 @@ abstract class AppLocalizations {
   /// No description provided for @addYourDocuments.
   ///
   /// In en, this message translates to:
-  /// **'Add your\\ndocuments'**
-  String get addYourDocuments;
+  /// **'Add your{projectId}documents'**
+  String addYourDocuments(Object projectId);
 
   /// No description provided for @uploadPrepareIndexSubtitle.
   ///
@@ -431,8 +431,8 @@ abstract class AppLocalizations {
   /// No description provided for @askHeroTitle.
   ///
   /// In en, this message translates to:
-  /// **'Search & ask across\\nyour knowledge'**
-  String get askHeroTitle;
+  /// **'Search & ask across{projectId}your knowledge'**
+  String askHeroTitle(Object projectId);
 
   /// No description provided for @askHeroSubtitle.
   ///
@@ -485,8 +485,8 @@ abstract class AppLocalizations {
   /// No description provided for @projectReadyTitle.
   ///
   /// In en, this message translates to:
-  /// **'Your project\\nis ready'**
-  String get projectReadyTitle;
+  /// **'Your project{projectId}is ready'**
+  String projectReadyTitle(Object projectId);
 
   /// No description provided for @projectReadySubtitle.
   ///
@@ -533,14 +533,14 @@ abstract class AppLocalizations {
   /// No description provided for @speechToText.
   ///
   /// In en, this message translates to:
-  /// **'Speech\\nto Text'**
-  String get speechToText;
+  /// **'Speech{projectId}to Text'**
+  String speechToText(Object projectId);
 
   /// No description provided for @voiceChat.
   ///
   /// In en, this message translates to:
-  /// **'Voice\\nChat'**
-  String get voiceChat;
+  /// **'Voice{projectId}Chat'**
+  String voiceChat(Object projectId);
 
   /// No description provided for @textToSpeech.
   ///
@@ -575,8 +575,8 @@ abstract class AppLocalizations {
   /// No description provided for @translateHeroTitle.
   ///
   /// In en, this message translates to:
-  /// **'Translate project\\nfiles'**
-  String get translateHeroTitle;
+  /// **'Translate project{projectId}files'**
+  String translateHeroTitle(Object projectId);
 
   /// No description provided for @translateHeroSubtitle.
   ///

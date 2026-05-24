@@ -152,7 +152,7 @@ class _AskHero extends StatelessWidget {
         // Animated waves
         AnimatedBuilder(
           animation: waveController,
-          builder: (_, __) => CustomPaint(
+          builder: (_, _) => CustomPaint(
             painter: _AskWavePainter(
               progress: waveController.value,
               color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
@@ -181,7 +181,7 @@ class _AskHero extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                context.l10n.askHeroTitle,
+                context.l10n.askHeroTitle(projectId),
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26.sp,

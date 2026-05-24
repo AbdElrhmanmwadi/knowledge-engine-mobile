@@ -74,7 +74,8 @@
     }
   },
   "ready": "READY",
-  "addYourDocuments": "Add your\\ndocuments",
+  "addYourDocuments": "Add your{projectId}documents",
+  "@addYourDocuments": { "placeholders": { "projectId": {} } },
   "uploadPrepareIndexSubtitle": "Upload · prepare · index into knowledge base",
   "stepUpload": "Upload",
   "stepPrepare": "Prepare",
@@ -94,7 +95,8 @@
   "askPageTitle": "Ask & Search",
   "askLeftLabel": "Search",
   "askRightLabel": "Ask AI",
-  "askHeroTitle": "Search & ask across\\nyour knowledge",
+  "askHeroTitle": "Search & ask across{projectId}your knowledge",
+  "@askHeroTitle": { "placeholders": { "projectId": {} } },
   "askHeroSubtitle": "Semantic search · RAG answers · debug traces",
 
   "workspaceTitle": "Workspace",
@@ -104,7 +106,8 @@
   "featureVoiceTitle": "Voice",
   "featureVoiceDesc": "Speak, transcribe, listen",
   "featureTranslateDesc": "Translate & download",
-  "projectReadyTitle": "Your project\\nis ready",
+  "projectReadyTitle": "Your project{projectId}is ready",
+  "@projectReadyTitle": { "placeholders": { "projectId": {} } },
   "projectReadySubtitle": "Pick what you want to do next.",
 
   "voiceTitle": "Voice Studio",
@@ -113,15 +116,18 @@
   "settings": "Settings",
   "ragLimit": "RAG limit",
   "actions": "Actions",
-  "speechToText": "Speech\\nto Text",
-  "voiceChat": "Voice\\nChat",
+  "speechToText": "Speech{projectId}to Text",
+  "@speechToText": { "placeholders": { "projectId": {} } },
+  "voiceChat": "Voice{projectId}Chat",
+  "@voiceChat": { "placeholders": { "projectId": {} } },
   "textToSpeech": "Text to Speech",
   "ttsHint": "Enter text to synthesize…",
   "transcript": "Transcript",
   "answerLabel": "Answer",
 
   "fileTranslationTitle": "File Translation",
-  "translateHeroTitle": "Translate project\\nfiles",
+  "translateHeroTitle": "Translate project{projectId}files",
+  "@translateHeroTitle": { "placeholders": { "projectId": {} } },
   "translateHeroSubtitle": "Create jobs · track progress · download results"
   ,
   "languageExample": "e.g. en"

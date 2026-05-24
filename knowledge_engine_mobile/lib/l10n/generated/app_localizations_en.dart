@@ -144,7 +144,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ready => 'READY';
 
   @override
-  String get addYourDocuments => 'Add your\\ndocuments';
+  String addYourDocuments(Object projectId) {
+    return 'Add your${projectId}documents';
+  }
 
   @override
   String get uploadPrepareIndexSubtitle =>
@@ -192,7 +194,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get askRightLabel => 'Ask AI';
 
   @override
-  String get askHeroTitle => 'Search & ask across\\nyour knowledge';
+  String askHeroTitle(Object projectId) {
+    return 'Search & ask across${projectId}your knowledge';
+  }
 
   @override
   String get askHeroSubtitle => 'Semantic search · RAG answers · debug traces';
@@ -219,7 +223,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get featureTranslateDesc => 'Translate & download';
 
   @override
-  String get projectReadyTitle => 'Your project\\nis ready';
+  String projectReadyTitle(Object projectId) {
+    return 'Your project${projectId}is ready';
+  }
 
   @override
   String get projectReadySubtitle => 'Pick what you want to do next.';
@@ -244,10 +250,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get actions => 'Actions';
 
   @override
-  String get speechToText => 'Speech\\nto Text';
+  String speechToText(Object projectId) {
+    return 'Speech${projectId}to Text';
+  }
 
   @override
-  String get voiceChat => 'Voice\\nChat';
+  String voiceChat(Object projectId) {
+    return 'Voice${projectId}Chat';
+  }
 
   @override
   String get textToSpeech => 'Text to Speech';
@@ -265,7 +275,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fileTranslationTitle => 'File Translation';
 
   @override
-  String get translateHeroTitle => 'Translate project\\nfiles';
+  String translateHeroTitle(Object projectId) {
+    return 'Translate project${projectId}files';
+  }
 
   @override
   String get translateHeroSubtitle =>

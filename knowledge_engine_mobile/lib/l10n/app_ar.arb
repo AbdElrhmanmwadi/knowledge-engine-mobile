@@ -74,7 +74,8 @@
     }
   },
   "ready": "جاهز",
-  "addYourDocuments": "أضف\\nمستنداتك",
+  "addYourDocuments": "أضف{projectId}مستنداتك",
+  "@addYourDocuments": { "placeholders": { "projectId": {} } },
   "uploadPrepareIndexSubtitle": "رفع · تجهيز · فهرسة إلى قاعدة المعرفة",
   "stepUpload": "رفع",
   "stepPrepare": "تحضير",
@@ -94,7 +95,8 @@
   "askPageTitle": "اسأل وابحث",
   "askLeftLabel": "بحث",
   "askRightLabel": "اسأل الذكاء الاصطناعي",
-  "askHeroTitle": "ابحث واسأل عبر\\nمعرفتك",
+  "askHeroTitle": "ابحث واسأل عبر{projectId}معرفتك",
+  "@askHeroTitle": { "placeholders": { "projectId": {} } },
   "askHeroSubtitle": "البحث الدلالي · إجابات RAG · آثار التصحيح",
 
   "workspaceTitle": "مساحة العمل",
@@ -104,7 +106,8 @@
   "featureVoiceTitle": "الصوت",
   "featureVoiceDesc": "تحدث، نسخ، استمع",
   "featureTranslateDesc": "ترجم وحمل",
-  "projectReadyTitle": "مشروعك\\nجاهز",
+  "projectReadyTitle": "مشروعك{projectId}جاهز",
+  "@projectReadyTitle": { "placeholders": { "projectId": {} } },
   "projectReadySubtitle": "اختر ما تريد فعله بعد.",
 
   "voiceTitle": "استوديو الصوت",
@@ -113,15 +116,18 @@
   "settings": "الإعدادات",
   "ragLimit": "حد RAG",
   "actions": "الإجراءات",
-  "speechToText": "النص\\nمن الكلام",
-  "voiceChat": "دردشة\\nصوتية",
+  "speechToText": "النص{projectId}من الكلام",
+  "@speechToText": { "placeholders": { "projectId": {} } },
+  "voiceChat": "دردشة{projectId}صوتية",
+  "@voiceChat": { "placeholders": { "projectId": {} } },
   "textToSpeech": "نص إلى كلام",
   "ttsHint": "أدخل نصًا للتوليد…",
   "transcript": "النص",
   "answerLabel": "الإجابة",
 
   "fileTranslationTitle": "ترجمة الملفات",
-  "translateHeroTitle": "ترجم\\nملفات المشروع",
+  "translateHeroTitle": "ترجم{projectId}ملفات المشروع",
+  "@translateHeroTitle": { "placeholders": { "projectId": {} } },
   "translateHeroSubtitle": "إنشاء مهام · تتبع التقدّم · تنزيل النتائج"
   ,
   "languageExample": "مثال: en"

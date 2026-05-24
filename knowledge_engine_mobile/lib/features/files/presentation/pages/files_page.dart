@@ -18,7 +18,7 @@ import '../../../../l10n/l10n.dart';
 
 /// Files Page — Upload → Prepare → Index workflow.
 class FilesPage extends ConsumerStatefulWidget {
-  const FilesPage({Key? key, required this.projectId}) : super(key: key);
+  const FilesPage({super.key, required this.projectId});
   final int projectId;
 
   @override
@@ -159,7 +159,7 @@ class _FilesHero extends StatelessWidget {
         ),
         AnimatedBuilder(
           animation: waveController,
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
               color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),
@@ -227,7 +227,7 @@ class _FilesHero extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                context.l10n.addYourDocuments,
+                context.l10n.addYourDocuments(projectId),
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26.sp,

@@ -9,7 +9,7 @@ import '../../../../l10n/l10n.dart';
 
 /// Dashboard Page — project hub with feature navigation.
 class DashboardPage extends StatefulWidget {
-  const DashboardPage({Key? key, required this.projectId}) : super(key: key);
+  const DashboardPage({super.key, required this.projectId});
   final int projectId;
 
   @override
@@ -131,7 +131,7 @@ class _DashboardHero extends StatelessWidget {
         // Animated waves
         AnimatedBuilder(
           animation: waveController,
-          builder: (_, __) => CustomPaint(
+          builder: (_, _) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
               color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
@@ -169,7 +169,7 @@ class _DashboardHero extends StatelessWidget {
               ),
               const SizedBox(height: 10),
               Text(
-                context.l10n.projectReadyTitle,
+                context.l10n.projectReadyTitle(projectId),
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26,
@@ -237,7 +237,7 @@ class _FeatureGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final features = [
+      final features = [
       _Feature(
         title: context.l10n.documents,
         description: context.l10n.featureDocumentsDesc,
@@ -256,14 +256,14 @@ class _FeatureGrid extends StatelessWidget {
         title: context.l10n.featureVoiceTitle,
         description: context.l10n.featureVoiceDesc,
         icon: Icons.mic_rounded,
-        color: Theme.of(context).colorScheme.tertiary ?? Theme.of(context).colorScheme.primary,
+        color: Theme.of(context).colorScheme.tertiary ,
         onTap: () => context.push('/voice', extra: projectId),
       ),
       _Feature(
-        title: context.l10n.translateHeroTitle,
+        title: context.l10n.translateHeroTitle(projectId),
         description: context.l10n.featureTranslateDesc,
         icon: Icons.translate_rounded,
-        color: Theme.of(context).colorScheme.tertiaryContainer ?? Theme.of(context).colorScheme.secondary,
+        color: Theme.of(context).colorScheme.tertiaryContainer, 
         onTap: () => context.push('/translate', extra: projectId),
       ),
     ];

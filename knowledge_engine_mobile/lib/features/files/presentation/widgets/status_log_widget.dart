@@ -99,12 +99,13 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                             .format(e.timestamp);
                         return '[$t] ${e.label}: ${e.message}';
                       }).join('\n');
+                      final messenger = ScaffoldMessenger.of(context);
+                      final copiedMsg = context.l10n.statusLogCopied;
                       await Clipboard.setData(
                           ClipboardData(text: text));
                       if (!mounted) return;
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                            content: Text(context.l10n.statusLogCopied)),
+                      messenger.showSnackBar(
+                        SnackBar(content: Text(copiedMsg)),
                       );
                     },
                   ),
@@ -158,7 +159,7 @@ class _StatusLogWidgetState extends ConsumerState<StatusLogWidget> {
                     controller: _scroll,
                     padding: EdgeInsets.fromLTRB(16.w, 0.h, 16.w, 16.h),
                     itemCount: logs.length,
-                    separatorBuilder: (_, __) =>
+                    separatorBuilder: (_, _) =>
                         SizedBox(height: 8.h),
                     itemBuilder: (context, i) {
                       final entry = logs[i];
