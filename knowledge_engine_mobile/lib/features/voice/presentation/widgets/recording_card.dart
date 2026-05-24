@@ -7,7 +7,7 @@ import '../../../../l10n/l10n.dart';
 
 class RecordingCard extends StatelessWidget {
   const RecordingCard({
-    Key? key,
+    super.key,
     required this.state,
     required this.notifier,
     required this.isRecording,
@@ -17,7 +17,7 @@ class RecordingCard extends StatelessWidget {
     required this.teal,
     required this.card,
     required this.textSecondary,
-  }) : super(key: key);
+  });
 
   final VoiceState state;
   final dynamic notifier;

@@ -3,11 +3,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class AlertBanner extends StatelessWidget {
   const AlertBanner({
-    Key? key,
+    super.key,
     required this.icon,
     required this.color,
     required this.message,
-  }) : super(key: key);
+  });
 
   final IconData icon;
   final Color color;

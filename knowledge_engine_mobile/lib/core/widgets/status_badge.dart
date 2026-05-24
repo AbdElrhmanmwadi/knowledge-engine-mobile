@@ -13,7 +13,7 @@ class StatusBadge extends StatelessWidget {
   final EdgeInsetsGeometry? padding;
 
   const StatusBadge({
-    Key? key,
+    super.key,
     required this.status,
     required this.label,
     this.backgroundColor,
@@ -21,7 +21,7 @@ class StatusBadge extends StatelessWidget {
     this.icon,
     this.fontSize = 14,
     this.padding,
-  }) : super(key: key);
+  });
 
   Color get _backgroundColor =>
       backgroundColor ?? AppTheme.getStatusColor(status);

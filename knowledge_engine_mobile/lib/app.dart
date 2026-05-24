@@ -35,7 +35,7 @@ const _localizationsDelegates = [
 
 /// Main application widget with routing configuration
 class KnowledgeEngineApp extends ConsumerWidget {
-  const KnowledgeEngineApp({Key? key}) : super(key: key);
+  const KnowledgeEngineApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

@@ -3,13 +3,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ActionTile extends StatelessWidget {
   const ActionTile({
-    Key? key,
+    super.key,
     required this.icon,
     required this.label,
     required this.color,
     required this.disabled,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final IconData icon;
   final String label;

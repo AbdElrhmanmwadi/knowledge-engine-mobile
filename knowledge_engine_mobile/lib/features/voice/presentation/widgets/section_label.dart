@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SectionLabel extends StatelessWidget {
-  const SectionLabel({Key? key, required this.label}) : super(key: key);
+  const SectionLabel({super.key, required this.label});
   final String label;
 
   @override

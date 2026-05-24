@@ -4,7 +4,7 @@ import '../../l10n/l10n.dart';
 import 'theme_controller.dart';
 
 class ThemeToggleButton extends ConsumerWidget {
-  const ThemeToggleButton({Key? key}) : super(key: key);
+  const ThemeToggleButton({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

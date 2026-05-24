@@ -147,7 +147,7 @@ class AnswerSection extends ConsumerWidget {
 
 // ─── Shared section wrapper ─────────────────────────────────────────────────
 class RSection extends StatelessWidget {
-  const RSection({
+  const RSection({super.key, 
     required this.label,
     required this.icon,
     required this.iconColor,
@@ -196,7 +196,7 @@ class RSection extends StatelessWidget {
 
 // ─── Alert banner ────────────────────────────────────────────────────────────
 class RAlertBanner extends StatelessWidget {
-  const RAlertBanner({
+  const RAlertBanner({super.key, 
     required this.icon,
     required this.color,
     required this.message,

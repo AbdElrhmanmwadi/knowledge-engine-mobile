@@ -3,14 +3,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class OutputCard extends StatelessWidget {
   const OutputCard({
-    Key? key,
+    super.key,
     required this.label,
     required this.icon,
     required this.content,
     required this.accentColor,
     required this.card,
     required this.textSecondary,
-  }) : super(key: key);
+  });
 
   final String label;
   final IconData icon;

@@ -123,7 +123,7 @@ class _TranslateHero extends StatelessWidget {
         ),
         AnimatedBuilder(
           animation: waveController,
-          builder: (_, __) => CustomPaint(
+          builder: (_, _) => CustomPaint(
             painter: _TranslateWavePainter(
               progress: waveController.value,
               color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
@@ -158,7 +158,7 @@ class _TranslateHero extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               Text(
-                context.l10n.translateHeroTitle,
+                context.l10n.translateHeroTitle(projectId),
                 style: TextStyle(
                   fontFamily: 'Georgia',
                   fontSize: 26.sp,

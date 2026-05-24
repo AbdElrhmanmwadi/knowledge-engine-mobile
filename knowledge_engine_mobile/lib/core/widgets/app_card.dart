@@ -14,7 +14,7 @@ class AppCard extends StatelessWidget {
   final double borderRadius;
 
   const AppCard({
-    Key? key,
+    super.key,
     this.title,
     this.child,
     this.children,
@@ -24,8 +24,7 @@ class AppCard extends StatelessWidget {
     this.backgroundColor,
     this.onTap,
     this.borderRadius = 8,
-  })  : assert(child != null || children != null),
-        super(key: key);
+  })  : assert(child != null || children != null);
 
   @override
   Widget build(BuildContext context) {

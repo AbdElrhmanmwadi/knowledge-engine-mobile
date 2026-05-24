@@ -292,7 +292,7 @@ class _AdvancedPanel extends StatelessWidget {
 
 // ── Dark-styled checkbox tile ────────────────────────────────────────────────
 class DarkCheckTile extends StatelessWidget {
-  const DarkCheckTile({
+  const DarkCheckTile({super.key, 
     required this.value,
     required this.title,
     required this.subtitle,

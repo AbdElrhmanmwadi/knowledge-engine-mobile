@@ -262,8 +262,8 @@ class AppTheme {
       ),
       // Checkbox and Radio
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return primaryColor;
           }
           return Colors.white;
@@ -287,7 +287,6 @@ class AppTheme {
         secondary: secondaryColor,
         tertiary: voiceColor,
         surface: darkSurface,
-        background: darkBg,
         error: errorDark,
         brightness: Brightness.dark,
       ),
@@ -472,8 +471,8 @@ class AppTheme {
       ),
       // Checkbox and Radio
       checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return primaryColor;
           }
           return darkCard;

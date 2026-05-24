@@ -6,14 +6,14 @@ import '../../../../l10n/l10n.dart';
 
 class PlaybackBar extends StatelessWidget {
   const PlaybackBar({
-    Key? key,
+    super.key,
     required this.state,
     required this.notifier,
     required this.accent,
     required this.teal,
     required this.card,
     required this.textSecondary,
-  }) : super(key: key);
+  });
 
   final VoiceState state;
   final dynamic notifier;

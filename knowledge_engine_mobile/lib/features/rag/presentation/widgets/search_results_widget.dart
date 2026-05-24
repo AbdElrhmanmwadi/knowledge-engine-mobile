@@ -34,7 +34,7 @@ class SearchResultsWidget extends ConsumerWidget {
               child: Text(
                 response.searchResults.isEmpty
                     ? context.l10n.noMatchingChunks
-                    : context.l10n.resultsForQuery(response.searchResults.length.toString(), response.query ?? ''),
+                    : context.l10n.resultsForQuery(response.searchResults.length.toString(), response.query ),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ),

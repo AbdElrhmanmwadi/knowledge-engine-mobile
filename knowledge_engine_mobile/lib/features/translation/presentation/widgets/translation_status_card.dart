@@ -110,16 +110,16 @@ class TranslationStatusCard extends ConsumerWidget {
                   children: [
                     if (created != null)
                       _InfoPill(
-                          label: 'Signal', value: created.signal as String),
+                          label: 'Signal', value: created.signal),
                     if (sourceLang != null && targetLang != null)
                       _InfoPill(
                         label: 'Route',
                         value:
-                            '${LanguageCodes.getLanguageName(sourceLang as String)} → ${LanguageCodes.getLanguageName(targetLang as String)}',
+                            '${LanguageCodes.getLanguageName(sourceLang)} → ${LanguageCodes.getLanguageName(targetLang)}',
                       ),
                     if (sourceAssetId != null)
                       _InfoPill(
-                          label: 'Asset', value: sourceAssetId as String),
+                          label: 'Asset', value: sourceAssetId),
                   ],
                 ),
 
@@ -127,7 +127,7 @@ class TranslationStatusCard extends ConsumerWidget {
                 if (createdAt != null) ...[
                   SizedBox(height: 10.h),
                     Text(
-                      'Created ${DateFormat('yyyy-MM-dd HH:mm:ss').format((createdAt as DateTime).toLocal())}',
+                      'Created ${DateFormat('yyyy-MM-dd HH:mm:ss').format((createdAt).toLocal())}',
                       style: TextStyle(
                           color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 11.sp),
                     ),
@@ -161,7 +161,7 @@ class TranslationStatusCard extends ConsumerWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(99.r),
                     child: LinearProgressIndicator(
-                      value: ((progress as int).clamp(0, 100) / 100)
+                      value: ((progress).clamp(0, 100) / 100)
                           .toDouble(),
                       minHeight: 6.h,
                       backgroundColor:
@@ -173,11 +173,11 @@ class TranslationStatusCard extends ConsumerWidget {
 
                 // ── Result file ───────────────────────────────
                 if (resultFileId != null &&
-                    (resultFileId as String).trim().isNotEmpty) ...[
+                    (resultFileId).trim().isNotEmpty) ...[
                   SizedBox(height: 16.h),
                   _ResultSection(
                     resultFileId: resultFileId,
-                    resultAssetId: resultAssetId as String?,
+                    resultAssetId: resultAssetId,
                     isCompleted: isCompleted,
                     isDownloading: state.isDownloading,
                     downloadError: state.downloadError,
@@ -197,9 +197,9 @@ class TranslationStatusCard extends ConsumerWidget {
                     onCopyFile: () => _copy(
                         context, resultFileId, 'Filename copied'),
                     onCopyAsset: resultAssetId != null &&
-                            (resultAssetId as String).trim().isNotEmpty
+                            (resultAssetId).trim().isNotEmpty
                         ? () => _copy(context,
-                            resultAssetId as String, 'Asset ID copied')
+                            resultAssetId, 'Asset ID copied')
                         : null,
                   ),
                 ],
@@ -207,7 +207,7 @@ class TranslationStatusCard extends ConsumerWidget {
                 // ── Error banners ─────────────────────────────
                 if (isFailed &&
                     (errorMessage == null ||
-                        (errorMessage as String).trim().isEmpty)) ...[
+                        (errorMessage).trim().isEmpty)) ...[
                   SizedBox(height: 14.h),
                     _InlineBanner(
                       color: Theme.of(context).colorScheme.error,
@@ -216,12 +216,12 @@ class TranslationStatusCard extends ConsumerWidget {
                     ),
                 ],
                 if (errorMessage != null &&
-                    (errorMessage as String).trim().isNotEmpty) ...[
+                    (errorMessage).trim().isNotEmpty) ...[
                   SizedBox(height: 14.h),
                     _InlineBanner(
                       color: Theme.of(context).colorScheme.error,
                       icon: Icons.error_outline_rounded,
-                      message: errorMessage as String,
+                      message: errorMessage,
                     ),
                 ],
                 if (state.downloadError != null &&

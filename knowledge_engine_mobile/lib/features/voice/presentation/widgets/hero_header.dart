@@ -5,7 +5,7 @@ import 'wave_painter.dart';
 
 class HeroHeader extends StatelessWidget {
   const HeroHeader({
-    Key? key,
+    super.key,
     required this.projectId,
     required this.isRecording,
     required this.isBusy,
@@ -14,7 +14,7 @@ class HeroHeader extends StatelessWidget {
     required this.accent,
     required this.teal,
     required this.accentSoft,
-  }) : super(key: key);
+  });
 
   final int projectId;
   final bool isRecording;
@@ -47,7 +47,7 @@ class HeroHeader extends StatelessWidget {
         // Animated waveform
         AnimatedBuilder(
           animation: waveController,
-          builder: (_, __) => CustomPaint(
+          builder: (_, _) => CustomPaint(
             painter: WavePainter(
               progress: waveController.value,
               color1: accent.withValues(alpha: isRecording ? 0.45 : 0.18),
@@ -90,7 +90,7 @@ class HeroHeader extends StatelessWidget {
                     SizedBox(width: 10.w),
                     AnimatedBuilder(
                       animation: pulseController,
-                      builder: (_, __) => Container(
+                      builder: (_, _) => Container(
                         width: 8.w,
                         height: 8.h,
                         decoration: BoxDecoration(

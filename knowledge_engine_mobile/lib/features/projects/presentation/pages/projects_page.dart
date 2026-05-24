@@ -194,7 +194,7 @@ class _Hero extends StatelessWidget {
         ),
         AnimatedBuilder(
           animation: waveController,
-            builder: (_, __) => CustomPaint(
+            builder: (_, _) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
               color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),

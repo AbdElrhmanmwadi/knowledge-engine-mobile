@@ -278,7 +278,7 @@ class _AutoRefreshRow extends StatelessWidget {
           ),
           SizedBox(height: 10.h),
           DropdownButtonFormField<int>(
-            value: state.refreshIntervalSeconds as int,
+            initialValue: state.refreshIntervalSeconds as int,
             dropdownColor: Theme.of(context).cardColor,
             style: TextStyle(color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 13.sp),
             decoration: InputDecoration(

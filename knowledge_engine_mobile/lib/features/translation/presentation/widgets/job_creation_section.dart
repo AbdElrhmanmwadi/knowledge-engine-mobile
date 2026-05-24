@@ -223,7 +223,7 @@ class _MiniPill extends StatelessWidget {
 
 // ─── Shared section wrapper ─────────────────────────────────────────────────
 class TSection extends StatelessWidget {
-  const TSection({
+  const TSection({super.key, 
     required this.label,
     required this.icon,
     required this.iconColor,
