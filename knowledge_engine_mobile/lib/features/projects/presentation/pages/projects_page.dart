@@ -31,7 +31,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
   @override
   void initState() {
     super.initState();
-    _controller   = TextEditingController();
+    _controller = TextEditingController();
     _waveController = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 4),
@@ -49,124 +49,131 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
 
   @override
   Widget build(BuildContext context) {
-    final stateAsync    = ref.watch(projectsNotifierProvider);
-    final notifier      = ref.read(projectsNotifierProvider.notifier);
+    final stateAsync = ref.watch(projectsNotifierProvider);
+    final notifier = ref.read(projectsNotifierProvider.notifier);
     final recentProjects = ref.watch(recentProjectsProvider);
     final l10n = context.l10n;
 
     return stateAsync.when(
-        loading: () => _shell(context, child: Center(
-          child: CircularProgressIndicator(color: Theme.of(context).colorScheme.primary),
-        )),
-        error: (e, _) => _shell(context, child: Center(
-          child: Text(l10n.errorWithMessage(e.toString()), style: TextStyle(color: Theme.of(context).colorScheme.error)),
-        )),
-        data: (state) {
-          // Sync controller
-          if (_controller.text != state.projectInput) {
-            _controller.value = _controller.value.copyWith(
-              text: state.projectInput,
-              selection: TextSelection.collapsed(
-                  offset: state.projectInput.length),
-              composing: TextRange.empty,
-            );
-          }
-
-          return _shell(context,
-            child: CustomScrollView(
-              slivers: [
-                // ── Collapsing hero ──────────────────────────────────
-                SliverAppBar(
-                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                  expandedHeight: 220.h,
-                  pinned: true,
-                  elevation: 0,
-                  title: Text(
-                    l10n.appTitle,
-                    style: TextStyle(
-                      fontFamily: 'Georgia',
-                      fontSize: 18.sp,
-                      fontWeight: FontWeight.w600,
-                      letterSpacing: 0.3,
-                      color: Theme.of(context).textTheme.bodyLarge?.color,
-                    ),
-                  ),
-                  centerTitle: false,
-                  actions: const [
-                    LanguageToggleButton(),
-                    ThemeToggleButton(),
-                  ],
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.parallax,
-                    background: _Hero(waveController: _waveController),
-                  ),
-                ),
-
-                // ── Body ─────────────────────────────────────────────
-                SliverPadding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                  sliver: SliverList(
-                    delegate: SliverChildListDelegate([
-                      // Error banner
-                              if (state.errorMessage != null) ...[
-                                _AlertBanner(
-                                    icon: Icons.error_outline_rounded,
-                                    color: Theme.of(context).colorScheme.error,
-                                    message: state.errorMessage!),
-                        SizedBox(height: 14.h),
-                      ],
-
-                      // ── Project ID input ─────────────────────────
-                      _SectionLabel(label: l10n.openProject),
-                      SizedBox(height: 12.h),
-                      _ProjectInputCard(
-                        controller: _controller,
-                        state: state,
-                        notifier: notifier,
-                        onOpen: (id) =>
-                            context.push('/dashboard', extra: id),
-                      ),
-
-                      SizedBox(height: 28.h),
-
-                      // ── Recent projects ──────────────────────────
-                      _SectionLabel(label: l10n.recentProjects),
-                      SizedBox(height: 12.h),
-                      _RecentProjectsList(
-                        recentProjects: recentProjects,
-                        notifier: notifier,
-                        onTap: (id) =>
-                            context.push('/dashboard', extra: id),
-                        onDelete: (id) async {
-                          final ok =
-                              await notifier.deleteProject(id);
-                          if (!ok && context.mounted) {
-                            ScaffoldMessenger.of(context)
-                                .showSnackBar(SnackBar(
-                              content: Text(
-                                  l10n.couldNotDeleteProject(id)),
-                            ));
-                          }
-                          return ok;
-                        },
-                      ),
-
-                      SizedBox(height: 32.h),
-                    ]),
-                  ),
-                ),
-              ],
+      loading: () => _shell(
+        context,
+        child: Center(
+          child: CircularProgressIndicator(
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      ),
+      error: (e, _) => _shell(
+        context,
+        child: Center(
+          child: Text(
+            l10n.errorWithMessage(e.toString()),
+            style: TextStyle(color: Theme.of(context).colorScheme.error),
+          ),
+        ),
+      ),
+      data: (state) {
+        // Sync controller
+        if (_controller.text != state.projectInput) {
+          _controller.value = _controller.value.copyWith(
+            text: state.projectInput,
+            selection: TextSelection.collapsed(
+              offset: state.projectInput.length,
             ),
+            composing: TextRange.empty,
           );
-        },
-      
+        }
+
+        return _shell(
+          context,
+          child: CustomScrollView(
+            slivers: [
+              // ── Collapsing hero ──────────────────────────────────
+              SliverAppBar(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                expandedHeight: 220.h,
+                pinned: true,
+                elevation: 0,
+                title: Text(
+                  l10n.appTitle,
+                  style: TextStyle(
+                    fontFamily: 'Georgia',
+                    fontSize: 18.sp,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                ),
+                centerTitle: false,
+                actions: const [LanguageToggleButton(), ThemeToggleButton()],
+                flexibleSpace: FlexibleSpaceBar(
+                  collapseMode: CollapseMode.parallax,
+                  background: _Hero(waveController: _waveController),
+                ),
+              ),
+
+              // ── Body ─────────────────────────────────────────────
+              SliverPadding(
+                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
+                sliver: SliverList(
+                  delegate: SliverChildListDelegate([
+                    // Error banner
+                    if (state.errorMessage != null) ...[
+                      _AlertBanner(
+                        icon: Icons.error_outline_rounded,
+                        color: Theme.of(context).colorScheme.error,
+                        message: state.errorMessage!,
+                      ),
+                      SizedBox(height: 14.h),
+                    ],
+
+                    // ── Project ID input ─────────────────────────
+                    _SectionLabel(label: l10n.openProject),
+                    SizedBox(height: 12.h),
+                    _ProjectInputCard(
+                      controller: _controller,
+                      state: state,
+                      notifier: notifier,
+                      onOpen: (id) => context.push('/dashboard', extra: id),
+                    ),
+
+                    SizedBox(height: 28.h),
+
+                    // ── Recent projects ──────────────────────────
+                    _SectionLabel(label: l10n.recentProjects),
+                    SizedBox(height: 12.h),
+                    _RecentProjectsList(
+                      recentProjects: recentProjects,
+                      notifier: notifier,
+                      onTap: (id) => context.push('/dashboard', extra: id),
+                      onDelete: (id) async {
+                        final ok = await notifier.deleteProject(id);
+                        if (!ok && context.mounted) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(l10n.couldNotDeleteProject(id)),
+                            ),
+                          );
+                        }
+                        return ok;
+                      },
+                    ),
+
+                    SizedBox(height: 32.h),
+                  ]),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
   Widget _shell(BuildContext context, {required Widget child}) => Scaffold(
-        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-        body: child,
-      );
+    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+    body: child,
+  );
 }
 
 // ── Hero header ──────────────────────────────────────────────────────────────
@@ -194,11 +201,15 @@ class _Hero extends StatelessWidget {
         ),
         AnimatedBuilder(
           animation: waveController,
-            builder: (_, _) => CustomPaint(
+          builder: (_, _) => CustomPaint(
             painter: _WavePainter(
               progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),
-              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.09),
+              color1: Theme.of(
+                context,
+              ).colorScheme.primary.withValues(alpha: 0.16),
+              color2: Theme.of(
+                context,
+              ).colorScheme.secondary.withValues(alpha: 0.09),
             ),
           ),
         ),
@@ -213,10 +224,15 @@ class _Hero extends StatelessWidget {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.14),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.primary.withValues(alpha: 0.14),
                   borderRadius: BorderRadius.circular(20.r),
                   border: Border.all(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.32)),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.primary.withValues(alpha: 0.32),
+                  ),
                 ),
                 child: Text(
                   context.l10n.knowledgeEngineUpper,
@@ -245,7 +261,9 @@ class _Hero extends StatelessWidget {
                 context.l10n.projectsHeroSubtitle,
                 style: TextStyle(
                   fontSize: 13.sp,
-                  color: Theme.of(context).textTheme.bodyLarge?.color?.withValues(alpha: 0.5),
+                  color: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.color?.withValues(alpha: 0.5),
                 ),
               ),
             ],
@@ -257,8 +275,11 @@ class _Hero extends StatelessWidget {
 }
 
 class _WavePainter extends CustomPainter {
-  const _WavePainter(
-      {required this.progress, required this.color1, required this.color2});
+  const _WavePainter({
+    required this.progress,
+    required this.color1,
+    required this.color2,
+  });
   final double progress;
   final Color color1;
   final Color color2;
@@ -274,8 +295,11 @@ class _WavePainter extends CustomPainter {
       final phase = (progress * speed + offset) * 2 * math.pi;
       path.moveTo(0, size.height * 0.6);
       for (double x = 0; x <= size.width; x++) {
-        path.lineTo(x,
-            size.height * 0.6 + math.sin(x / size.width * 3 * math.pi + phase) * amp);
+        path.lineTo(
+          x,
+          size.height * 0.6 +
+              math.sin(x / size.width * 3 * math.pi + phase) * amp,
+        );
       }
       canvas.drawPath(path, p);
     }
@@ -321,50 +345,69 @@ class _ProjectInputCard extends StatelessWidget {
             keyboardType: TextInputType.number,
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             style: TextStyle(
-                color: Theme.of(context).textTheme.bodyLarge?.color, fontSize: 16.sp, fontWeight: FontWeight.w500),
+              color: Theme.of(context).textTheme.bodyLarge?.color,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
             onChanged: notifier.updateProjectInput,
             onSubmitted: (_) => _submit(context),
             decoration: InputDecoration(
               labelText: context.l10n.projectId,
               hintText: context.l10n.projectIdHint,
               errorText: state.validationError,
-                prefixIcon: Icon(Icons.folder_outlined,
-                  size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
-                suffixIcon: state.projectInput.trim().isNotEmpty
+              prefixIcon: Icon(
+                Icons.folder_outlined,
+                size: 18.r,
+                color: Theme.of(context).textTheme.bodyMedium?.color,
+              ),
+              suffixIcon: state.projectInput.trim().isNotEmpty
                   ? IconButton(
-                    icon: Icon(Icons.close_rounded,
-                      size: 18.r, color: Theme.of(context).textTheme.bodyMedium?.color),
-                    tooltip: context.l10n.clear,
-                    onPressed: () => notifier.updateProjectInput(''),
-                  )
+                      icon: Icon(
+                        Icons.close_rounded,
+                        size: 18.r,
+                        color: Theme.of(context).textTheme.bodyMedium?.color,
+                      ),
+                      tooltip: context.l10n.clear,
+                      onPressed: () => notifier.updateProjectInput(''),
+                    )
                   : null,
             ),
           ),
           SizedBox(height: 14.h),
           SizedBox(
             width: double.infinity,
-              child: FilledButton.icon(
+            child: FilledButton.icon(
               onPressed: state.isLoading ? null : () => _submit(context),
               style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              foregroundColor: Theme.of(context).colorScheme.onPrimary,
-              disabledBackgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(AppRadius.lg)),
-              padding: EdgeInsets.symmetric(vertical: 14.h),
-              textStyle: TextStyle(
-                fontSize: 14.sp, fontWeight: FontWeight.w600),
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                disabledBackgroundColor: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.3),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 14.h),
+                textStyle: TextStyle(
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               icon: state.isLoading
                   ? SizedBox(
                       width: 16.w,
                       height: 16.h,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2, color: Colors.white),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
                     )
                   : Icon(Icons.arrow_forward_rounded, size: 18.r),
-              label:
-                  Text(state.isLoading ? context.l10n.opening : context.l10n.openProject),
+              label: Text(
+                state.isLoading
+                    ? context.l10n.opening
+                    : context.l10n.openProject,
+              ),
             ),
           ),
         ],
@@ -401,7 +444,9 @@ class _RecentProjectsList extends StatelessWidget {
         child: Padding(
           padding: EdgeInsets.all(24.r),
           child: CircularProgressIndicator(
-              strokeWidth: 2, color: Theme.of(context).colorScheme.primary),
+            strokeWidth: 2,
+            color: Theme.of(context).colorScheme.primary,
+          ),
         ),
       ),
       error: (e, _) => _AlertBanner(
@@ -411,31 +456,41 @@ class _RecentProjectsList extends StatelessWidget {
       ),
       data: (projects) {
         if (projects.isEmpty) {
-                return Container(
+          return Container(
             padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 20.w),
             decoration: BoxDecoration(
               color: Theme.of(context).cardColor,
               borderRadius: BorderRadius.circular(AppRadius.lg),
               border: Border.all(
-                  color: Theme.of(context).dividerColor.withValues(alpha: 0.07)),
+                color: Theme.of(context).dividerColor.withValues(alpha: 0.07),
+              ),
             ),
             child: Column(
               children: [
-                Icon(Icons.folder_off_outlined,
-                    color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
-                    size: 36.r),
+                Icon(
+                  Icons.folder_off_outlined,
+                  color: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                  size: 36.r,
+                ),
                 SizedBox(height: 10.h),
                 Text(
                   context.l10n.noRecentProjects,
                   style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium?.color, fontSize: 13.sp),
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                    fontSize: 13.sp,
+                  ),
                 ),
                 SizedBox(height: 4.h),
                 Text(
                   context.l10n.openProjectAbove,
                   style: TextStyle(
-                      color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
-                      fontSize: 11.sp),
+                    color: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
+                    fontSize: 11.sp,
+                  ),
                 ),
               ],
             ),
@@ -451,8 +506,7 @@ class _RecentProjectsList extends StatelessWidget {
                 onTap: () => onTap(projects[i]),
                 onDelete: () => onDelete(projects[i]),
               ),
-              if (i < projects.length - 1)
-                SizedBox(height: 8.h),
+              if (i < projects.length - 1) SizedBox(height: 8.h),
             ],
           ],
         );
@@ -489,12 +543,9 @@ class _RecentProjectTile extends StatelessWidget {
 
     return Dismissible(
       key: ValueKey('project_$projectId'),
-      direction: DismissDirection.horizontal,
+      direction: DismissDirection.endToStart,
       confirmDismiss: (_) => onDelete(),
-      background: _SwipeBackground(
-          alignment: Alignment.centerLeft),
-      secondaryBackground: _SwipeBackground(
-          alignment: Alignment.centerRight),
+      background: _SwipeBackground(alignment: Alignment.centerRight),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -502,8 +553,7 @@ class _RecentProjectTile extends StatelessWidget {
           decoration: BoxDecoration(
             color: Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(16.r),
-            border: Border.all(
-                color: color.withValues(alpha: 0.18)),
+            border: Border.all(color: color.withValues(alpha: 0.18)),
           ),
           child: Row(
             children: [
@@ -514,11 +564,9 @@ class _RecentProjectTile extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: color.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                      color: color.withValues(alpha: 0.25)),
+                  border: Border.all(color: color.withValues(alpha: 0.25)),
                 ),
-                child: Icon(Icons.folder_rounded,
-                    color: color, size: 20.r),
+                child: Icon(Icons.folder_rounded, color: color, size: 20.r),
               ),
               SizedBox(width: 14.w),
               Expanded(
@@ -537,16 +585,22 @@ class _RecentProjectTile extends StatelessWidget {
                     Text(
                       context.l10n.tapToOpenSwipeToDelete,
                       style: TextStyle(
-                        color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
+                        color: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                         fontSize: 11.sp,
                       ),
                     ),
                   ],
                 ),
               ),
-                Icon(Icons.chevron_right_rounded,
-                  color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
-                  size: 20.r),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
+                size: 20.r,
+              ),
             ],
           ),
         ),
@@ -562,37 +616,50 @@ class _SwipeBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isLeft = alignment == Alignment.centerLeft;
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.error.withValues(alpha: 0.15),
+        color: colorScheme.errorContainer.withValues(alpha: 0.85),
         borderRadius: BorderRadius.circular(16.r),
-        border: Border.all(color: Theme.of(context).colorScheme.error.withValues(alpha: 0.3)),
+        border: Border.all(color: colorScheme.error.withValues(alpha: 0.35)),
       ),
       padding: EdgeInsets.symmetric(horizontal: 20.w),
       alignment: alignment,
-    child: Row(
-    mainAxisSize: MainAxisSize.min,
-    children: isLeft
-      ? [
-        Icon(Icons.delete_outline_rounded,
-          color: Theme.of(context).colorScheme.error, size: 20.r),
-        SizedBox(width: 6.w),
-        Text(context.l10n.delete,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.error,
-            fontWeight: FontWeight.w600,
-            fontSize: 13.sp)),
-        ]
-      : [
-        Text(context.l10n.delete,
-          style: TextStyle(
-            color: Theme.of(context).colorScheme.error,
-            fontWeight: FontWeight.w600,
-            fontSize: 13.sp)),
-        SizedBox(width: 6.w),
-        Icon(Icons.delete_outline_rounded,
-          color: Theme.of(context).colorScheme.error, size: 20.r),
-        ],
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: isLeft
+            ? [
+                Icon(
+                  Icons.delete_outline_rounded,
+                  color: colorScheme.onErrorContainer,
+                  size: 20.r,
+                ),
+                SizedBox(width: 6.w),
+                Text(
+                  context.l10n.delete,
+                  style: TextStyle(
+                    color: colorScheme.onErrorContainer,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13.sp,
+                  ),
+                ),
+              ]
+            : [
+                Text(
+                  context.l10n.delete,
+                  style: TextStyle(
+                    color: colorScheme.onErrorContainer,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 13.sp,
+                  ),
+                ),
+                SizedBox(width: 6.w),
+                Icon(
+                  Icons.delete_outline_rounded,
+                  color: colorScheme.onErrorContainer,
+                  size: 20.r,
+                ),
+              ],
       ),
     );
   }
@@ -618,8 +685,11 @@ class _SectionLabel extends StatelessWidget {
 }
 
 class _AlertBanner extends StatelessWidget {
-  const _AlertBanner(
-      {required this.icon, required this.color, required this.message});
+  const _AlertBanner({
+    required this.icon,
+    required this.color,
+    required this.message,
+  });
   final IconData icon;
   final Color color;
   final String message;
@@ -639,9 +709,10 @@ class _AlertBanner extends StatelessWidget {
           Icon(icon, color: color, size: 16.r),
           SizedBox(width: 10.w),
           Expanded(
-            child: Text(message,
-                style: TextStyle(
-                    color: color, fontSize: 12.sp, height: 1.45)),
+            child: Text(
+              message,
+              style: TextStyle(color: color, fontSize: 12.sp, height: 1.45),
+            ),
           ),
         ],
       ),
