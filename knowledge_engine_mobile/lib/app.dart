@@ -8,6 +8,12 @@ import 'core/localization/locale_controller.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'l10n/l10n.dart';
+import 'features/auth/presentation/pages/forgot_password_page.dart';
+import 'features/auth/presentation/pages/login_page.dart';
+import 'features/auth/presentation/pages/register_page.dart';
+import 'features/auth/presentation/pages/reset_password_page.dart';
+import 'features/auth/presentation/pages/verify_email_page.dart';
+import 'features/auth/presentation/providers/auth_notifier.dart';
 import 'features/onboarding/presentation/pages/onboarding_page.dart';
 import 'features/projects/presentation/pages/projects_page.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
@@ -42,8 +48,9 @@ class KnowledgeEngineApp extends ConsumerWidget {
     final themeMode = ref.watch(themeModeProvider);
     final locale = ref.watch(localeProvider);
     final onboardingCompleted = ref.watch(onboardingCompletedProvider);
+    final authStatus = ref.watch(authNotifierProvider);
 
-    if (onboardingCompleted.isLoading) {
+    if (onboardingCompleted.isLoading || authStatus == AuthStatus.unknown) {
       return MaterialApp(
         title: 'Knowledge Engine',
         locale: locale,
@@ -71,19 +78,74 @@ class KnowledgeEngineApp extends ConsumerWidget {
       theme: AppTheme.lightTheme(),
       darkTheme: AppTheme.darkTheme(),
       themeMode: themeMode,
-      routerConfig: createRouter(hasSeenOnboarding: hasSeenOnboarding),
+      routerConfig: createRouter(
+        hasSeenOnboarding: hasSeenOnboarding,
+        authStatus: authStatus,
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
+/// Routes reachable without a session.
+const Set<String> _publicPaths = {
+  '/onboarding',
+  '/login',
+  '/register',
+  '/auth/forgot-password',
+  '/auth/reset-password',
+  '/auth/verify-email',
+};
+
 /// GoRouter configuration
-GoRouter createRouter({required bool hasSeenOnboarding}) => GoRouter(
-  initialLocation: hasSeenOnboarding ? '/projects' : '/onboarding',
+GoRouter createRouter({
+  required bool hasSeenOnboarding,
+  required AuthStatus authStatus,
+}) => GoRouter(
+  initialLocation: !hasSeenOnboarding
+      ? '/onboarding'
+      : authStatus == AuthStatus.authenticated
+          ? '/projects'
+          : '/login',
+  redirect: (context, state) {
+    final isAuthenticated = authStatus == AuthStatus.authenticated;
+    final location = state.matchedLocation;
+    final isPublic = _publicPaths.contains(location);
+
+    if (!isAuthenticated && !isPublic) {
+      return '/login';
+    }
+    if (isAuthenticated && (location == '/login' || location == '/register')) {
+      return '/projects';
+    }
+    return null;
+  },
   routes: [
     GoRoute(
       path: '/onboarding',
       builder: (context, state) => const OnboardingPage(),
+    ),
+    GoRoute(
+      path: '/login',
+      builder: (context, state) => const LoginPage(),
+    ),
+    GoRoute(
+      path: '/register',
+      builder: (context, state) => const RegisterPage(),
+    ),
+    GoRoute(
+      path: '/auth/forgot-password',
+      builder: (context, state) => const ForgotPasswordPage(),
+    ),
+    GoRoute(
+      path: '/auth/reset-password',
+      builder: (context, state) =>
+          ResetPasswordPage(token: state.uri.queryParameters['token']),
+    ),
+    GoRoute(
+      path: '/auth/verify-email',
+      builder: (context, state) =>
+          VerifyEmailPage(token: state.uri.queryParameters['token']),
     ),
     GoRoute(
       path: '/projects',
