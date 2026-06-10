@@ -11,6 +11,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../l10n/l10n.dart';
 
+import '../../../auth/presentation/providers/auth_notifier.dart';
 import '../providers/projects_notifier.dart';
 import '../providers/recent_projects_provider.dart';
 
@@ -105,7 +106,15 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                   ),
                 ),
                 centerTitle: false,
-                actions: const [LanguageToggleButton(), ThemeToggleButton()],
+                actions: [
+                  const LanguageToggleButton(),
+                  const ThemeToggleButton(),
+                  IconButton(
+                    icon: Icon(Icons.logout_rounded, size: 20.r),
+                    tooltip: l10n.logout,
+                    onPressed: _confirmLogout,
+                  ),
+                ],
                 flexibleSpace: FlexibleSpaceBar(
                   collapseMode: CollapseMode.parallax,
                   background: _Hero(waveController: _waveController),
@@ -168,6 +177,32 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
         );
       },
     );
+  }
+
+  Future<void> _confirmLogout() async {
+    final l10n = context.l10n;
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: Text(l10n.logoutConfirmTitle),
+        content: Text(l10n.logoutConfirmBody),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(dialogContext).pop(false),
+            child: Text(l10n.cancel),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(dialogContext).pop(true),
+            child: Text(l10n.logout),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed == true) {
+      // Routing back to /login is handled by the router's auth redirect.
+      await ref.read(authNotifierProvider.notifier).logout();
+    }
   }
 
   Widget _shell(BuildContext context, {required Widget child}) => Scaffold(
