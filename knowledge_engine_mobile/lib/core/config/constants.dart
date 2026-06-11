@@ -33,6 +33,24 @@ class ApiConstants {
       '$translatePath/download/$jobId';
 }
 
+/// Authentication endpoint constants (mounted under /auth, not /api/v1)
+class AuthConstants {
+  static const String authPath = '/auth';
+
+  static const String register = '$authPath/register';
+  static const String login = '$authPath/login';
+  static const String googleLogin = '$authPath/google';
+  static const String verifyEmail = '$authPath/verify-email';
+  static const String requestPasswordReset = '$authPath/request-password-reset';
+  static const String resetPassword = '$authPath/reset-password';
+  static const String refreshToken = '$authPath/refresh';
+  static const String logout = '$authPath/logout';
+
+  /// Password rules shared by register and reset-password.
+  static const int minPasswordLength = 8;
+  static const int maxPasswordLength = 128;
+}
+
 /// Supported file types for upload
 class SupportedFileTypes {
   static const List<String> extensions = [
