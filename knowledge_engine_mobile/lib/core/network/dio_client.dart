@@ -1,12 +1,14 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'api_exception.dart';
+import 'auth_interceptor.dart';
 import '../config/app_config.dart';
 
 /// Centralized Dio HTTP client with interceptors and configuration
 class DioClient {
   static final DioClient _instance = DioClient._internal();
   late Dio _dio;
+  late AuthInterceptor _authInterceptor;
 
   factory DioClient() {
     return _instance;
@@ -17,6 +19,10 @@ class DioClient {
   }
 
   Dio get dio => _dio;
+
+  /// Auth interceptor, exposed so the auth state holder can register a
+  /// session-expired callback.
+  AuthInterceptor get authInterceptor => _authInterceptor;
 
   /// Initialize Dio with base configuration and interceptors
   void _initializeDio({String? baseUrl}) {
@@ -30,8 +36,12 @@ class DioClient {
       ),
     );
 
-    // Add interceptors
+    _authInterceptor = AuthInterceptor(dioProvider: () => _dio);
+
+    // Add interceptors. Auth goes first so it sees raw 401 responses
+    // before the error interceptor wraps them.
     _dio.interceptors.addAll([
+      _authInterceptor,
       _LoggingInterceptor(),
       _ErrorInterceptor(),
     ]);
