@@ -14,6 +14,7 @@ import 'features/auth/presentation/pages/register_page.dart';
 import 'features/auth/presentation/pages/reset_password_page.dart';
 import 'features/auth/presentation/pages/verify_email_page.dart';
 import 'features/auth/presentation/providers/auth_notifier.dart';
+import 'features/agent/presentation/pages/agent_chat_page.dart';
 import 'features/onboarding/presentation/pages/onboarding_page.dart';
 import 'features/projects/presentation/pages/projects_page.dart';
 import 'features/dashboard/presentation/pages/dashboard_page.dart';
@@ -179,6 +180,16 @@ GoRouter createRouter({
           return const ProjectsPage();
         }
         return AskPage(projectId: projectId);
+      },
+    ),
+    GoRoute(
+      path: '/agent',
+      builder: (context, state) {
+        final projectId = state.extra as int?;
+        if (projectId == null) {
+          return const ProjectsPage();
+        }
+        return AgentChatPage(projectId: projectId);
       },
     ),
     GoRoute(

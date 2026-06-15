@@ -20,6 +20,13 @@ class ApiConstants {
   static String answerQuestion(int projectId) =>
       '$nlpPath/index/answer/$projectId';
 
+  // Agent (conversational RAG) endpoints
+  static const String agentPath = '$basePath/agent';
+  static String agentChat(int projectId) => '$agentPath/chat/$projectId';
+  static String agentSessions(int projectId) => '$agentPath/sessions/$projectId';
+  static String agentSession(int projectId, int sessionId) =>
+      '$agentPath/sessions/$projectId/$sessionId';
+
   // Voice endpoints
   static const String speechToText = '$voicePath/stt';
   static const String textToSpeech = '$voicePath/tts';

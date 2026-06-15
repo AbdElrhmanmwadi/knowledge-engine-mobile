@@ -5,6 +5,8 @@ import 'package:dio/dio.dart';
 
 import '../config/app_config.dart';
 import '../config/constants.dart';
+import '../models/agent_chat_response.dart';
+import '../models/agent_session.dart';
 import '../models/api_response_base.dart';
 import '../models/index_push_response.dart';
 import '../models/process_response.dart';
@@ -18,6 +20,7 @@ import '../models/upload_response.dart';
 import '../models/voice_chat_response.dart';
 import 'api_exception.dart';
 import 'dio_client.dart';
+import 'sse_parser.dart';
 
 typedef JsonParser<T> = T Function(JsonMap json);
 
@@ -60,6 +63,55 @@ abstract class ApiService {
     required int projectId,
     required String text,
     int limit = AppConfig.defaultRagLimit,
+  });
+
+  /// Stream a RAG answer as Server-Sent Events.
+  ///
+  /// Mirrors the agent contract: `meta` → `delta`* → `done` (or `error`).
+  /// Pass a [cancelToken] and cancel it to abort the stream.
+  Stream<SseEvent> askQuestionStream({
+    required int projectId,
+    required String text,
+    int limit = AppConfig.defaultRagLimit,
+    CancelToken? cancelToken,
+  });
+
+  /// Send a message to the conversational agent. Pass [sessionId] to continue
+  /// an existing conversation; omit it to start a new one.
+  Future<AgentChatResponse> agentChat({
+    required int projectId,
+    required String message,
+    int? sessionId,
+    int? limit,
+  });
+
+  /// Stream a conversational agent answer as Server-Sent Events.
+  ///
+  /// Event order is `meta` → `delta`* → `done` (or `error`). Pass a
+  /// [cancelToken] and cancel it to abort the stream.
+  Stream<SseEvent> agentChatStream({
+    required int projectId,
+    required String message,
+    int? sessionId,
+    int? limit,
+    CancelToken? cancelToken,
+  });
+
+  /// List the current user's agent sessions for a project.
+  Future<List<AgentSessionSummary>> agentSessions({
+    required int projectId,
+  });
+
+  /// Fetch a single agent session with its full message history.
+  Future<AgentSession> agentSession({
+    required int projectId,
+    required int sessionId,
+  });
+
+  /// Delete an agent session.
+  Future<void> deleteAgentSession({
+    required int projectId,
+    required int sessionId,
   });
 
   Future<SttResponse> speechToText({
@@ -265,6 +317,113 @@ class DioApiService implements ApiService {
   }
 
   @override
+  Future<AgentChatResponse> agentChat({
+    required int projectId,
+    required String message,
+    int? sessionId,
+    int? limit,
+  }) {
+    return _post(
+      path: ApiConstants.agentChat(projectId),
+      data: <String, dynamic>{
+        'message': message,
+        'session_id': ?sessionId,
+        'limit': ?limit,
+        'stream': false,
+      },
+      parser: AgentChatResponse.fromJson,
+      operation: 'agent chat',
+      requireSuccessSignal: false,
+      validateSignalIfPresent: true,
+    );
+  }
+
+  @override
+  Stream<SseEvent> agentChatStream({
+    required int projectId,
+    required String message,
+    int? sessionId,
+    int? limit,
+    CancelToken? cancelToken,
+  }) {
+    return _postSse(
+      path: ApiConstants.agentChat(projectId),
+      data: <String, dynamic>{
+        'message': message,
+        'session_id': ?sessionId,
+        'limit': ?limit,
+        'stream': true,
+      },
+      cancelToken: cancelToken,
+    );
+  }
+
+  @override
+  Stream<SseEvent> askQuestionStream({
+    required int projectId,
+    required String text,
+    int limit = AppConfig.defaultRagLimit,
+    CancelToken? cancelToken,
+  }) {
+    return _postSse(
+      path: ApiConstants.answerQuestion(projectId),
+      data: <String, dynamic>{
+        'text': text,
+        'limit': limit,
+        'stream': true,
+      },
+      cancelToken: cancelToken,
+    );
+  }
+
+  @override
+  Future<List<AgentSessionSummary>> agentSessions({
+    required int projectId,
+  }) {
+    return _get(
+      path: ApiConstants.agentSessions(projectId),
+      parser: (JsonMap json) {
+        final list = ApiResponseBase.readOptionalJsonMapList(json, 'sessions') ??
+            const <JsonMap>[];
+        return list.map(AgentSessionSummary.fromJson).toList(growable: false);
+      },
+      operation: 'list agent sessions',
+      requireSuccessSignal: false,
+      validateSignalIfPresent: true,
+    );
+  }
+
+  @override
+  Future<AgentSession> agentSession({
+    required int projectId,
+    required int sessionId,
+  }) {
+    return _get(
+      path: ApiConstants.agentSession(projectId, sessionId),
+      parser: (JsonMap json) => AgentSession.fromJson(
+        ApiResponseBase.readRequiredJsonMap(json, 'session'),
+      ),
+      operation: 'get agent session',
+      requireSuccessSignal: false,
+      validateSignalIfPresent: true,
+    );
+  }
+
+  @override
+  Future<void> deleteAgentSession({
+    required int projectId,
+    required int sessionId,
+  }) async {
+    await _delete(
+      path: ApiConstants.agentSession(projectId, sessionId),
+      parser: (JsonMap json) => json,
+      operation: 'delete agent session',
+      requireSuccessSignal: false,
+      validateSignalIfPresent: true,
+    );
+  }
+
+  @override
   Future<TranslationJobCreateResponse> createTranslationJob({
     required int projectId,
     required String fileId,
@@ -417,6 +576,39 @@ class DioApiService implements ApiService {
       );
     }
     return Uint8List(0);
+  }
+
+  /// Opens an SSE-over-POST request and yields the parsed event stream.
+  ///
+  /// Shared by every endpoint that streams `event:`/`data:` frames
+  /// (`meta` → `delta`* → `done` | `error`). Cancel [cancelToken] to abort.
+  Stream<SseEvent> _postSse({
+    required String path,
+    required Map<String, dynamic> data,
+    CancelToken? cancelToken,
+  }) async* {
+    final ResponseBody body;
+    try {
+      final response = await _dio.post<ResponseBody>(
+        path,
+        data: data,
+        options: Options(
+          responseType: ResponseType.stream,
+          headers: <String, dynamic>{'Accept': 'text/event-stream'},
+          receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+        ),
+        cancelToken: cancelToken,
+      );
+      body = response.data!;
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
+
+    try {
+      yield* SseParser.parse(body.stream);
+    } on DioException catch (error) {
+      throw _mapDioException(error);
+    }
   }
 
   Future<T> _get<T>({
