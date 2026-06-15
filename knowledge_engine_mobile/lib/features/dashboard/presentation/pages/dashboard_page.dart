@@ -237,7 +237,15 @@ class _FeatureGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final features = [
+      final agentFeature = _Feature(
+      title: context.l10n.featureAgentTitle,
+      description: context.l10n.featureAgentDesc,
+      icon: Icons.forum_rounded,
+      color: Theme.of(context).colorScheme.primary,
+      onTap: () => context.push('/agent', extra: projectId),
+    );
+
+    final features = [
       _Feature(
         title: context.l10n.documents,
         description: context.l10n.featureDocumentsDesc,
@@ -270,6 +278,8 @@ class _FeatureGrid extends StatelessWidget {
 
     return Column(
       children: [
+        _FeatureCard(feature: agentFeature),
+        const SizedBox(height: 12),
         Row(
           children: [
             Expanded(child: _FeatureCard(feature: features[0])),
