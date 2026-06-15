@@ -62,6 +62,7 @@ class AuthConstants {
 class SupportedFileTypes {
   static const List<String> extensions = [
     '.txt',
+    '.md',
     '.pdf',
     '.docx',
     '.csv',
@@ -71,6 +72,7 @@ class SupportedFileTypes {
 
   static const Map<String, String> mimeTypes = {
     '.txt': 'text/plain',
+    '.md': 'text/markdown',
     '.pdf': 'application/pdf',
     '.docx':
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

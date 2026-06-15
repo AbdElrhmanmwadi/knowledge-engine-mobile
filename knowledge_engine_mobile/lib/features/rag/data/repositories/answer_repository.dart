@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
+
 import '../../../../core/config/app_config.dart';
 import '../../../../core/models/rag_answer_response.dart';
 import '../../../../core/network/api_service.dart';
+import '../../../../core/network/sse_parser.dart';
 
 /// Lightweight in-memory record for recent answer requests.
 class AnswerRecord {
@@ -42,16 +45,47 @@ class AnswerRepository {
       limit: limit,
     );
 
+    rememberAnswer(
+      projectId: projectId,
+      question: text,
+      limit: limit,
+      response: response,
+    );
+
+    return response;
+  }
+
+  /// Stream a RAG answer token-by-token. The notifier accumulates the events
+  /// and calls [rememberAnswer] once the final answer is assembled.
+  Stream<SseEvent> askQuestionStream({
+    required int projectId,
+    required String text,
+    int limit = AppConfig.defaultRagLimit,
+    CancelToken? cancelToken,
+  }) {
+    return _apiService.askQuestionStream(
+      projectId: projectId,
+      text: text,
+      limit: limit,
+      cancelToken: cancelToken,
+    );
+  }
+
+  /// Record a completed answer in the recent-answers cache.
+  void rememberAnswer({
+    required int projectId,
+    required String question,
+    required int limit,
+    required RagAnswerResponse response,
+  }) {
     _rememberAnswer(
       AnswerRecord(
         projectId: projectId,
-        question: text,
+        question: question,
         limit: limit,
         response: response,
       ),
     );
-
-    return response;
   }
 
   void clearCache() {
