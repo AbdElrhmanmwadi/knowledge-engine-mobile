@@ -103,7 +103,11 @@ class AuthScaffold extends StatelessWidget {
 }
 
 /// Text field styled consistently with the rest of the app.
-class AuthTextField extends StatelessWidget {
+///
+/// When [obscureText] is true a show/hide toggle is added automatically so
+/// users can verify what they typed. Pass [autofillHints] to let the OS /
+/// password manager offer saved credentials.
+class AuthTextField extends StatefulWidget {
   const AuthTextField({
     super.key,
     required this.controller,
@@ -116,6 +120,7 @@ class AuthTextField extends StatelessWidget {
     this.errorText,
     this.onSubmitted,
     this.enabled = true,
+    this.autofillHints,
   });
 
   final TextEditingController controller;
@@ -128,34 +133,60 @@ class AuthTextField extends StatelessWidget {
   final String? errorText;
   final ValueChanged<String>? onSubmitted;
   final bool enabled;
+  final Iterable<String>? autofillHints;
+
+  @override
+  State<AuthTextField> createState() => _AuthTextFieldState();
+}
+
+class _AuthTextFieldState extends State<AuthTextField> {
+  late bool _obscured = widget.obscureText;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      textInputAction: textInputAction,
-      onSubmitted: onSubmitted,
-      enabled: enabled,
+      controller: widget.controller,
+      obscureText: _obscured,
+      keyboardType: widget.keyboardType,
+      textInputAction: widget.textInputAction,
+      onSubmitted: widget.onSubmitted,
+      enabled: widget.enabled,
       autocorrect: false,
+      autofillHints: widget.autofillHints,
       style: TextStyle(
         color: theme.textTheme.bodyLarge?.color,
         fontSize: 16.sp,
         fontWeight: FontWeight.w500,
       ),
       decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        errorText: errorText,
+        labelText: widget.label,
+        hintText: widget.hint,
+        errorText: widget.errorText,
         errorMaxLines: 3,
-        prefixIcon: icon != null
+        prefixIcon: widget.icon != null
             ? Icon(
-                icon,
+                widget.icon,
                 size: 18.r,
                 color: theme.textTheme.bodyMedium?.color,
+              )
+            : null,
+        suffixIcon: widget.obscureText
+            ? IconButton(
+                tooltip: _obscured
+                    ? context.l10n.showPassword
+                    : context.l10n.hidePassword,
+                icon: Icon(
+                  _obscured
+                      ? Icons.visibility_outlined
+                      : Icons.visibility_off_outlined,
+                  size: 20.r,
+                  color: theme.textTheme.bodyMedium?.color,
+                ),
+                onPressed: widget.enabled
+                    ? () => setState(() => _obscured = !_obscured)
+                    : null,
               )
             : null,
       ),
