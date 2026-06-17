@@ -67,9 +67,9 @@ class IndexSection extends ConsumerWidget {
                 DarkCheckTile(
                   value: state.indexDoReset,
                   disabled: state.isBusy,
-                  title: 'Full rebuild',
+                  title: 'Rebuild from scratch',
                   subtitle:
-                      'Rebuilds the knowledge base from scratch (slower).',
+                      'Clears and rebuilds everything (slower). Use this after re-preparing the file.',
                   onChanged: (v) =>
                       notifier.toggleIndexDoReset(v ?? false),
                 ),
@@ -128,8 +128,8 @@ class IndexSection extends ConsumerWidget {
                   Expanded(
                     child: Text(
                       state.indexResponse!.indexedCount == null
-                          ? 'Chunks were pushed to the vector database.'
-                          : '${state.indexResponse!.indexedCount} chunks pushed to the vector database.',
+                          ? 'Your document is ready to answer questions.'
+                          : 'Your document is ready — ${state.indexResponse!.indexedCount} sections added.',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.primary,
                         fontSize: 13.sp,

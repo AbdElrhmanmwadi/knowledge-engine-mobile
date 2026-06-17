@@ -116,10 +116,14 @@ class AnswerSection extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: FilledButton.icon(
-              onPressed:
-                  (state.isBusy || !state.canAsk) ? null : notifier.askQuestion,
+              // While streaming, the button stops the answer; otherwise it asks.
+              onPressed: state.isAnswering
+                  ? notifier.cancelAnswer
+                  : (state.canAsk ? notifier.askQuestion : null),
               style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(context).colorScheme.primary,
+              backgroundColor: state.isAnswering
+                  ? Theme.of(context).colorScheme.error
+                  : Theme.of(context).colorScheme.primary,
               foregroundColor: Colors.white,
               disabledBackgroundColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
               shape: RoundedRectangleBorder(
@@ -129,14 +133,9 @@ class AnswerSection extends ConsumerWidget {
                 fontSize: 14.sp, fontWeight: FontWeight.w600),
               ),
               icon: state.isAnswering
-                  ?  SizedBox(
-                      width: 16.w,
-                      height: 16.h,
-                      child: CircularProgressIndicator(
-                          strokeWidth: 2, color: Colors.white),
-                    )
+                  ? Icon(Icons.stop_rounded, size: 18.r)
                   : Icon(Icons.auto_awesome_rounded, size: 18.r),
-              label: Text(state.isAnswering ? context.l10n.thinking : context.l10n.ask),
+              label: Text(state.isAnswering ? context.l10n.stop : context.l10n.ask),
             ),
           ),
         ],

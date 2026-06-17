@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../l10n/l10n.dart';
 import '../providers/rag_provider.dart';
 
 class AnswerDisplayWidget extends ConsumerWidget {
@@ -43,7 +44,9 @@ class AnswerDisplayWidget extends ConsumerWidget {
                   ),
                 ),
                 const Spacer(),
-                if (response.retrievedChunks != null)
+                if (state.isAnswering)
+                  _StreamingPill(label: context.l10n.thinking)
+                else if (response.retrievedChunks != null)
                   _MiniPill(
                     label: '${response.retrievedChunks} chunks',
                     color: Theme.of(context).colorScheme.secondary,
@@ -68,6 +71,10 @@ class AnswerDisplayWidget extends ConsumerWidget {
           SizedBox(height: 14.h),
 
           // ── Signal + actions ──────────────────────────────────────
+          // Hidden while streaming — the payload (signal, debug) isn't final yet.
+          if (state.isAnswering)
+            SizedBox(height: 16.h)
+          else
           Padding(
             padding: EdgeInsets.fromLTRB(18.w, 0.h, 18.w, 16.h),
             child: Row(
@@ -115,6 +122,44 @@ class AnswerDisplayWidget extends ConsumerWidget {
     if (!context.mounted) return;
     ScaffoldMessenger.of(context)
         .showSnackBar(SnackBar(content: Text(label)));
+  }
+}
+
+// ── Streaming pill (spinner + label while the answer streams) ─────────────────
+class _StreamingPill extends StatelessWidget {
+  const _StreamingPill({required this.label});
+  final String label;
+
+  @override
+  Widget build(BuildContext context) {
+    final color = Theme.of(context).colorScheme.primary;
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(20.r),
+        border: Border.all(color: color.withValues(alpha: 0.25)),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 10.r,
+            height: 10.r,
+            child: CircularProgressIndicator(strokeWidth: 2, color: color),
+          ),
+          SizedBox(width: 6.w),
+          Text(
+            label,
+            style: TextStyle(
+              color: color,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

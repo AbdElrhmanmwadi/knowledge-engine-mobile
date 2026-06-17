@@ -48,8 +48,9 @@ class _DashboardPageState extends State<DashboardPage>
             pinned: true,
             elevation: 0,
             leading: IconButton(
-              icon: const Icon(Icons.arrow_back_rounded,
-                  color: Colors.transparent),
+              tooltip: context.l10n.goToProjects,
+              icon: Icon(Icons.arrow_back_rounded,
+                  color: Theme.of(context).textTheme.bodyLarge?.color),
               onPressed: () => context.go('/projects'),
             ),
             title: Text(

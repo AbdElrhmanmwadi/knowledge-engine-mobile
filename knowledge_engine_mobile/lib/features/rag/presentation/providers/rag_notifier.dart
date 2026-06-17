@@ -1,9 +1,12 @@
+import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/app_config.dart';
 import '../../../../core/config/constants.dart';
+import '../../../../core/models/api_response_base.dart';
 import '../../../../core/models/rag_answer_response.dart';
 import '../../../../core/models/search_response.dart';
+import '../../../../core/network/api_exception.dart';
 import '../../../../core/network/user_friendly_error.dart';
 import '../../data/repositories/answer_repository.dart';
 import '../../data/repositories/search_repository.dart';
@@ -126,11 +129,13 @@ class RagNotifier extends AsyncNotifier<RagState> {
   final int _projectId;
   late SearchRepository _searchRepository;
   late AnswerRepository _answerRepository;
+  CancelToken? _answerCancelToken;
 
   @override
   RagState build() {
     _searchRepository = SearchRepository();
     _answerRepository = AnswerRepository();
+    ref.onDispose(() => _answerCancelToken?.cancel('disposed'));
     return RagState.initial(_projectId);
   }
 
@@ -299,34 +304,155 @@ class RagNotifier extends AsyncNotifier<RagState> {
       return;
     }
 
+    final cancelToken = CancelToken();
+    _answerCancelToken = cancelToken;
+
+    // Clear the previous answer so the card fills in fresh as deltas arrive.
     _updateState(currentState.copyWith(
       isAnswering: true,
       answerErrorMessage: null,
       answerLimitError: null,
+      answerResponse: null,
+      isDebugVisible: false,
     ));
 
+    final buffer = StringBuffer();
+    int? retrievedChunks;
+    RagAnswerResponse? finalResponse;
+
     try {
-      final response = await _answerRepository.askQuestion(
+      final stream = _answerRepository.askQuestionStream(
         projectId: currentState.currentProjectId,
         text: question,
         limit: currentState.answerLimit,
+        cancelToken: cancelToken,
+      );
+
+      await for (final event in stream) {
+        switch (event.event) {
+          case 'meta':
+            retrievedChunks =
+                _asInt(event.data['retrieved_chunks']) ?? retrievedChunks;
+            _emitPartialAnswer(buffer.toString(), retrievedChunks);
+            break;
+          case 'delta':
+            final chunk = event.data['text'] as String? ?? '';
+            if (chunk.isEmpty) break;
+            buffer.write(chunk);
+            _emitPartialAnswer(buffer.toString(), retrievedChunks);
+            break;
+          case 'done':
+            // done carries the authoritative payload (full prompt, history).
+            finalResponse = _buildFinalAnswer(
+              event.data,
+              buffer.toString(),
+              retrievedChunks,
+            );
+            break;
+          case 'error':
+            throw _AnswerStreamException(
+              event.data['detail'] as String? ?? 'stream error',
+            );
+        }
+      }
+
+      // Stream ended without an explicit `done` — assemble from accumulated text.
+      finalResponse ??= _buildFinalAnswer(
+        const <String, dynamic>{},
+        buffer.toString(),
+        retrievedChunks,
+      );
+
+      _answerRepository.rememberAnswer(
+        projectId: currentState.currentProjectId,
+        question: question,
+        limit: currentState.answerLimit,
+        response: finalResponse,
       );
 
       _updateState(_currentState.copyWith(
         isAnswering: false,
-        answerResponse: response,
+        answerResponse: finalResponse,
         answerErrorMessage: null,
-        isDebugVisible: false,
       ));
     } catch (error) {
+      _handleAnswerError(error, buffer.toString(), retrievedChunks);
+    } finally {
+      if (identical(_answerCancelToken, cancelToken)) {
+        _answerCancelToken = null;
+      }
+    }
+  }
+
+  /// Abort an in-progress streamed answer.
+  void cancelAnswer() {
+    _answerCancelToken?.cancel('cancelled by user');
+  }
+
+  /// Push the partial answer text into state so the card renders live.
+  void _emitPartialAnswer(String text, int? retrievedChunks) {
+    if (text.isEmpty) return;
+    _updateState(_currentState.copyWith(
+      answerResponse: RagAnswerResponse(
+        signal: ApiSignals.success,
+        answer: text,
+        retrievedChunks: retrievedChunks,
+      ),
+    ));
+  }
+
+  RagAnswerResponse _buildFinalAnswer(
+    JsonMap data,
+    String fallbackText,
+    int? retrievedChunks,
+  ) {
+    final answer = ApiResponseBase.readOptionalString(data, 'answer');
+    final hasPayload = answer != null && answer.trim().isNotEmpty;
+    return RagAnswerResponse(
+      signal: ApiResponseBase.readOptionalString(data, 'signal') ??
+          ApiSignals.success,
+      answer: hasPayload ? answer : fallbackText,
+      fullPrompt: ApiResponseBase.readOptionalString(data, 'full_prompt'),
+      chatHistory: ApiResponseBase.readOptionalJsonMapList(data, 'chat_history'),
+      retrievedChunks:
+          ApiResponseBase.readOptionalInt(data, 'retrieved_chunks') ??
+              retrievedChunks,
+    );
+  }
+
+  void _handleAnswerError(Object error, String partial, int? retrievedChunks) {
+    final cancelled = error is ApiException && error.code == 'CANCELLED';
+
+    // On cancel, keep whatever streamed so far instead of discarding it.
+    if (cancelled && partial.trim().isNotEmpty) {
       _updateState(_currentState.copyWith(
         isAnswering: false,
-        answerErrorMessage: UserFriendlyError.message(
-          error,
-          fallback: 'Couldn’t generate an answer. Please try again.',
+        answerResponse: _buildFinalAnswer(
+          const <String, dynamic>{},
+          partial,
+          retrievedChunks,
         ),
+        answerErrorMessage: null,
       ));
+      return;
     }
+
+    _updateState(_currentState.copyWith(
+      isAnswering: false,
+      answerErrorMessage: cancelled
+          ? null
+          : UserFriendlyError.message(
+              error,
+              fallback: 'Couldn’t generate an answer. Please try again.',
+            ),
+    ));
+  }
+
+  static int? _asInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    if (value is String) return int.tryParse(value);
+    return null;
   }
 
   bool _isSearchLimitValid(int value) {
@@ -338,4 +464,14 @@ class RagNotifier extends AsyncNotifier<RagState> {
     return value >= ValidationConstants.minRagLimit &&
         value <= ValidationConstants.maxRagLimit;
   }
+}
+
+/// Raised when the backend emits an SSE `error` event mid-answer.
+class _AnswerStreamException implements Exception {
+  const _AnswerStreamException(this.detail);
+
+  final String detail;
+
+  @override
+  String toString() => detail;
 }
