@@ -107,11 +107,15 @@ class AgentNotifier extends AsyncNotifier<AgentState> {
   final int _projectId;
   late AgentRepository _repository;
   CancelToken? _cancelToken;
+  bool _disposed = false;
 
   @override
   AgentState build() {
     _repository = AgentRepository();
-    ref.onDispose(() => _cancelToken?.cancel('disposed'));
+    ref.onDispose(() {
+      _disposed = true;
+      _cancelToken?.cancel('disposed');
+    });
     return AgentState.initial(_projectId);
   }
 
@@ -121,6 +125,9 @@ class AgentNotifier extends AsyncNotifier<AgentState> {
       );
 
   void _update(AgentState next) {
+    // A streamed answer can resolve after the user leaves the page and the
+    // notifier is disposed; writing to `state` then throws. Drop late updates.
+    if (_disposed) return;
     state = AsyncValue.data(next);
   }
 

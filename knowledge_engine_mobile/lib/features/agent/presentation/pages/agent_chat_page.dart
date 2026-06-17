@@ -616,7 +616,34 @@ class _SessionHistorySheet extends ConsumerWidget {
                 state: state,
                 scrollController: scrollController,
                 onOpen: onOpen,
-                onDelete: notifier.deleteSession,
+                onDelete: (sessionId) async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (dialogContext) => AlertDialog(
+                      title: Text(context.l10n.agentDeleteSession),
+                      content: Text(context.l10n.agentDeleteSessionBody),
+                      actions: [
+                        TextButton(
+                          onPressed: () =>
+                              Navigator.of(dialogContext).pop(false),
+                          child: Text(context.l10n.cancel),
+                        ),
+                        FilledButton(
+                          style: FilledButton.styleFrom(
+                            backgroundColor:
+                                Theme.of(dialogContext).colorScheme.error,
+                          ),
+                          onPressed: () =>
+                              Navigator.of(dialogContext).pop(true),
+                          child: Text(context.l10n.delete),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed == true) {
+                    notifier.deleteSession(sessionId);
+                  }
+                },
               ),
             ),
           ],
