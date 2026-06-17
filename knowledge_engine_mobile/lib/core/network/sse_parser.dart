@@ -21,7 +21,12 @@ class SseParser {
 
   static Stream<SseEvent> parse(Stream<List<int>> byteStream) async* {
     var buffer = '';
-    await for (final chunk in byteStream.transform(utf8.decoder)) {
+    // Dio yields `Stream<Uint8List>`, but `utf8.decoder` is a
+    // `StreamTransformer<List<int>, String>`. StreamTransformer is invariant in
+    // its input type, so transforming the Uint8List stream directly throws a
+    // runtime _TypeError. Widen to `List<int>` first so the types line up.
+    await for (final chunk
+        in byteStream.cast<List<int>>().transform(utf8.decoder)) {
       buffer += chunk.replaceAll('\r\n', '\n');
       int sep;
       while ((sep = buffer.indexOf('\n\n')) != -1) {
