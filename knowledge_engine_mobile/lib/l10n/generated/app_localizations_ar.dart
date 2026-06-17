@@ -199,7 +199,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get askHeroSubtitle => 'البحث الدلالي · إجابات RAG · آثار التصحيح';
+  String get askHeroSubtitle => 'ابحث في مستنداتك واحصل على إجابات';
 
   @override
   String get workspaceTitle => 'مساحة العمل';
@@ -244,7 +244,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get settings => 'الإعدادات';
 
   @override
-  String get ragLimit => 'حد RAG';
+  String get ragLimit => 'عدد المصادر المستخدمة';
 
   @override
   String get actions => 'الإجراءات';
@@ -359,14 +359,14 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String searchRunAgainstProject(int id) {
-    return 'قم بتشغيل البحث الدلالي على الأجزاء المفهرسة في المشروع $id.';
+    return 'ابحث في مستندات المشروع $id.';
   }
 
   @override
   String get searchQuery => 'استعلام البحث';
 
   @override
-  String get searchHint => 'ابحث عن الأجزاء أو المفاهيم ذات الصلة…';
+  String get searchHint => 'ابحث عن موضوع أو كلمة…';
 
   @override
   String get resultLimit => 'حد النتائج';
@@ -387,7 +387,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String askQuestionAboutProject(int id) {
-    return 'اطرح سؤالًا حول المعرفة المفهرسة في المشروع $id.';
+    return 'اطرح سؤالًا عن مستنداتك في المشروع $id.';
   }
 
   @override
@@ -397,7 +397,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get askHint => 'اطرح أي شيء عن معرفتك المرفوعة…';
 
   @override
-  String get retrievedChunksLimit => 'حد الأجزاء المسترجعة';
+  String get retrievedChunksLimit => 'عدد المصادر المستخدمة';
 
   @override
   String get thinking => 'جارٍ التفكير…';
@@ -409,7 +409,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get searchResultsTitle => 'نتائج البحث';
 
   @override
-  String get noMatchingChunks => 'لم تُرجع أي أجزاء مطابقة.';
+  String get noMatchingChunks => 'لا توجد نتائج مطابقة.';
 
   @override
   String resultsForQuery(Object count, Object query) {
@@ -539,10 +539,10 @@ class AppLocalizationsAr extends AppLocalizations {
       'استخدم هذا إذا قمت بإعادة رفع الملف أو تغييره.';
 
   @override
-  String get chunkSize => 'حجم القطعة';
+  String get chunkSize => 'حجم المقطع';
 
   @override
-  String get overlapSize => 'حجم التداخل';
+  String get overlapSize => 'تداخل المقاطع';
 
   @override
   String get onlyChangeIfKnow =>
@@ -558,8 +558,266 @@ class AppLocalizationsAr extends AppLocalizations {
   String get processingComplete => 'اكتمل المعالجة';
 
   @override
-  String get chunksInserted => 'الأجزاء المضافة';
+  String get chunksInserted => 'المقاطع المضافة';
 
   @override
   String get filesProcessed => 'الملفات المعالجة';
+
+  @override
+  String get loginTitle => 'مرحبًا بعودتك';
+
+  @override
+  String get loginSubtitle => 'سجّل الدخول للمتابعة إلى مشاريعك';
+
+  @override
+  String get email => 'البريد الإلكتروني';
+
+  @override
+  String get emailHint => 'you@example.com';
+
+  @override
+  String get password => 'كلمة المرور';
+
+  @override
+  String get signIn => 'تسجيل الدخول';
+
+  @override
+  String get signingIn => 'جارٍ تسجيل الدخول…';
+
+  @override
+  String get forgotPasswordQuestion => 'هل نسيت كلمة المرور؟';
+
+  @override
+  String get noAccountCreateOne => 'ليس لديك حساب؟ أنشئ حسابًا';
+
+  @override
+  String get registerTitle => 'إنشاء حساب';
+
+  @override
+  String get registerSubtitle => 'أنشئ حسابك في محرك المعرفة';
+
+  @override
+  String get username => 'اسم المستخدم';
+
+  @override
+  String get createAccount => 'إنشاء حساب';
+
+  @override
+  String get creatingAccount => 'جارٍ إنشاء الحساب…';
+
+  @override
+  String get alreadyHaveAccountSignIn => 'لديك حساب بالفعل؟ سجّل الدخول';
+
+  @override
+  String get checkYourEmailTitle => 'تحقق من بريدك الإلكتروني';
+
+  @override
+  String get checkYourEmailSubtitle => 'خطوة أخيرة لتفعيل حسابك';
+
+  @override
+  String checkYourEmailBody(Object email) {
+    return 'أرسلنا رابط تفعيل إلى $email. افتحه لتفعيل حسابك ثم سجّل الدخول.';
+  }
+
+  @override
+  String get backToSignIn => 'العودة إلى تسجيل الدخول';
+
+  @override
+  String get forgotPasswordTitle => 'نسيت كلمة المرور';
+
+  @override
+  String get forgotPasswordSubtitle =>
+      'سنرسل لك رابطًا لإعادة تعيينها عبر البريد';
+
+  @override
+  String get sendResetLink => 'إرسال رابط إعادة التعيين';
+
+  @override
+  String get sending => 'جارٍ الإرسال…';
+
+  @override
+  String get resetEmailSentGeneric =>
+      'إذا كان هناك حساب بهذا البريد الإلكتروني، فقد تم إرسال رابط إعادة تعيين كلمة المرور.';
+
+  @override
+  String resendInSeconds(Object s) {
+    return 'إعادة الإرسال خلال $s ث';
+  }
+
+  @override
+  String get resetPasswordTitle => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get resetPasswordSubtitle => 'اختر كلمة مرور جديدة لحسابك';
+
+  @override
+  String get resetTokenLabel => 'رمز إعادة التعيين';
+
+  @override
+  String get resetTokenHint => 'الصق الرمز من رابط البريد الإلكتروني';
+
+  @override
+  String get resetTokenRequired =>
+      'الصق رمز إعادة التعيين من البريد الإلكتروني';
+
+  @override
+  String get newPassword => 'كلمة المرور الجديدة';
+
+  @override
+  String get confirmPassword => 'تأكيد كلمة المرور';
+
+  @override
+  String get showPassword => 'إظهار كلمة المرور';
+
+  @override
+  String get hidePassword => 'إخفاء كلمة المرور';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get resetPasswordButton => 'إعادة تعيين كلمة المرور';
+
+  @override
+  String get resetting => 'جارٍ إعادة التعيين…';
+
+  @override
+  String get passwordChangedTitle => 'تم تغيير كلمة المرور';
+
+  @override
+  String get passwordChangedSubtitle => 'سجّل الدخول بكلمة المرور الجديدة';
+
+  @override
+  String get requestNewLink => 'اطلب رابطًا جديدًا';
+
+  @override
+  String get verifyEmailTitle => 'تأكيد البريد الإلكتروني';
+
+  @override
+  String get verifyEmailSubtitle => 'أكّد بريدك الإلكتروني لتفعيل حسابك';
+
+  @override
+  String get verificationTokenLabel => 'رمز التفعيل';
+
+  @override
+  String get verificationTokenHint => 'الصق الرمز من رابط البريد الإلكتروني';
+
+  @override
+  String get verificationTokenRequired =>
+      'الصق رمز التفعيل من البريد الإلكتروني';
+
+  @override
+  String get verifyEmailButton => 'تأكيد البريد';
+
+  @override
+  String get verifying => 'جارٍ التحقق…';
+
+  @override
+  String get emailVerifiedTitle => 'تم تأكيد البريد';
+
+  @override
+  String get emailVerifiedSubtitle => 'حسابك جاهز — سجّل الدخول للمتابعة';
+
+  @override
+  String get authEmailRequired => 'أدخل بريدك الإلكتروني';
+
+  @override
+  String get authEmailInvalid => 'أدخل بريدًا إلكترونيًا صحيحًا';
+
+  @override
+  String get authPasswordRequired => 'أدخل كلمة المرور';
+
+  @override
+  String get authUsernameRequired => 'أدخل اسم المستخدم';
+
+  @override
+  String get authPasswordRule => 'يجب أن تكون كلمة المرور بين 8 و128 حرفًا';
+
+  @override
+  String get authErrorInvalidCredentials =>
+      'البريد الإلكتروني أو كلمة المرور غير صحيحة.';
+
+  @override
+  String get authErrorEmailNotVerified =>
+      'لم يتم تأكيد بريدك الإلكتروني بعد. تحقق من صندوق الوارد لرابط التفعيل.';
+
+  @override
+  String get authErrorGoogleAccount =>
+      'هذا الحساب يستخدم تسجيل الدخول عبر Google. يرجى تسجيل الدخول باستخدام Google.';
+
+  @override
+  String get authErrorResetLinkExpired =>
+      'انتهت صلاحية هذا الرابط. اطلب رابطًا جديدًا.';
+
+  @override
+  String get authErrorResetLinkInvalid =>
+      'هذا الرابط غير صالح أو تم استخدامه من قبل. اطلب رابطًا جديدًا.';
+
+  @override
+  String get authErrorNetwork =>
+      'تعذر الوصول إلى الخادم. تحقق من اتصالك وحاول مرة أخرى.';
+
+  @override
+  String get authErrorGeneric => 'حدث خطأ ما. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get agentTitle => 'الوكيل';
+
+  @override
+  String get agentSubtitle => 'إجابات تحادثية مع ذاكرة';
+
+  @override
+  String get agentInputHint => 'راسل الوكيل…';
+
+  @override
+  String get agentSend => 'إرسال';
+
+  @override
+  String get agentNewChat => 'محادثة جديدة';
+
+  @override
+  String get agentHistory => 'سجل المحادثات';
+
+  @override
+  String get agentNoSessions => 'لا توجد محادثات بعد';
+
+  @override
+  String get agentEmptyTitle => 'اسأل الوكيل أي شيء';
+
+  @override
+  String get agentEmptyBody => 'يجيب من مستندات مشروعك ويتذكر سياق المحادثة.';
+
+  @override
+  String get agentThinking => 'يفكّر…';
+
+  @override
+  String get agentSources => 'المصادر';
+
+  @override
+  String get agentUntitledSession => 'محادثة بدون عنوان';
+
+  @override
+  String get agentDeleteSession => 'حذف المحادثة';
+
+  @override
+  String get agentDeleteSessionBody => 'سيتم حذف هذه المحادثة نهائيًا.';
+
+  @override
+  String get featureAgentTitle => 'محادثة الوكيل';
+
+  @override
+  String get featureAgentDesc => 'محادثة بذاكرة عبر معرفتك';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get logoutConfirmTitle => 'تسجيل الخروج؟';
+
+  @override
+  String get logoutConfirmBody =>
+      'ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى مشاريعك.';
+
+  @override
+  String get cancel => 'إلغاء';
 }

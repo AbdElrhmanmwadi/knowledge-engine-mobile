@@ -199,7 +199,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get askHeroSubtitle => 'Semantic search · RAG answers · debug traces';
+  String get askHeroSubtitle => 'Search your documents and get answers';
 
   @override
   String get workspaceTitle => 'Workspace';
@@ -244,7 +244,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
-  String get ragLimit => 'RAG limit';
+  String get ragLimit => 'Sources to use';
 
   @override
   String get actions => 'Actions';
@@ -359,14 +359,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String searchRunAgainstProject(int id) {
-    return 'Run semantic search against the indexed chunks in project $id.';
+    return 'Search across the documents in project $id.';
   }
 
   @override
   String get searchQuery => 'Search query';
 
   @override
-  String get searchHint => 'Find relevant chunks or concepts…';
+  String get searchHint => 'Find a topic or keyword…';
 
   @override
   String get resultLimit => 'Result limit';
@@ -387,7 +387,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String askQuestionAboutProject(int id) {
-    return 'Ask a question about the indexed knowledge in project $id.';
+    return 'Ask a question about your documents in project $id.';
   }
 
   @override
@@ -397,7 +397,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get askHint => 'Ask anything about your uploaded knowledge…';
 
   @override
-  String get retrievedChunksLimit => 'Retrieved chunks limit';
+  String get retrievedChunksLimit => 'Sources to use';
 
   @override
   String get thinking => 'Thinking…';
@@ -409,7 +409,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get searchResultsTitle => 'Search Results';
 
   @override
-  String get noMatchingChunks => 'No matching chunks were returned.';
+  String get noMatchingChunks => 'No matching results found.';
 
   @override
   String resultsForQuery(Object count, Object query) {
@@ -542,10 +542,10 @@ class AppLocalizationsEn extends AppLocalizations {
       'Use this if you re-uploaded or changed the file.';
 
   @override
-  String get chunkSize => 'Chunk size';
+  String get chunkSize => 'Segment size';
 
   @override
-  String get overlapSize => 'Overlap size';
+  String get overlapSize => 'Segment overlap';
 
   @override
   String get onlyChangeIfKnow =>
@@ -561,8 +561,267 @@ class AppLocalizationsEn extends AppLocalizations {
   String get processingComplete => 'PROCESSING COMPLETE';
 
   @override
-  String get chunksInserted => 'Chunks inserted';
+  String get chunksInserted => 'Sections added';
 
   @override
   String get filesProcessed => 'Files processed';
+
+  @override
+  String get loginTitle => 'Welcome back';
+
+  @override
+  String get loginSubtitle => 'Sign in to continue to your projects';
+
+  @override
+  String get email => 'Email';
+
+  @override
+  String get emailHint => 'you@example.com';
+
+  @override
+  String get password => 'Password';
+
+  @override
+  String get signIn => 'Sign in';
+
+  @override
+  String get signingIn => 'Signing in…';
+
+  @override
+  String get forgotPasswordQuestion => 'Forgot password?';
+
+  @override
+  String get noAccountCreateOne => 'Don\'t have an account? Create one';
+
+  @override
+  String get registerTitle => 'Create account';
+
+  @override
+  String get registerSubtitle => 'Set up your Knowledge Engine account';
+
+  @override
+  String get username => 'Username';
+
+  @override
+  String get createAccount => 'Create account';
+
+  @override
+  String get creatingAccount => 'Creating account…';
+
+  @override
+  String get alreadyHaveAccountSignIn => 'Already have an account? Sign in';
+
+  @override
+  String get checkYourEmailTitle => 'Check your email';
+
+  @override
+  String get checkYourEmailSubtitle => 'One more step to activate your account';
+
+  @override
+  String checkYourEmailBody(Object email) {
+    return 'We sent a verification link to $email. Open it to activate your account, then sign in.';
+  }
+
+  @override
+  String get backToSignIn => 'Back to sign in';
+
+  @override
+  String get forgotPasswordTitle => 'Forgot password';
+
+  @override
+  String get forgotPasswordSubtitle => 'We\'ll email you a link to reset it';
+
+  @override
+  String get sendResetLink => 'Send reset link';
+
+  @override
+  String get sending => 'Sending…';
+
+  @override
+  String get resetEmailSentGeneric =>
+      'If an account with that email exists, a password reset link has been sent.';
+
+  @override
+  String resendInSeconds(Object s) {
+    return 'Resend in ${s}s';
+  }
+
+  @override
+  String get resetPasswordTitle => 'Reset password';
+
+  @override
+  String get resetPasswordSubtitle => 'Choose a new password for your account';
+
+  @override
+  String get resetTokenLabel => 'Reset token';
+
+  @override
+  String get resetTokenHint => 'Paste the token from the email link';
+
+  @override
+  String get resetTokenRequired => 'Paste the reset token from the email';
+
+  @override
+  String get newPassword => 'New password';
+
+  @override
+  String get confirmPassword => 'Confirm password';
+
+  @override
+  String get showPassword => 'Show password';
+
+  @override
+  String get hidePassword => 'Hide password';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get resetPasswordButton => 'Reset password';
+
+  @override
+  String get resetting => 'Resetting…';
+
+  @override
+  String get passwordChangedTitle => 'Password changed';
+
+  @override
+  String get passwordChangedSubtitle => 'Sign in with your new password';
+
+  @override
+  String get requestNewLink => 'Request a new link';
+
+  @override
+  String get verifyEmailTitle => 'Verify email';
+
+  @override
+  String get verifyEmailSubtitle =>
+      'Confirm your email address to activate your account';
+
+  @override
+  String get verificationTokenLabel => 'Verification token';
+
+  @override
+  String get verificationTokenHint => 'Paste the token from the email link';
+
+  @override
+  String get verificationTokenRequired =>
+      'Paste the verification token from the email';
+
+  @override
+  String get verifyEmailButton => 'Verify email';
+
+  @override
+  String get verifying => 'Verifying…';
+
+  @override
+  String get emailVerifiedTitle => 'Email verified';
+
+  @override
+  String get emailVerifiedSubtitle =>
+      'Your account is ready — sign in to continue';
+
+  @override
+  String get authEmailRequired => 'Enter your email';
+
+  @override
+  String get authEmailInvalid => 'Enter a valid email address';
+
+  @override
+  String get authPasswordRequired => 'Enter your password';
+
+  @override
+  String get authUsernameRequired => 'Enter a username';
+
+  @override
+  String get authPasswordRule => 'Password must be 8–128 characters';
+
+  @override
+  String get authErrorInvalidCredentials => 'Invalid email or password.';
+
+  @override
+  String get authErrorEmailNotVerified =>
+      'Your email is not verified yet. Check your inbox for the verification link.';
+
+  @override
+  String get authErrorGoogleAccount =>
+      'This account uses Google sign-in. Please sign in with Google.';
+
+  @override
+  String get authErrorResetLinkExpired =>
+      'This link has expired. Request a new one.';
+
+  @override
+  String get authErrorResetLinkInvalid =>
+      'This link is invalid or was already used. Request a new one.';
+
+  @override
+  String get authErrorNetwork =>
+      'Couldn\'t reach the server. Check your connection and try again.';
+
+  @override
+  String get authErrorGeneric => 'Something went wrong. Please try again.';
+
+  @override
+  String get agentTitle => 'Agent';
+
+  @override
+  String get agentSubtitle => 'Conversational answers with memory';
+
+  @override
+  String get agentInputHint => 'Message the agent…';
+
+  @override
+  String get agentSend => 'Send';
+
+  @override
+  String get agentNewChat => 'New chat';
+
+  @override
+  String get agentHistory => 'Chat history';
+
+  @override
+  String get agentNoSessions => 'No conversations yet';
+
+  @override
+  String get agentEmptyTitle => 'Ask the agent anything';
+
+  @override
+  String get agentEmptyBody =>
+      'It answers from your project’s documents and remembers the conversation.';
+
+  @override
+  String get agentThinking => 'Thinking…';
+
+  @override
+  String get agentSources => 'Sources';
+
+  @override
+  String get agentUntitledSession => 'Untitled chat';
+
+  @override
+  String get agentDeleteSession => 'Delete conversation';
+
+  @override
+  String get agentDeleteSessionBody =>
+      'This conversation will be permanently deleted.';
+
+  @override
+  String get featureAgentTitle => 'Agent chat';
+
+  @override
+  String get featureAgentDesc => 'Chat with memory across your knowledge';
+
+  @override
+  String get logout => 'Sign out';
+
+  @override
+  String get logoutConfirmTitle => 'Sign out?';
+
+  @override
+  String get logoutConfirmBody =>
+      'You\'ll need to sign in again to access your projects.';
+
+  @override
+  String get cancel => 'Cancel';
 }

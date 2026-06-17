@@ -437,7 +437,7 @@ abstract class AppLocalizations {
   /// No description provided for @askHeroSubtitle.
   ///
   /// In en, this message translates to:
-  /// **'Semantic search · RAG answers · debug traces'**
+  /// **'Search your documents and get answers'**
   String get askHeroSubtitle;
 
   /// No description provided for @workspaceTitle.
@@ -521,7 +521,7 @@ abstract class AppLocalizations {
   /// No description provided for @ragLimit.
   ///
   /// In en, this message translates to:
-  /// **'RAG limit'**
+  /// **'Sources to use'**
   String get ragLimit;
 
   /// No description provided for @actions.
@@ -731,7 +731,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchRunAgainstProject.
   ///
   /// In en, this message translates to:
-  /// **'Run semantic search against the indexed chunks in project {id}.'**
+  /// **'Search across the documents in project {id}.'**
   String searchRunAgainstProject(int id);
 
   /// No description provided for @searchQuery.
@@ -743,7 +743,7 @@ abstract class AppLocalizations {
   /// No description provided for @searchHint.
   ///
   /// In en, this message translates to:
-  /// **'Find relevant chunks or concepts…'**
+  /// **'Find a topic or keyword…'**
   String get searchHint;
 
   /// No description provided for @resultLimit.
@@ -779,7 +779,7 @@ abstract class AppLocalizations {
   /// No description provided for @askQuestionAboutProject.
   ///
   /// In en, this message translates to:
-  /// **'Ask a question about the indexed knowledge in project {id}.'**
+  /// **'Ask a question about your documents in project {id}.'**
   String askQuestionAboutProject(int id);
 
   /// No description provided for @yourQuestion.
@@ -797,7 +797,7 @@ abstract class AppLocalizations {
   /// No description provided for @retrievedChunksLimit.
   ///
   /// In en, this message translates to:
-  /// **'Retrieved chunks limit'**
+  /// **'Sources to use'**
   String get retrievedChunksLimit;
 
   /// No description provided for @thinking.
@@ -821,7 +821,7 @@ abstract class AppLocalizations {
   /// No description provided for @noMatchingChunks.
   ///
   /// In en, this message translates to:
-  /// **'No matching chunks were returned.'**
+  /// **'No matching results found.'**
   String get noMatchingChunks;
 
   /// No description provided for @resultsForQuery.
@@ -1061,13 +1061,13 @@ abstract class AppLocalizations {
   /// No description provided for @chunkSize.
   ///
   /// In en, this message translates to:
-  /// **'Chunk size'**
+  /// **'Segment size'**
   String get chunkSize;
 
   /// No description provided for @overlapSize.
   ///
   /// In en, this message translates to:
-  /// **'Overlap size'**
+  /// **'Segment overlap'**
   String get overlapSize;
 
   /// No description provided for @onlyChangeIfKnow.
@@ -1097,7 +1097,7 @@ abstract class AppLocalizations {
   /// No description provided for @chunksInserted.
   ///
   /// In en, this message translates to:
-  /// **'Chunks inserted'**
+  /// **'Sections added'**
   String get chunksInserted;
 
   /// No description provided for @filesProcessed.
@@ -1105,6 +1105,492 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Files processed'**
   String get filesProcessed;
+
+  /// No description provided for @loginTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome back'**
+  String get loginTitle;
+
+  /// No description provided for @loginSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in to continue to your projects'**
+  String get loginSubtitle;
+
+  /// No description provided for @email.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get email;
+
+  /// No description provided for @emailHint.
+  ///
+  /// In en, this message translates to:
+  /// **'you@example.com'**
+  String get emailHint;
+
+  /// No description provided for @password.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get password;
+
+  /// No description provided for @signIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in'**
+  String get signIn;
+
+  /// No description provided for @signingIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing in…'**
+  String get signingIn;
+
+  /// No description provided for @forgotPasswordQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password?'**
+  String get forgotPasswordQuestion;
+
+  /// No description provided for @noAccountCreateOne.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Create one'**
+  String get noAccountCreateOne;
+
+  /// No description provided for @registerTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get registerTitle;
+
+  /// No description provided for @registerSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Set up your Knowledge Engine account'**
+  String get registerSubtitle;
+
+  /// No description provided for @username.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get username;
+
+  /// No description provided for @createAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Create account'**
+  String get createAccount;
+
+  /// No description provided for @creatingAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Creating account…'**
+  String get creatingAccount;
+
+  /// No description provided for @alreadyHaveAccountSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Already have an account? Sign in'**
+  String get alreadyHaveAccountSignIn;
+
+  /// No description provided for @checkYourEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Check your email'**
+  String get checkYourEmailTitle;
+
+  /// No description provided for @checkYourEmailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'One more step to activate your account'**
+  String get checkYourEmailSubtitle;
+
+  /// No description provided for @checkYourEmailBody.
+  ///
+  /// In en, this message translates to:
+  /// **'We sent a verification link to {email}. Open it to activate your account, then sign in.'**
+  String checkYourEmailBody(Object email);
+
+  /// No description provided for @backToSignIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Back to sign in'**
+  String get backToSignIn;
+
+  /// No description provided for @forgotPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Forgot password'**
+  String get forgotPasswordTitle;
+
+  /// No description provided for @forgotPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We\'ll email you a link to reset it'**
+  String get forgotPasswordSubtitle;
+
+  /// No description provided for @sendResetLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Send reset link'**
+  String get sendResetLink;
+
+  /// No description provided for @sending.
+  ///
+  /// In en, this message translates to:
+  /// **'Sending…'**
+  String get sending;
+
+  /// No description provided for @resetEmailSentGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'If an account with that email exists, a password reset link has been sent.'**
+  String get resetEmailSentGeneric;
+
+  /// No description provided for @resendInSeconds.
+  ///
+  /// In en, this message translates to:
+  /// **'Resend in {s}s'**
+  String resendInSeconds(Object s);
+
+  /// No description provided for @resetPasswordTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get resetPasswordTitle;
+
+  /// No description provided for @resetPasswordSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a new password for your account'**
+  String get resetPasswordSubtitle;
+
+  /// No description provided for @resetTokenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset token'**
+  String get resetTokenLabel;
+
+  /// No description provided for @resetTokenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the token from the email link'**
+  String get resetTokenHint;
+
+  /// No description provided for @resetTokenRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the reset token from the email'**
+  String get resetTokenRequired;
+
+  /// No description provided for @newPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'New password'**
+  String get newPassword;
+
+  /// No description provided for @confirmPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm password'**
+  String get confirmPassword;
+
+  /// No description provided for @showPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Show password'**
+  String get showPassword;
+
+  /// No description provided for @hidePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Hide password'**
+  String get hidePassword;
+
+  /// No description provided for @passwordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// No description provided for @resetPasswordButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Reset password'**
+  String get resetPasswordButton;
+
+  /// No description provided for @resetting.
+  ///
+  /// In en, this message translates to:
+  /// **'Resetting…'**
+  String get resetting;
+
+  /// No description provided for @passwordChangedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password changed'**
+  String get passwordChangedTitle;
+
+  /// No description provided for @passwordChangedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign in with your new password'**
+  String get passwordChangedSubtitle;
+
+  /// No description provided for @requestNewLink.
+  ///
+  /// In en, this message translates to:
+  /// **'Request a new link'**
+  String get requestNewLink;
+
+  /// No description provided for @verifyEmailTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify email'**
+  String get verifyEmailTitle;
+
+  /// No description provided for @verifyEmailSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm your email address to activate your account'**
+  String get verifyEmailSubtitle;
+
+  /// No description provided for @verificationTokenLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Verification token'**
+  String get verificationTokenLabel;
+
+  /// No description provided for @verificationTokenHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the token from the email link'**
+  String get verificationTokenHint;
+
+  /// No description provided for @verificationTokenRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste the verification token from the email'**
+  String get verificationTokenRequired;
+
+  /// No description provided for @verifyEmailButton.
+  ///
+  /// In en, this message translates to:
+  /// **'Verify email'**
+  String get verifyEmailButton;
+
+  /// No description provided for @verifying.
+  ///
+  /// In en, this message translates to:
+  /// **'Verifying…'**
+  String get verifying;
+
+  /// No description provided for @emailVerifiedTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Email verified'**
+  String get emailVerifiedTitle;
+
+  /// No description provided for @emailVerifiedSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account is ready — sign in to continue'**
+  String get emailVerifiedSubtitle;
+
+  /// No description provided for @authEmailRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email'**
+  String get authEmailRequired;
+
+  /// No description provided for @authEmailInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid email address'**
+  String get authEmailInvalid;
+
+  /// No description provided for @authPasswordRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get authPasswordRequired;
+
+  /// No description provided for @authUsernameRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a username'**
+  String get authUsernameRequired;
+
+  /// No description provided for @authPasswordRule.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be 8–128 characters'**
+  String get authPasswordRule;
+
+  /// No description provided for @authErrorInvalidCredentials.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid email or password.'**
+  String get authErrorInvalidCredentials;
+
+  /// No description provided for @authErrorEmailNotVerified.
+  ///
+  /// In en, this message translates to:
+  /// **'Your email is not verified yet. Check your inbox for the verification link.'**
+  String get authErrorEmailNotVerified;
+
+  /// No description provided for @authErrorGoogleAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'This account uses Google sign-in. Please sign in with Google.'**
+  String get authErrorGoogleAccount;
+
+  /// No description provided for @authErrorResetLinkExpired.
+  ///
+  /// In en, this message translates to:
+  /// **'This link has expired. Request a new one.'**
+  String get authErrorResetLinkExpired;
+
+  /// No description provided for @authErrorResetLinkInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'This link is invalid or was already used. Request a new one.'**
+  String get authErrorResetLinkInvalid;
+
+  /// No description provided for @authErrorNetwork.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t reach the server. Check your connection and try again.'**
+  String get authErrorNetwork;
+
+  /// No description provided for @authErrorGeneric.
+  ///
+  /// In en, this message translates to:
+  /// **'Something went wrong. Please try again.'**
+  String get authErrorGeneric;
+
+  /// No description provided for @agentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent'**
+  String get agentTitle;
+
+  /// No description provided for @agentSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Conversational answers with memory'**
+  String get agentSubtitle;
+
+  /// No description provided for @agentInputHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Message the agent…'**
+  String get agentInputHint;
+
+  /// No description provided for @agentSend.
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get agentSend;
+
+  /// No description provided for @agentNewChat.
+  ///
+  /// In en, this message translates to:
+  /// **'New chat'**
+  String get agentNewChat;
+
+  /// No description provided for @agentHistory.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat history'**
+  String get agentHistory;
+
+  /// No description provided for @agentNoSessions.
+  ///
+  /// In en, this message translates to:
+  /// **'No conversations yet'**
+  String get agentNoSessions;
+
+  /// No description provided for @agentEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Ask the agent anything'**
+  String get agentEmptyTitle;
+
+  /// No description provided for @agentEmptyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'It answers from your project’s documents and remembers the conversation.'**
+  String get agentEmptyBody;
+
+  /// No description provided for @agentThinking.
+  ///
+  /// In en, this message translates to:
+  /// **'Thinking…'**
+  String get agentThinking;
+
+  /// No description provided for @agentSources.
+  ///
+  /// In en, this message translates to:
+  /// **'Sources'**
+  String get agentSources;
+
+  /// No description provided for @agentUntitledSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled chat'**
+  String get agentUntitledSession;
+
+  /// No description provided for @agentDeleteSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete conversation'**
+  String get agentDeleteSession;
+
+  /// No description provided for @agentDeleteSessionBody.
+  ///
+  /// In en, this message translates to:
+  /// **'This conversation will be permanently deleted.'**
+  String get agentDeleteSessionBody;
+
+  /// No description provided for @featureAgentTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Agent chat'**
+  String get featureAgentTitle;
+
+  /// No description provided for @featureAgentDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Chat with memory across your knowledge'**
+  String get featureAgentDesc;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get logout;
+
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out?'**
+  String get logoutConfirmTitle;
+
+  /// No description provided for @logoutConfirmBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ll need to sign in again to access your projects.'**
+  String get logoutConfirmBody;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
 }
 
 class _AppLocalizationsDelegate
