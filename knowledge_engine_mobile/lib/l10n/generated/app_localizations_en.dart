@@ -85,6 +85,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get recentProjects => 'Recent Projects';
 
   @override
+  String get yourProjects => 'Your Projects';
+
+  @override
+  String get noProjectsYet => 'No projects yet.';
+
+  @override
+  String get couldNotLoadProjects => 'Couldn’t load your projects.';
+
+  @override
+  String get retry => 'Retry';
+
+  @override
+  String get tapToOpen => 'Tap to open';
+
+  @override
   String get projectId => 'Project ID';
 
   @override
@@ -163,6 +178,15 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get chooseFile => 'Choose file';
+
+  @override
+  String get selectFileToTranslate => 'Select a file to translate';
+
+  @override
+  String get noFilesInProject => 'No files in this project yet.';
+
+  @override
+  String get couldNotLoadFiles => 'Couldn’t load this project’s files.';
 
   @override
   String get statusLogCopied => 'Status log copied.';

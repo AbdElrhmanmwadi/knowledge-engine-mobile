@@ -85,6 +85,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get recentProjects => 'المشاريع الأخيرة';
 
   @override
+  String get yourProjects => 'مشاريعك';
+
+  @override
+  String get noProjectsYet => 'لا توجد مشاريع بعد.';
+
+  @override
+  String get couldNotLoadProjects => 'تعذّر تحميل مشاريعك.';
+
+  @override
+  String get retry => 'إعادة المحاولة';
+
+  @override
+  String get tapToOpen => 'اضغط للفتح';
+
+  @override
   String get projectId => 'معرّف المشروع';
 
   @override
@@ -163,6 +178,15 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get chooseFile => 'اختر ملف';
+
+  @override
+  String get selectFileToTranslate => 'اختر ملفًا للترجمة';
+
+  @override
+  String get noFilesInProject => 'لا توجد ملفات في هذا المشروع بعد.';
+
+  @override
+  String get couldNotLoadFiles => 'تعذّر تحميل ملفات هذا المشروع.';
 
   @override
   String get statusLogCopied => 'تم نسخ سجل الحالة.';

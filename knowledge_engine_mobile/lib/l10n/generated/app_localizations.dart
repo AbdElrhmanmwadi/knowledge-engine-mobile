@@ -236,6 +236,36 @@ abstract class AppLocalizations {
   /// **'Recent Projects'**
   String get recentProjects;
 
+  /// No description provided for @yourProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Projects'**
+  String get yourProjects;
+
+  /// No description provided for @noProjectsYet.
+  ///
+  /// In en, this message translates to:
+  /// **'No projects yet.'**
+  String get noProjectsYet;
+
+  /// No description provided for @couldNotLoadProjects.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t load your projects.'**
+  String get couldNotLoadProjects;
+
+  /// No description provided for @retry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get retry;
+
+  /// No description provided for @tapToOpen.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap to open'**
+  String get tapToOpen;
+
   /// No description provided for @projectId.
   ///
   /// In en, this message translates to:
@@ -373,6 +403,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Choose file'**
   String get chooseFile;
+
+  /// No description provided for @selectFileToTranslate.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a file to translate'**
+  String get selectFileToTranslate;
+
+  /// No description provided for @noFilesInProject.
+  ///
+  /// In en, this message translates to:
+  /// **'No files in this project yet.'**
+  String get noFilesInProject;
+
+  /// No description provided for @couldNotLoadFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn’t load this project’s files.'**
+  String get couldNotLoadFiles;
 
   /// No description provided for @statusLogCopied.
   ///
