@@ -136,6 +136,18 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                       SizedBox(height: 14.h),
                     ],
 
+                    // ── Your projects (from backend) ─────────────
+                    _SectionLabel(label: l10n.yourProjects),
+                    SizedBox(height: 12.h),
+                    _AllProjectsList(
+                      onTap: (id) {
+                        notifier.rememberProject(id);
+                        context.push('/dashboard', extra: id);
+                      },
+                    ),
+
+                    SizedBox(height: 28.h),
+
                     // ── Project ID input ─────────────────────────
                     _SectionLabel(label: l10n.openProject),
                     SizedBox(height: 12.h),
@@ -695,6 +707,187 @@ class _SwipeBackground extends StatelessWidget {
                   size: 20.r,
                 ),
               ],
+      ),
+    );
+  }
+}
+
+// ── All projects (fetched from the backend) ──────────────────────────────────
+class _AllProjectsList extends ConsumerWidget {
+  const _AllProjectsList({required this.onTap});
+  final void Function(int id) onTap;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final projectsAsync = ref.watch(projectsListProvider);
+    return projectsAsync.when(
+      loading: () => Center(
+        child: Padding(
+          padding: EdgeInsets.all(24.r),
+          child: CircularProgressIndicator(
+            strokeWidth: 2,
+            color: Theme.of(context).colorScheme.primary,
+          ),
+        ),
+      ),
+      error: (e, _) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          _AlertBanner(
+            icon: Icons.error_outline_rounded,
+            color: Theme.of(context).colorScheme.error,
+            message: context.l10n.couldNotLoadProjects,
+          ),
+          SizedBox(height: 8.h),
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: TextButton.icon(
+              onPressed: () => ref.invalidate(projectsListProvider),
+              icon: Icon(Icons.refresh_rounded, size: 18.r),
+              label: Text(context.l10n.retry),
+            ),
+          ),
+        ],
+      ),
+      data: (projects) {
+        if (projects.isEmpty) {
+          return Container(
+            padding: EdgeInsets.symmetric(vertical: 32.h, horizontal: 20.w),
+            decoration: BoxDecoration(
+              color: Theme.of(context).cardColor,
+              borderRadius: BorderRadius.circular(AppRadius.lg),
+              border: Border.all(
+                color: Theme.of(context).dividerColor.withValues(alpha: 0.07),
+              ),
+            ),
+            child: Column(
+              children: [
+                Icon(
+                  Icons.folder_off_outlined,
+                  color: Theme.of(context)
+                      .textTheme
+                      .bodyMedium
+                      ?.color
+                      ?.withValues(alpha: 0.4),
+                  size: 36.r,
+                ),
+                SizedBox(height: 10.h),
+                Text(
+                  context.l10n.noProjectsYet,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
+                    fontSize: 13.sp,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return Column(
+          children: [
+            for (var i = 0; i < projects.length; i++) ...[
+              _ProjectListTile(
+                projectId: projects[i].projectId,
+                index: i,
+                onTap: () => onTap(projects[i].projectId),
+              ),
+              if (i < projects.length - 1) SizedBox(height: 8.h),
+            ],
+          ],
+        );
+      },
+    );
+  }
+}
+
+// ── Single fetched-project tile (tap to open) ────────────────────────────────
+class _ProjectListTile extends StatelessWidget {
+  const _ProjectListTile({
+    required this.projectId,
+    required this.index,
+    required this.onTap,
+  });
+
+  final int projectId;
+  final int index;
+  final VoidCallback onTap;
+
+  static const _colors = [
+    AppColors.primary,
+    AppColors.secondary,
+    AppColors.purple,
+    AppColors.amber,
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    final color = _colors[index % _colors.length];
+    return Material(
+      color: Theme.of(context).cardColor,
+      borderRadius: BorderRadius.circular(16.r),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16.r),
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.r),
+            border: Border.all(color: color.withValues(alpha: 0.18)),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 42.w,
+                height: 42.h,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(color: color.withValues(alpha: 0.25)),
+                ),
+                child: Icon(Icons.folder_rounded, color: color, size: 20.r),
+              ),
+              SizedBox(width: 14.w),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      context.l10n.projectNumber(projectId),
+                      style: TextStyle(
+                        color: Theme.of(context).textTheme.bodyLarge?.color,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 14.sp,
+                      ),
+                    ),
+                    SizedBox(height: 2.h),
+                    Text(
+                      context.l10n.tapToOpen,
+                      style: TextStyle(
+                        color: Theme.of(context)
+                            .textTheme
+                            .bodyMedium
+                            ?.color
+                            ?.withValues(alpha: 0.6),
+                        fontSize: 11.sp,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.color
+                    ?.withValues(alpha: 0.4),
+                size: 20.r,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/config/constants.dart';
+import '../../../projects/presentation/providers/recent_projects_provider.dart';
 import '../providers/translation_provider.dart';
 import 'language_selector_widget.dart';
 import '../../../../core/theme/app_radius.dart';
@@ -28,6 +29,26 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
   void dispose() {
     _fileIdController.dispose();
     super.dispose();
+  }
+
+  Future<void> _pickFile(BuildContext context) async {
+    final notifier =
+        ref.read(translationNotifierProvider(widget.projectId).notifier);
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (sheetContext) => _FilePickerSheet(
+        projectId: widget.projectId,
+        onPick: (fileName) {
+          notifier.updateFileId(fileName);
+          Navigator.of(sheetContext).pop();
+        },
+      ),
+    );
   }
 
   @override
@@ -57,7 +78,23 @@ class _JobCreationSectionState extends ConsumerState<JobCreationSection> {
           ),
           SizedBox(height: 16.h),
 
-          // ── File ID field ──────────────────────────────────────────
+          // ── Choose a file from the project ─────────────────────────
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: state.isBusy ? null : () => _pickFile(context),
+              style: OutlinedButton.styleFrom(
+                padding: EdgeInsets.symmetric(vertical: 13.h),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md)),
+              ),
+              icon: Icon(Icons.folder_open_rounded, size: 18.r),
+              label: Text(context.l10n.chooseFile),
+            ),
+          ),
+          SizedBox(height: 12.h),
+
+          // ── File ID field (auto-filled by the picker; editable) ────
           TextField(
             controller: _fileIdController,
             enabled: !state.isBusy,
@@ -307,6 +344,148 @@ class _AlertBanner extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+// ─── File picker bottom sheet ───────────────────────────────────────────────
+class _FilePickerSheet extends ConsumerWidget {
+  const _FilePickerSheet({required this.projectId, required this.onPick});
+
+  final int projectId;
+  final ValueChanged<String> onPick;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final filesAsync = ref.watch(projectFilesProvider(projectId));
+    return DraggableScrollableSheet(
+      expand: false,
+      initialChildSize: 0.55,
+      minChildSize: 0.3,
+      maxChildSize: 0.9,
+      builder: (context, scrollController) {
+        return Column(
+          children: [
+            SizedBox(height: 12.h),
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color:
+                    Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                borderRadius: BorderRadius.circular(2.r),
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.fromLTRB(20.w, 14.h, 20.w, 8.h),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: Text(
+                  context.l10n.selectFileToTranslate,
+                  style: TextStyle(
+                    fontFamily: 'Georgia',
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: filesAsync.when(
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Padding(
+                  padding: EdgeInsets.all(20.r),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _AlertBanner(
+                        icon: Icons.error_outline_rounded,
+                        color: Theme.of(context).colorScheme.error,
+                        message: context.l10n.couldNotLoadFiles,
+                      ),
+                      SizedBox(height: 8.h),
+                      TextButton.icon(
+                        onPressed: () =>
+                            ref.invalidate(projectFilesProvider(projectId)),
+                        icon: Icon(Icons.refresh_rounded, size: 18.r),
+                        label: Text(context.l10n.retry),
+                      ),
+                    ],
+                  ),
+                ),
+                data: (files) {
+                  if (files.isEmpty) {
+                    return Center(
+                      child: Text(
+                        context.l10n.noFilesInProject,
+                        style: TextStyle(
+                          fontSize: 13.sp,
+                          color: Theme.of(context).textTheme.bodyMedium?.color,
+                        ),
+                      ),
+                    );
+                  }
+                  return ListView.separated(
+                    controller: scrollController,
+                    padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    itemCount: files.length,
+                    separatorBuilder: (_, _) => SizedBox(height: 8.h),
+                    itemBuilder: (context, index) {
+                      final file = files[index];
+                      return Material(
+                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(12.r),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(12.r),
+                          onTap: () => onPick(file.fileName),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 14.w, vertical: 12.h),
+                            child: Row(
+                              children: [
+                                Icon(Icons.insert_drive_file_outlined,
+                                    size: 18.w,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color),
+                                SizedBox(width: 12.w),
+                                Expanded(
+                                  child: Text(
+                                    file.fileName,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 13.sp,
+                                      fontWeight: FontWeight.w500,
+                                      color: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.color,
+                                    ),
+                                  ),
+                                ),
+                                Icon(Icons.chevron_right_rounded,
+                                    size: 18.w,
+                                    color: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium
+                                        ?.color
+                                        ?.withValues(alpha: 0.4)),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

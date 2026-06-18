@@ -92,6 +92,14 @@ class ProjectsNotifier extends AsyncNotifier<ProjectsState> {
     return true;
   }
 
+  /// Remember a project the user opened from a list, so it also shows in
+  /// Recents. Safe to call repeatedly.
+  Future<void> rememberProject(int projectId) async {
+    if (projectId <= 0) return;
+    await repository.addRecentProject(projectId);
+    ref.invalidate(recentProjectsProvider);
+  }
+
   /// Save project to recent projects list
   Future<void> _saveToRecentProjects(int projectId) async {
     final currentState = state.maybeWhen(
