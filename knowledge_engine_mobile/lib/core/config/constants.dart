@@ -7,8 +7,13 @@ class ApiConstants {
   static const String voicePath = '/api/v1/voice';
   static const String translatePath = '/translate';
 
+  // Project endpoints
+  static String listProjects({int page = 1, int pageSize = 50}) =>
+      '$basePath/projects?page=$page&page_size=$pageSize';
+
   // Data endpoints
   static String uploadFile(int projectId) => '$dataPath/upload/$projectId';
+  static String listProjectFiles(int projectId) => '$dataPath/files/$projectId';
   static String processFile(int projectId) => '$dataPath/process/$projectId';
   static String deleteAllProjectFiles(int projectId) =>
       '$dataPath/delete_all/$projectId';
