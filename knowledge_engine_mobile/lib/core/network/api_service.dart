@@ -10,6 +10,8 @@ import '../models/agent_session.dart';
 import '../models/api_response_base.dart';
 import '../models/index_push_response.dart';
 import '../models/process_response.dart';
+import '../models/project_file.dart';
+import '../models/project_summary.dart';
 import '../models/rag_answer_response.dart';
 import '../models/search_response.dart';
 import '../models/stt_response.dart';
@@ -30,6 +32,17 @@ abstract class ApiService {
     required int projectId,
     required File file,
     ProgressCallback? onProgress,
+  });
+
+  /// List the current user's projects (newest first).
+  Future<List<ProjectSummary>> listProjects({
+    int page = 1,
+    int pageSize = 50,
+  });
+
+  /// List the files stored under a project.
+  Future<List<ProjectFile>> listProjectFiles({
+    required int projectId,
   });
 
   Future<JsonMap> deleteAllProjectFiles({
@@ -155,6 +168,41 @@ class DioApiService implements ApiService {
   }) : _dio = dio ?? DioClient().dio;
 
   final Dio _dio;
+
+  @override
+  Future<List<ProjectSummary>> listProjects({
+    int page = 1,
+    int pageSize = 50,
+  }) {
+    return _get(
+      path: ApiConstants.listProjects(page: page, pageSize: pageSize),
+      parser: (JsonMap json) {
+        final list = ApiResponseBase.readOptionalJsonMapList(json, 'projects') ??
+            const <JsonMap>[];
+        return list.map(ProjectSummary.fromJson).toList(growable: false);
+      },
+      operation: 'list projects',
+      requireSuccessSignal: false,
+      validateSignalIfPresent: true,
+    );
+  }
+
+  @override
+  Future<List<ProjectFile>> listProjectFiles({
+    required int projectId,
+  }) {
+    return _get(
+      path: ApiConstants.listProjectFiles(projectId),
+      parser: (JsonMap json) {
+        final list = ApiResponseBase.readOptionalJsonMapList(json, 'files') ??
+            const <JsonMap>[];
+        return list.map(ProjectFile.fromJson).toList(growable: false);
+      },
+      operation: 'list project files',
+      requireSuccessSignal: false,
+      validateSignalIfPresent: true,
+    );
+  }
 
   @override
   Future<JsonMap> deleteAllProjectFiles({
