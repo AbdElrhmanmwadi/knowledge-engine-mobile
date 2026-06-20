@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/models/agent_chat_response.dart';
+import '../../../../core/widgets/skeleton.dart';
 import '../../../../l10n/l10n.dart';
 import '../providers/agent_notifier.dart';
 import '../providers/agent_provider.dart';
@@ -89,7 +90,8 @@ class _AgentChatPageState extends ConsumerState<AgentChatPage> {
     ref.listen(agentStateProvider(widget.projectId), (previous, next) {
       final countChanged =
           next.messages.length != (previous?.messages.length ?? 0);
-      final lastChanged = next.messages.isNotEmpty &&
+      final lastChanged =
+          next.messages.isNotEmpty &&
           (previous == null ||
               previous.messages.isEmpty ||
               previous.messages.last.content != next.messages.last.content);
@@ -120,11 +122,9 @@ class _AgentChatPageState extends ConsumerState<AgentChatPage> {
               context.l10n.agentSubtitle,
               style: TextStyle(
                 fontSize: 11.sp,
-                color: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.color
-                    ?.withValues(alpha: 0.6),
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
               ),
             ),
           ],
@@ -146,10 +146,7 @@ class _AgentChatPageState extends ConsumerState<AgentChatPage> {
         children: [
           Expanded(
             child: state.hasMessages
-                ? _MessageList(
-                    state: state,
-                    controller: _scrollController,
-                  )
+                ? _MessageList(state: state, controller: _scrollController)
                 : const _EmptyState(),
           ),
           if (state.errorMessage != null)
@@ -205,17 +202,18 @@ class _MessageBubble extends StatelessWidget {
     final bg = isUser
         ? scheme.primary
         : (message.isError
-            ? scheme.error.withValues(alpha: 0.12)
-            : Theme.of(context).cardColor);
+              ? scheme.error.withValues(alpha: 0.12)
+              : Theme.of(context).cardColor);
     final fg = isUser
         ? scheme.onPrimary
         : (message.isError
-            ? scheme.error
-            : Theme.of(context).textTheme.bodyLarge?.color);
+              ? scheme.error
+              : Theme.of(context).textTheme.bodyLarge?.color);
 
     return Align(
-      alignment:
-          isUser ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
+      alignment: isUser
+          ? AlignmentDirectional.centerEnd
+          : AlignmentDirectional.centerStart,
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         constraints: BoxConstraints(maxWidth: 0.82.sw),
@@ -230,22 +228,17 @@ class _MessageBubble extends StatelessWidget {
           ),
           border: isUser
               ? null
-              : Border.all(
-                  color: scheme.onSurface.withValues(alpha: 0.08),
-                ),
+              : Border.all(color: scheme.onSurface.withValues(alpha: 0.08)),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               message.content,
-              style: TextStyle(
-                color: fg,
-                fontSize: 14.sp,
-                height: 1.4,
-              ),
+              style: TextStyle(color: fg, fontSize: 14.sp, height: 1.4),
             ),
-            if (message.sources.isNotEmpty) _SourcesBlock(sources: message.sources),
+            if (message.sources.isNotEmpty)
+              _SourcesBlock(sources: message.sources),
           ],
         ),
       ),
@@ -337,7 +330,9 @@ class _TypingBubble extends StatelessWidget {
           color: Theme.of(context).cardColor,
           borderRadius: BorderRadius.circular(16.r),
           border: Border.all(
-            color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.08),
+            color: Theme.of(
+              context,
+            ).colorScheme.onSurface.withValues(alpha: 0.08),
           ),
         ),
         child: Row(
@@ -404,11 +399,9 @@ class _EmptyState extends StatelessWidget {
               style: TextStyle(
                 fontSize: 13.sp,
                 height: 1.5,
-                color: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.color
-                    ?.withValues(alpha: 0.7),
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
               ),
             ),
           ],
@@ -459,8 +452,10 @@ class _InputBar extends StatelessWidget {
                   hintText: context.l10n.agentInputHint,
                   filled: true,
                   fillColor: Theme.of(context).cardColor,
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16.w,
+                    vertical: 12.h,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(24.r),
                     borderSide: BorderSide(
@@ -481,11 +476,7 @@ class _InputBar extends StatelessWidget {
               ),
             ),
             SizedBox(width: 8.w),
-            _SendButton(
-              isSending: isSending,
-              onSend: onSend,
-              onStop: onStop,
-            ),
+            _SendButton(isSending: isSending, onSend: onSend, onStop: onStop),
           ],
         ),
       ),
@@ -559,10 +550,7 @@ class _ErrorBanner extends StatelessWidget {
 
 // ── Session history sheet ────────────────────────────────────────────────────
 class _SessionHistorySheet extends ConsumerWidget {
-  const _SessionHistorySheet({
-    required this.projectId,
-    required this.onOpen,
-  });
+  const _SessionHistorySheet({required this.projectId, required this.onOpen});
 
   final int projectId;
   final ValueChanged<int> onOpen;
@@ -585,7 +573,9 @@ class _SessionHistorySheet extends ConsumerWidget {
               width: 40.w,
               height: 4.h,
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.2),
+                color: Theme.of(
+                  context,
+                ).colorScheme.onSurface.withValues(alpha: 0.2),
                 borderRadius: BorderRadius.circular(2.r),
               ),
             ),
@@ -616,6 +606,7 @@ class _SessionHistorySheet extends ConsumerWidget {
               child: _SessionList(
                 state: state,
                 scrollController: scrollController,
+                onRefresh: notifier.loadSessions,
                 onOpen: onOpen,
                 onDelete: (sessionId) async {
                   final confirmed = await showDialog<bool>(
@@ -631,8 +622,9 @@ class _SessionHistorySheet extends ConsumerWidget {
                         ),
                         FilledButton(
                           style: FilledButton.styleFrom(
-                            backgroundColor:
-                                Theme.of(dialogContext).colorScheme.error,
+                            backgroundColor: Theme.of(
+                              dialogContext,
+                            ).colorScheme.error,
                           ),
                           onPressed: () =>
                               Navigator.of(dialogContext).pop(true),
@@ -658,17 +650,29 @@ class _SessionList extends StatelessWidget {
   const _SessionList({
     required this.state,
     required this.scrollController,
+    required this.onRefresh,
     required this.onOpen,
     required this.onDelete,
   });
 
   final AgentState state;
   final ScrollController scrollController;
+  final Future<void> Function() onRefresh;
   final ValueChanged<int> onOpen;
   final ValueChanged<int> onDelete;
 
   @override
   Widget build(BuildContext context) {
+    if (state.isLoadingSessions && state.sessions.isEmpty) {
+      return ListView.separated(
+        controller: scrollController,
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        itemCount: 5,
+        separatorBuilder: (_, _) => SizedBox(height: 8.h),
+        itemBuilder: (_, _) => const _SessionSkeleton(),
+      );
+    }
+
     if (!state.isLoadingSessions && state.sessions.isEmpty) {
       return Center(
         child: Text(
@@ -681,63 +685,93 @@ class _SessionList extends StatelessWidget {
       );
     }
 
-    return ListView.separated(
-      controller: scrollController,
-      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-      itemCount: state.sessions.length,
-      separatorBuilder: (_, _) => SizedBox(height: 8.h),
-      itemBuilder: (context, index) {
-        final session = state.sessions[index];
-        final isActive = session.sessionId == state.sessionId;
-        final title = session.title.trim().isEmpty
-            ? context.l10n.agentUntitledSession
-            : session.title;
-        final scheme = Theme.of(context).colorScheme;
-        return Material(
-          color: isActive
-              ? scheme.primary.withValues(alpha: 0.1)
-              : Theme.of(context).cardColor,
-          borderRadius: BorderRadius.circular(12.r),
-          child: InkWell(
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: ListView.separated(
+        controller: scrollController,
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+        itemCount: state.sessions.length,
+        separatorBuilder: (_, _) => SizedBox(height: 8.h),
+        itemBuilder: (context, index) {
+          final session = state.sessions[index];
+          final isActive = session.sessionId == state.sessionId;
+          final title = session.title.trim().isEmpty
+              ? context.l10n.agentUntitledSession
+              : session.title;
+          final scheme = Theme.of(context).colorScheme;
+          return Material(
+            color: isActive
+                ? scheme.primary.withValues(alpha: 0.1)
+                : Theme.of(context).cardColor,
             borderRadius: BorderRadius.circular(12.r),
-            onTap: () => onOpen(session.sessionId),
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    size: 18.w,
-                    color: isActive
-                        ? scheme.primary
-                        : Theme.of(context).textTheme.bodyMedium?.color,
-                  ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 14.sp,
-                        fontWeight:
-                            isActive ? FontWeight.w700 : FontWeight.w500,
-                        color: Theme.of(context).textTheme.bodyLarge?.color,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(12.r),
+              onTap: () => onOpen(session.sessionId),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
+                child: Row(
+                  children: [
+                    Icon(
+                      Icons.chat_bubble_outline_rounded,
+                      size: 18.w,
+                      color: isActive
+                          ? scheme.primary
+                          : Theme.of(context).textTheme.bodyMedium?.color,
+                    ),
+                    SizedBox(width: 12.w),
+                    Expanded(
+                      child: Text(
+                        title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 14.sp,
+                          fontWeight: isActive
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          color: Theme.of(context).textTheme.bodyLarge?.color,
+                        ),
                       ),
                     ),
-                  ),
-                  IconButton(
-                    tooltip: context.l10n.agentDeleteSession,
-                    icon: Icon(Icons.delete_outline_rounded,
-                        size: 18.w, color: scheme.error),
-                    onPressed: () => onDelete(session.sessionId),
-                  ),
-                ],
+                    IconButton(
+                      tooltip: context.l10n.agentDeleteSession,
+                      icon: Icon(
+                        Icons.delete_outline_rounded,
+                        size: 18.w,
+                        color: scheme.error,
+                      ),
+                      onPressed: () => onDelete(session.sessionId),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _SessionSkeleton extends StatelessWidget {
+  const _SessionSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Row(
+        children: [
+          SkeletonBox(width: 18, height: 18, borderRadius: 6),
+          SizedBox(width: 12.w),
+          Expanded(child: SkeletonBox(height: 13)),
+        ],
+      ),
     );
   }
 }
