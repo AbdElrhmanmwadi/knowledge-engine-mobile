@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Reusable app card widget
@@ -36,7 +37,12 @@ class AppCard extends StatelessWidget {
       ),
       color: backgroundColor,
       child: InkWell(
-        onTap: onTap,
+        onTap: onTap == null
+            ? null
+            : () {
+                HapticFeedback.selectionClick();
+                onTap!();
+              },
         borderRadius: BorderRadius.circular(borderRadius.r),
         child: Padding(
           padding: padding ?? EdgeInsets.all(16.r),

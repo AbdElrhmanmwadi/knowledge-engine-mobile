@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 /// Reusable app button widget with loading state
@@ -28,14 +29,19 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void handlePressed() {
+      HapticFeedback.lightImpact();
+      onPressed();
+    }
+
     final button = isOutlined
         ? OutlinedButton(
-            onPressed: isEnabled && !isLoading ? onPressed : null,
+            onPressed: isEnabled && !isLoading ? handlePressed : null,
             style: style,
             child: _buildContent(),
           )
         : ElevatedButton(
-            onPressed: isEnabled && !isLoading ? onPressed : null,
+            onPressed: isEnabled && !isLoading ? handlePressed : null,
             style: style,
             child: _buildContent(),
           );
