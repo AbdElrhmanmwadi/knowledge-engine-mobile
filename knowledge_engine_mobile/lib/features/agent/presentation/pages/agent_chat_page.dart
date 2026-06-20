@@ -214,18 +214,19 @@ class _MessageBubble extends StatelessWidget {
             : Theme.of(context).textTheme.bodyLarge?.color);
 
     return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      alignment:
+          isUser ? AlignmentDirectional.centerEnd : AlignmentDirectional.centerStart,
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         constraints: BoxConstraints(maxWidth: 0.82.sw),
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
         decoration: BoxDecoration(
           color: bg,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(16.r),
-            topRight: Radius.circular(16.r),
-            bottomLeft: Radius.circular(isUser ? 16.r : 4.r),
-            bottomRight: Radius.circular(isUser ? 4.r : 16.r),
+          borderRadius: BorderRadiusDirectional.only(
+            topStart: Radius.circular(16.r),
+            topEnd: Radius.circular(16.r),
+            bottomStart: Radius.circular(isUser ? 16.r : 4.r),
+            bottomEnd: Radius.circular(isUser ? 4.r : 16.r),
           ),
           border: isUser
               ? null
@@ -328,7 +329,7 @@ class _TypingBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerStart,
       child: Container(
         margin: EdgeInsets.only(bottom: 12.h),
         padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),

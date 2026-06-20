@@ -9,6 +9,7 @@ import '../../../../core/localization/language_toggle.dart';
 import '../../../../core/theme/theme_toggle.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../core/widgets/directional_icon.dart';
 import '../../../../l10n/l10n.dart';
 
 import '../../../auth/presentation/providers/auth_notifier.dart';
@@ -449,7 +450,7 @@ class _ProjectInputCard extends StatelessWidget {
                         color: Colors.white,
                       ),
                     )
-                  : Icon(Icons.arrow_forward_rounded, size: 18.r),
+                  : DirectionalIcon(Icons.arrow_forward_rounded, size: 18.r),
               label: Text(
                 state.isLoading
                     ? context.l10n.opening
@@ -591,8 +592,11 @@ class _RecentProjectTile extends StatelessWidget {
     return Dismissible(
       key: ValueKey('project_$projectId'),
       direction: DismissDirection.endToStart,
-      confirmDismiss: (_) => onDelete(),
-      background: _SwipeBackground(alignment: Alignment.centerRight),
+      confirmDismiss: (_) {
+        HapticFeedback.mediumImpact();
+        return onDelete();
+      },
+      background: _SwipeBackground(alignment: AlignmentDirectional.centerEnd),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -641,7 +645,7 @@ class _RecentProjectTile extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
+              DirectionalIcon(
                 Icons.chevron_right_rounded,
                 color: Theme.of(
                   context,
@@ -876,7 +880,7 @@ class _ProjectListTile extends StatelessWidget {
                   ],
                 ),
               ),
-              Icon(
+              DirectionalIcon(
                 Icons.chevron_right_rounded,
                 color: Theme.of(context)
                     .textTheme

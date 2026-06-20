@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_radius.dart';
+import '../../../../core/widgets/directional_icon.dart';
 import '../../../../l10n/l10n.dart';
 import '../../data/models/auth_failure.dart';
 
@@ -241,7 +242,7 @@ class AuthSubmitButton extends StatelessWidget {
                   color: Colors.white,
                 ),
               )
-            : Icon(icon, size: 18.r),
+            : DirectionalIcon(icon, size: 18.r),
         label: Text(isLoading ? loadingLabel : label),
       ),
     );

@@ -78,7 +78,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
           child: Column(
             children: [
               Align(
-                alignment: Alignment.centerRight,
+                alignment: AlignmentDirectional.centerEnd,
                 child: TextButton(
                   onPressed: _saving ? null : _finish,
                   child: Text(l10n.skip),

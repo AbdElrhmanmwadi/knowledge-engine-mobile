@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/config/constants.dart';
+import '../../../../core/widgets/directional_icon.dart';
 import '../providers/translation_provider.dart';
 import '../../../../l10n/l10n.dart';
 
@@ -70,7 +71,7 @@ class LanguageSelectorWidget extends ConsumerWidget {
                   Expanded(child: sourceDropdown),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
-                    child: Icon(Icons.arrow_forward_rounded,
+                    child: DirectionalIcon(Icons.arrow_forward_rounded,
                       color: Theme.of(context).textTheme.bodyMedium?.color?.withValues(alpha: 0.5),
                       size: 18.r),
                   ),

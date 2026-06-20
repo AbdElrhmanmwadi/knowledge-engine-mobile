@@ -6,6 +6,7 @@ import '../../../projects/presentation/providers/recent_projects_provider.dart';
 import '../providers/translation_provider.dart';
 import 'language_selector_widget.dart';
 import '../../../../core/theme/app_radius.dart';
+import '../../../../core/widgets/directional_icon.dart';
 import '../../../../l10n/l10n.dart';
 
 class JobCreationSection extends ConsumerStatefulWidget {
@@ -466,7 +467,7 @@ class _FilePickerSheet extends ConsumerWidget {
                                     ),
                                   ),
                                 ),
-                                Icon(Icons.chevron_right_rounded,
+                                DirectionalIcon(Icons.chevron_right_rounded,
                                     size: 18.w,
                                     color: Theme.of(context)
                                         .textTheme

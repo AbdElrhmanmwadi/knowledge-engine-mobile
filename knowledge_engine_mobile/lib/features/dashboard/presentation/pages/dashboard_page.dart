@@ -1,8 +1,10 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import '../../../../core/widgets/directional_icon.dart';
 import '../../../../l10n/l10n.dart';
 
 // Local design tokens removed — use Theme / AppColors instead
@@ -49,7 +51,7 @@ class _DashboardPageState extends State<DashboardPage>
             elevation: 0,
             leading: IconButton(
               tooltip: context.l10n.goToProjects,
-              icon: Icon(Icons.arrow_back_rounded,
+              icon: DirectionalIcon(Icons.arrow_back_rounded,
                   color: Theme.of(context).textTheme.bodyLarge?.color),
               onPressed: () => context.go('/projects'),
             ),
@@ -334,6 +336,7 @@ class _FeatureCardState extends State<_FeatureCard> {
       onTapDown: (_) => setState(() => _pressed = true),
       onTapUp: (_) {
         setState(() => _pressed = false);
+        HapticFeedback.lightImpact();
         f.onTap();
       },
       onTapCancel: () => setState(() => _pressed = false),
@@ -407,7 +410,7 @@ class _FeatureCardState extends State<_FeatureCard> {
                     color: f.color.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
+                  child: DirectionalIcon(
                     Icons.arrow_forward_rounded,
                     color: f.color,
                     size: 14,

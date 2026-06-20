@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:path/path.dart' as p;
 
@@ -83,9 +84,14 @@ class RecordingCard extends StatelessWidget {
                     ),
                     onPressed: state.isBusy
                         ? null
-                        : isRecording
-                        ? () => notifier.stopRecording()
-                        : () => notifier.startRecording(),
+                        : () {
+                            HapticFeedback.mediumImpact();
+                            if (isRecording) {
+                              notifier.stopRecording();
+                            } else {
+                              notifier.startRecording();
+                            }
+                          },
                   ),
                 ),
               ),
