@@ -10,6 +10,7 @@ import '../../../../core/theme/theme_toggle.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/widgets/directional_icon.dart';
+import '../../../../core/widgets/skeleton.dart';
 import '../../../../l10n/l10n.dart';
 
 import '../../../auth/presentation/providers/auth_notifier.dart';
@@ -88,108 +89,121 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
 
         return _shell(
           context,
-          child: CustomScrollView(
-            slivers: [
-              // ── Collapsing hero ──────────────────────────────────
-              SliverAppBar(
-                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-                expandedHeight: 220.h,
-                pinned: true,
-                elevation: 0,
-                title: Text(
-                  l10n.appTitle,
-                  style: TextStyle(
-                    fontFamily: 'Georgia',
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w600,
-                    letterSpacing: 0.3,
-                    color: Theme.of(context).textTheme.bodyLarge?.color,
+          child: RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              slivers: [
+                // ── Collapsing hero ──────────────────────────────────
+                SliverAppBar(
+                  backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                  expandedHeight: 220.h,
+                  pinned: true,
+                  elevation: 0,
+                  title: Text(
+                    l10n.appTitle,
+                    style: TextStyle(
+                      fontFamily: 'Georgia',
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.3,
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
+                    ),
+                  ),
+                  centerTitle: false,
+                  actions: [
+                    const LanguageToggleButton(),
+                    const ThemeToggleButton(),
+                    IconButton(
+                      icon: Icon(Icons.logout_rounded, size: 20.r),
+                      tooltip: l10n.logout,
+                      onPressed: _confirmLogout,
+                    ),
+                  ],
+                  flexibleSpace: FlexibleSpaceBar(
+                    collapseMode: CollapseMode.parallax,
+                    background: _Hero(waveController: _waveController),
                   ),
                 ),
-                centerTitle: false,
-                actions: [
-                  const LanguageToggleButton(),
-                  const ThemeToggleButton(),
-                  IconButton(
-                    icon: Icon(Icons.logout_rounded, size: 20.r),
-                    tooltip: l10n.logout,
-                    onPressed: _confirmLogout,
-                  ),
-                ],
-                flexibleSpace: FlexibleSpaceBar(
-                  collapseMode: CollapseMode.parallax,
-                  background: _Hero(waveController: _waveController),
-                ),
-              ),
 
-              // ── Body ─────────────────────────────────────────────
-              SliverPadding(
-                padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 12.h),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    // Error banner
-                    if (state.errorMessage != null) ...[
-                      _AlertBanner(
-                        icon: Icons.error_outline_rounded,
-                        color: Theme.of(context).colorScheme.error,
-                        message: state.errorMessage!,
+                // ── Body ─────────────────────────────────────────────
+                SliverPadding(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 20.w,
+                    vertical: 12.h,
+                  ),
+                  sliver: SliverList(
+                    delegate: SliverChildListDelegate([
+                      // Error banner
+                      if (state.errorMessage != null) ...[
+                        _AlertBanner(
+                          icon: Icons.error_outline_rounded,
+                          color: Theme.of(context).colorScheme.error,
+                          message: state.errorMessage!,
+                        ),
+                        SizedBox(height: 14.h),
+                      ],
+
+                      // ── Your projects (from backend) ─────────────
+                      _SectionLabel(label: l10n.yourProjects),
+                      SizedBox(height: 12.h),
+                      _AllProjectsList(
+                        onTap: (id) {
+                          notifier.rememberProject(id);
+                          context.push('/dashboard', extra: id);
+                        },
                       ),
-                      SizedBox(height: 14.h),
-                    ],
 
-                    // ── Your projects (from backend) ─────────────
-                    _SectionLabel(label: l10n.yourProjects),
-                    SizedBox(height: 12.h),
-                    _AllProjectsList(
-                      onTap: (id) {
-                        notifier.rememberProject(id);
-                        context.push('/dashboard', extra: id);
-                      },
-                    ),
+                      SizedBox(height: 28.h),
 
-                    SizedBox(height: 28.h),
+                      // ── Project ID input ─────────────────────────
+                      _SectionLabel(label: l10n.openProject),
+                      SizedBox(height: 12.h),
+                      _ProjectInputCard(
+                        controller: _controller,
+                        state: state,
+                        notifier: notifier,
+                        onOpen: (id) => context.push('/dashboard', extra: id),
+                      ),
 
-                    // ── Project ID input ─────────────────────────
-                    _SectionLabel(label: l10n.openProject),
-                    SizedBox(height: 12.h),
-                    _ProjectInputCard(
-                      controller: _controller,
-                      state: state,
-                      notifier: notifier,
-                      onOpen: (id) => context.push('/dashboard', extra: id),
-                    ),
+                      SizedBox(height: 28.h),
 
-                    SizedBox(height: 28.h),
+                      // ── Recent projects ──────────────────────────
+                      _SectionLabel(label: l10n.recentProjects),
+                      SizedBox(height: 12.h),
+                      _RecentProjectsList(
+                        recentProjects: recentProjects,
+                        notifier: notifier,
+                        onTap: (id) => context.push('/dashboard', extra: id),
+                        onDelete: (id) async {
+                          final ok = await notifier.deleteProject(id);
+                          if (!ok && context.mounted) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(l10n.couldNotDeleteProject(id)),
+                              ),
+                            );
+                          }
+                          return ok;
+                        },
+                      ),
 
-                    // ── Recent projects ──────────────────────────
-                    _SectionLabel(label: l10n.recentProjects),
-                    SizedBox(height: 12.h),
-                    _RecentProjectsList(
-                      recentProjects: recentProjects,
-                      notifier: notifier,
-                      onTap: (id) => context.push('/dashboard', extra: id),
-                      onDelete: (id) async {
-                        final ok = await notifier.deleteProject(id);
-                        if (!ok && context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(l10n.couldNotDeleteProject(id)),
-                            ),
-                          );
-                        }
-                        return ok;
-                      },
-                    ),
-
-                    SizedBox(height: 32.h),
-                  ]),
+                      SizedBox(height: 32.h),
+                    ]),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
     );
+  }
+
+  Future<void> _onRefresh() async {
+    ref.invalidate(recentProjectsProvider);
+    ref.invalidate(projectsListProvider);
+    await ref.read(projectsListProvider.future);
   }
 
   Future<void> _confirmLogout() async {
@@ -725,14 +739,13 @@ class _AllProjectsList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final projectsAsync = ref.watch(projectsListProvider);
     return projectsAsync.when(
-      loading: () => Center(
-        child: Padding(
-          padding: EdgeInsets.all(24.r),
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-        ),
+      loading: () => Column(
+        children: [
+          for (var i = 0; i < 3; i++) ...[
+            const _ProjectTileSkeleton(),
+            if (i < 2) SizedBox(height: 8.h),
+          ],
+        ],
       ),
       error: (e, _) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -768,11 +781,9 @@ class _AllProjectsList extends ConsumerWidget {
               children: [
                 Icon(
                   Icons.folder_off_outlined,
-                  color: Theme.of(context)
-                      .textTheme
-                      .bodyMedium
-                      ?.color
-                      ?.withValues(alpha: 0.4),
+                  color: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                   size: 36.r,
                 ),
                 SizedBox(height: 10.h),
@@ -802,6 +813,41 @@ class _AllProjectsList extends ConsumerWidget {
           ],
         );
       },
+    );
+  }
+}
+
+// ── Loading placeholder mirroring a project tile ─────────────────────────────
+class _ProjectTileSkeleton extends StatelessWidget {
+  const _ProjectTileSkeleton();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+      decoration: BoxDecoration(
+        color: Theme.of(context).cardColor,
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: Theme.of(context).dividerColor.withValues(alpha: 0.07),
+        ),
+      ),
+      child: Row(
+        children: [
+          SkeletonBox(width: 42, height: 42, borderRadius: 12),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SkeletonBox(width: 120, height: 14),
+                SizedBox(height: 8.h),
+                SkeletonBox(width: 80, height: 11),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -869,11 +915,9 @@ class _ProjectListTile extends StatelessWidget {
                     Text(
                       context.l10n.tapToOpen,
                       style: TextStyle(
-                        color: Theme.of(context)
-                            .textTheme
-                            .bodyMedium
-                            ?.color
-                            ?.withValues(alpha: 0.6),
+                        color: Theme.of(
+                          context,
+                        ).textTheme.bodyMedium?.color?.withValues(alpha: 0.6),
                         fontSize: 11.sp,
                       ),
                     ),
@@ -882,11 +926,9 @@ class _ProjectListTile extends StatelessWidget {
               ),
               DirectionalIcon(
                 Icons.chevron_right_rounded,
-                color: Theme.of(context)
-                    .textTheme
-                    .bodyMedium
-                    ?.color
-                    ?.withValues(alpha: 0.4),
+                color: Theme.of(
+                  context,
+                ).textTheme.bodyMedium?.color?.withValues(alpha: 0.4),
                 size: 20.r,
               ),
             ],
