@@ -1,10 +1,9 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/widgets/directional_icon.dart';
+import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 import '../../data/models/auth_failure.dart';
 
@@ -13,7 +12,7 @@ import '../../data/models/auth_failure.dart';
 ///
 /// Renders an animated wave background (matching the Files and Onboarding
 /// pages) behind the form to keep the app's visual identity consistent.
-class AuthScaffold extends StatefulWidget {
+class AuthScaffold extends StatelessWidget {
   const AuthScaffold({
     super.key,
     required this.title,
@@ -26,29 +25,6 @@ class AuthScaffold extends StatefulWidget {
   final String subtitle;
   final List<Widget> children;
   final Widget? footer;
-
-  @override
-  State<AuthScaffold> createState() => _AuthScaffoldState();
-}
-
-class _AuthScaffoldState extends State<AuthScaffold>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _waveController;
-
-  @override
-  void initState() {
-    super.initState();
-    _waveController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _waveController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +55,9 @@ class _AuthScaffoldState extends State<AuthScaffold>
             right: 0,
             bottom: 0,
             height: 220.h,
-            child: AnimatedBuilder(
-              animation: _waveController,
-              builder: (_, _) => CustomPaint(
-                size: Size.infinite,
-                painter: _WavePainter(
-                  progress: _waveController.value,
-                  color1: colors.primary.withValues(alpha: 0.16),
-                  color2: colors.secondary.withValues(alpha: 0.1),
-                ),
-              ),
+            child: AnimatedWaves(
+              color1: colors.primary.withValues(alpha: 0.16),
+              color2: colors.secondary.withValues(alpha: 0.1),
             ),
           ),
           SafeArea(
@@ -120,7 +89,7 @@ class _AuthScaffoldState extends State<AuthScaffold>
                 ),
                 SizedBox(height: 14.h),
                 Text(
-                  widget.title,
+                  title,
                   style: TextStyle(
                     fontFamily: 'Georgia',
                     fontSize: 26.sp,
@@ -132,7 +101,7 @@ class _AuthScaffoldState extends State<AuthScaffold>
                 ),
                 SizedBox(height: 6.h),
                 Text(
-                  widget.subtitle,
+                  subtitle,
                   style: TextStyle(
                     fontSize: 13.sp,
                     color: theme.textTheme.bodyLarge?.color
@@ -150,12 +119,12 @@ class _AuthScaffoldState extends State<AuthScaffold>
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: widget.children,
+                    children: children,
                   ),
                 ),
-                if (widget.footer != null) ...[
+                if (footer != null) ...[
                   SizedBox(height: 18.h),
-                  Center(child: widget.footer),
+                  Center(child: footer),
                 ],
               ],
             ),
@@ -166,42 +135,6 @@ class _AuthScaffoldState extends State<AuthScaffold>
       ),
     );
   }
-}
-
-class _WavePainter extends CustomPainter {
-  const _WavePainter(
-      {required this.progress, required this.color1, required this.color2});
-  final double progress;
-  final Color color1;
-  final Color color2;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    void wave(Color c, double amp, double speed, double off) {
-      final p = Paint()
-        ..color = c
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
-      final path = Path();
-      final phase = (progress * speed + off) * 2 * math.pi;
-      path.moveTo(0, size.height * 0.6);
-      for (double x = 0; x <= size.width; x++) {
-        path.lineTo(
-            x,
-            size.height * 0.6 +
-                math.sin(x / size.width * 3 * math.pi + phase) * amp);
-      }
-      canvas.drawPath(path, p);
-    }
-
-    wave(color1, 14, 0.55, 0.0);
-    wave(color1.withValues(alpha: 0.5), 9, 1.0, 0.5);
-    wave(color2, 18, 0.4, 1.0);
-    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
-  }
-
-  @override
-  bool shouldRepaint(_WavePainter old) => old.progress != progress;
 }
 
 /// Text field styled consistently with the rest of the app.

@@ -1,5 +1,3 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +9,7 @@ import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/widgets/directional_icon.dart';
 import '../../../../core/widgets/skeleton.dart';
+import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 
 import '../../../auth/presentation/providers/auth_notifier.dart';
@@ -26,25 +25,18 @@ class ProjectsPage extends ConsumerStatefulWidget {
   ConsumerState<ProjectsPage> createState() => _ProjectsPageState();
 }
 
-class _ProjectsPageState extends ConsumerState<ProjectsPage>
-    with SingleTickerProviderStateMixin {
+class _ProjectsPageState extends ConsumerState<ProjectsPage> {
   late final TextEditingController _controller;
-  late final AnimationController _waveController;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _waveController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    )..repeat();
   }
 
   @override
   void dispose() {
     _controller.dispose();
-    _waveController.dispose();
     super.dispose();
   }
 
@@ -122,7 +114,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
                   ],
                   flexibleSpace: FlexibleSpaceBar(
                     collapseMode: CollapseMode.parallax,
-                    background: _Hero(waveController: _waveController),
+                    background: const _Hero(),
                   ),
                 ),
 
@@ -240,8 +232,7 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage>
 
 // ── Hero header ──────────────────────────────────────────────────────────────
 class _Hero extends StatelessWidget {
-  const _Hero({required this.waveController});
-  final AnimationController waveController;
+  const _Hero();
 
   @override
   Widget build(BuildContext context) {
@@ -261,19 +252,12 @@ class _Hero extends StatelessWidget {
             ),
           ),
         ),
-        AnimatedBuilder(
-          animation: waveController,
-          builder: (_, _) => CustomPaint(
-            painter: _WavePainter(
-              progress: waveController.value,
-              color1: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.16),
-              color2: Theme.of(
-                context,
-              ).colorScheme.secondary.withValues(alpha: 0.09),
-            ),
-          ),
+        AnimatedWaves(
+          duration: const Duration(seconds: 4),
+          color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.16),
+          color2: Theme.of(
+            context,
+          ).colorScheme.secondary.withValues(alpha: 0.09),
         ),
         Positioned(
           bottom: 28,
@@ -334,46 +318,6 @@ class _Hero extends StatelessWidget {
       ],
     );
   }
-}
-
-class _WavePainter extends CustomPainter {
-  const _WavePainter({
-    required this.progress,
-    required this.color1,
-    required this.color2,
-  });
-  final double progress;
-  final Color color1;
-  final Color color2;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    void wave(Color c, double amp, double speed, double offset) {
-      final p = Paint()
-        ..color = c
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
-      final path = Path();
-      final phase = (progress * speed + offset) * 2 * math.pi;
-      path.moveTo(0, size.height * 0.6);
-      for (double x = 0; x <= size.width; x++) {
-        path.lineTo(
-          x,
-          size.height * 0.6 +
-              math.sin(x / size.width * 3 * math.pi + phase) * amp,
-        );
-      }
-      canvas.drawPath(path, p);
-    }
-
-    wave(color1, 14, 0.55, 0.0);
-    wave(color1.withValues(alpha: 0.5), 9, 1.0, 0.5);
-    wave(color2, 18, 0.4, 1.0);
-    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
-  }
-
-  @override
-  bool shouldRepaint(_WavePainter old) => old.progress != progress;
 }
 
 // ── Project input card ───────────────────────────────────────────────────────

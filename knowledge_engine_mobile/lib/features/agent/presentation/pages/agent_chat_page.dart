@@ -1,11 +1,10 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../core/models/agent_chat_response.dart';
 import '../../../../core/widgets/skeleton.dart';
+import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 import '../providers/agent_notifier.dart';
 import '../providers/agent_provider.dart';
@@ -361,31 +360,8 @@ class _TypingBubble extends StatelessWidget {
 }
 
 // ── Empty state ──────────────────────────────────────────────────────────────
-class _EmptyState extends StatefulWidget {
+class _EmptyState extends StatelessWidget {
   const _EmptyState();
-
-  @override
-  State<_EmptyState> createState() => _EmptyStateState();
-}
-
-class _EmptyStateState extends State<_EmptyState>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _waveController;
-
-  @override
-  void initState() {
-    super.initState();
-    _waveController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _waveController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -400,16 +376,9 @@ class _EmptyStateState extends State<_EmptyState>
           right: 0,
           bottom: 0,
           height: 220.h,
-          child: AnimatedBuilder(
-            animation: _waveController,
-            builder: (_, _) => CustomPaint(
-              size: Size.infinite,
-              painter: _WavePainter(
-                progress: _waveController.value,
-                color1: colors.primary.withValues(alpha: 0.16),
-                color2: colors.secondary.withValues(alpha: 0.1),
-              ),
-            ),
+          child: AnimatedWaves(
+            color1: colors.primary.withValues(alpha: 0.16),
+            color2: colors.secondary.withValues(alpha: 0.1),
           ),
         ),
         Center(
@@ -458,42 +427,6 @@ class _EmptyStateState extends State<_EmptyState>
       ],
     );
   }
-}
-
-class _WavePainter extends CustomPainter {
-  const _WavePainter(
-      {required this.progress, required this.color1, required this.color2});
-  final double progress;
-  final Color color1;
-  final Color color2;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    void wave(Color c, double amp, double speed, double off) {
-      final p = Paint()
-        ..color = c
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
-      final path = Path();
-      final phase = (progress * speed + off) * 2 * math.pi;
-      path.moveTo(0, size.height * 0.6);
-      for (double x = 0; x <= size.width; x++) {
-        path.lineTo(
-            x,
-            size.height * 0.6 +
-                math.sin(x / size.width * 3 * math.pi + phase) * amp);
-      }
-      canvas.drawPath(path, p);
-    }
-
-    wave(color1, 14, 0.55, 0.0);
-    wave(color1.withValues(alpha: 0.5), 9, 1.0, 0.5);
-    wave(color2, 18, 0.4, 1.0);
-    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
-  }
-
-  @override
-  bool shouldRepaint(_WavePainter old) => old.progress != progress;
 }
 
 // ── Input bar ────────────────────────────────────────────────────────────────

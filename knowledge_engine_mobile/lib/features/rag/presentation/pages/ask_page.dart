@@ -1,10 +1,9 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../core/widgets/loading_overlay.dart';
+import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 import '../providers/rag_provider.dart';
 import '../widgets/answer_display_widget.dart';
@@ -25,25 +24,7 @@ class AskPage extends ConsumerStatefulWidget {
   
 }
 
-class _AskPageState extends ConsumerState<AskPage>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _waveController;
-
-  @override
-  void initState() {
-    super.initState();
-    _waveController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _waveController.dispose();
-    super.dispose();
-  }
-
+class _AskPageState extends ConsumerState<AskPage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(ragStateProvider(widget.projectId));
@@ -76,7 +57,6 @@ class _AskPageState extends ConsumerState<AskPage>
                 collapseMode: CollapseMode.parallax,
                 background: _AskHero(
                   projectId: widget.projectId,
-                  waveController: _waveController,
                 ),
               ),
             ),
@@ -124,11 +104,9 @@ class _AskPageState extends ConsumerState<AskPage>
 class _AskHero extends StatelessWidget {
   const _AskHero({
     required this.projectId,
-    required this.waveController,
   });
 
   final int projectId;
-  final AnimationController waveController;
 
   @override
   Widget build(BuildContext context) {
@@ -150,15 +128,9 @@ class _AskHero extends StatelessWidget {
           ),
         ),
         // Animated waves
-        AnimatedBuilder(
-          animation: waveController,
-          builder: (_, _) => CustomPaint(
-            painter: _AskWavePainter(
-              progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
-              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.12),
-            ),
-          ),
+        AnimatedWaves(
+          color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
+          color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.12),
         ),
         // Content
         Positioned(
@@ -233,46 +205,6 @@ class _HeroBadge extends StatelessWidget {
       ),
     );
   }
-}
-
-// ── Wave painter ─────────────────────────────────────────────────────────────
-class _AskWavePainter extends CustomPainter {
-  const _AskWavePainter({
-    required this.progress,
-    required this.color1,
-    required this.color2,
-  });
-
-  final double progress;
-  final Color color1;
-  final Color color2;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    void wave(Color color, double amp, double speed, double offset) {
-      final paint = Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
-      final path = Path();
-      final phase = (progress * speed + offset) * 2 * math.pi;
-      path.moveTo(0, size.height * 0.55);
-      for (double x = 0; x <= size.width; x++) {
-        final y = size.height * 0.55 +
-            math.sin(x / size.width * 3 * math.pi + phase) * amp;
-        path.lineTo(x, y);
-      }
-      canvas.drawPath(path, paint);
-    }
-
-    wave(color1, 15, 0.6, 0.0);
-    wave(color1.withValues(alpha: 0.5), 9, 1.1, 0.5);
-    wave(color2, 19, 0.45, 0.9);
-    wave(color2.withValues(alpha: 0.4), 7, 1.3, 1.4);
-  }
-
-  @override
-  bool shouldRepaint(_AskWavePainter old) => old.progress != progress;
 }
 
 // ── Feature divider ──────────────────────────────────────────────────────────

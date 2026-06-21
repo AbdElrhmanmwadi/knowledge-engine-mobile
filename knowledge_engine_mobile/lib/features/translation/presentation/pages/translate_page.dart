@@ -1,9 +1,8 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../../core/widgets/loading_overlay.dart';
+import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 import '../providers/translation_provider.dart';
 import '../widgets/job_creation_section.dart';
@@ -21,25 +20,7 @@ class TranslatePage extends ConsumerStatefulWidget {
   ConsumerState<TranslatePage> createState() => _TranslatePageState();
 }
 
-class _TranslatePageState extends ConsumerState<TranslatePage>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _waveController;
-
-  @override
-  void initState() {
-    super.initState();
-    _waveController = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 3),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _waveController.dispose();
-    super.dispose();
-  }
-
+class _TranslatePageState extends ConsumerState<TranslatePage> {
   @override
   Widget build(BuildContext context) {
     final state = ref.watch(translationStateProvider(widget.projectId));
@@ -71,7 +52,6 @@ class _TranslatePageState extends ConsumerState<TranslatePage>
                 collapseMode: CollapseMode.parallax,
                 background: _TranslateHero(
                   projectId: widget.projectId,
-                  waveController: _waveController,
                 ),
               ),
             ),
@@ -97,11 +77,9 @@ class _TranslatePageState extends ConsumerState<TranslatePage>
 class _TranslateHero extends StatelessWidget {
   const _TranslateHero({
     required this.projectId,
-    required this.waveController,
   });
 
   final int projectId;
-  final AnimationController waveController;
 
   @override
   Widget build(BuildContext context) {
@@ -121,15 +99,9 @@ class _TranslateHero extends StatelessWidget {
             ),
           ),
         ),
-        AnimatedBuilder(
-          animation: waveController,
-          builder: (_, _) => CustomPaint(
-            painter: _TranslateWavePainter(
-              progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
-              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
-            ),
-          ),
+        AnimatedWaves(
+          color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.18),
+          color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
         ),
         Positioned(
           bottom: 24,
@@ -185,41 +157,3 @@ class _TranslateHero extends StatelessWidget {
   }
 }
 
-class _TranslateWavePainter extends CustomPainter {
-  const _TranslateWavePainter({
-    required this.progress,
-    required this.color1,
-    required this.color2,
-  });
-
-  final double progress;
-  final Color color1;
-  final Color color2;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    void wave(Color color, double amp, double speed, double offset) {
-      final paint = Paint()
-        ..color = color
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
-      final path = Path();
-      final phase = (progress * speed + offset) * 2 * math.pi;
-      path.moveTo(0, size.height * 0.55);
-      for (double x = 0; x <= size.width; x++) {
-        final y = size.height * 0.55 +
-            math.sin(x / size.width * 3 * math.pi + phase) * amp;
-        path.lineTo(x, y);
-      }
-      canvas.drawPath(path, paint);
-    }
-
-    wave(color1, 16, 0.6, 0);
-    wave(color1.withValues(alpha: 0.5), 10, 1.0, 0.5);
-    wave(color2, 20, 0.4, 0.9);
-    wave(color2.withValues(alpha: 0.4), 7, 1.3, 1.3);
-  }
-
-  @override
-  bool shouldRepaint(_TranslateWavePainter old) => old.progress != progress;
-}

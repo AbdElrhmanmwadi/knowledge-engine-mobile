@@ -1,10 +1,9 @@
-import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../core/widgets/directional_icon.dart';
+import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 
 // Local design tokens removed — use Theme / AppColors instead
@@ -18,25 +17,7 @@ class DashboardPage extends StatefulWidget {
   State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _DashboardPageState extends State<DashboardPage>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _wave;
-
-  @override
-  void initState() {
-    super.initState();
-    _wave = AnimationController(
-      vsync: this,
-      duration: const Duration(seconds: 4),
-    )..repeat();
-  }
-
-  @override
-  void dispose() {
-    _wave.dispose();
-    super.dispose();
-  }
-
+class _DashboardPageState extends State<DashboardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -70,7 +51,6 @@ class _DashboardPageState extends State<DashboardPage>
               collapseMode: CollapseMode.parallax,
               background: _DashboardHero(
                 projectId: widget.projectId,
-                waveController: _wave,
               ),
             ),
           ),
@@ -107,10 +87,8 @@ class _DashboardPageState extends State<DashboardPage>
 class _DashboardHero extends StatelessWidget {
   const _DashboardHero({
     required this.projectId,
-    required this.waveController,
   });
   final int projectId;
-  final AnimationController waveController;
 
   @override
   Widget build(BuildContext context) {
@@ -132,15 +110,10 @@ class _DashboardHero extends StatelessWidget {
           ),
         ),
         // Animated waves
-        AnimatedBuilder(
-          animation: waveController,
-          builder: (_, _) => CustomPaint(
-            painter: _WavePainter(
-              progress: waveController.value,
-              color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
-              color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
-            ),
-          ),
+        AnimatedWaves(
+          duration: const Duration(seconds: 4),
+          color1: Theme.of(context).colorScheme.primary.withValues(alpha: 0.15),
+          color2: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.1),
         ),
         // Content
         Positioned(
@@ -196,41 +169,6 @@ class _DashboardHero extends StatelessWidget {
       ],
     );
   }
-}
-
-class _WavePainter extends CustomPainter {
-  const _WavePainter(
-      {required this.progress, required this.color1, required this.color2});
-  final double progress;
-  final Color color1;
-  final Color color2;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    void wave(Color c, double amp, double speed, double off) {
-      final p = Paint()
-        ..color = c
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.5;
-      final path = Path();
-      final phase = (progress * speed + off) * 2 * math.pi;
-      path.moveTo(0, size.height * 0.6);
-      for (double x = 0; x <= size.width; x++) {
-        path.lineTo(x,
-            size.height * 0.6 +
-                math.sin(x / size.width * 3 * math.pi + phase) * amp);
-      }
-      canvas.drawPath(path, p);
-    }
-
-    wave(color1, 14, 0.55, 0.0);
-    wave(color1.withValues(alpha: 0.5), 8, 1.0, 0.5);
-    wave(color2, 18, 0.4, 1.0);
-    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
-  }
-
-  @override
-  bool shouldRepaint(_WavePainter old) => old.progress != progress;
 }
 
 // ── Feature grid ─────────────────────────────────────────────────────────────
