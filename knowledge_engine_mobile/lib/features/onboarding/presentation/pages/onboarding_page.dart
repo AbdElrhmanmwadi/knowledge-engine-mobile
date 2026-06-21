@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
@@ -11,17 +13,29 @@ class OnboardingPage extends StatefulWidget {
   State<OnboardingPage> createState() => _OnboardingPageState();
 }
 
-class _OnboardingPageState extends State<OnboardingPage> {
+class _OnboardingPageState extends State<OnboardingPage>
+    with SingleTickerProviderStateMixin {
   static const _storageKey = 'hasSeenOnboarding';
   static const _slideCount = 3;
 
   final _controller = PageController();
+  late final AnimationController _waveController;
   int _index = 0;
   bool _saving = false;
 
   @override
+  void initState() {
+    super.initState();
+    _waveController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat();
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
+    _waveController.dispose();
     super.dispose();
   }
 
@@ -72,7 +86,41 @@ class _OnboardingPageState extends State<OnboardingPage> {
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Animated wave background (same style as the Files page).
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  theme.scaffoldBackgroundColor,
+                  colors.primary.withValues(alpha: 0.35),
+                  colors.secondary.withValues(alpha: 0.1),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 220.h,
+            child: AnimatedBuilder(
+              animation: _waveController,
+              builder: (_, _) => CustomPaint(
+                size: Size.infinite,
+                painter: _WavePainter(
+                  progress: _waveController.value,
+                  color1: colors.primary.withValues(alpha: 0.16),
+                  color2: colors.secondary.withValues(alpha: 0.1),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
         child: Padding(
           padding: EdgeInsets.fromLTRB(24.w, 20.h, 24.w, 24.h),
           child: Column(
@@ -130,9 +178,47 @@ class _OnboardingPageState extends State<OnboardingPage> {
             ],
           ),
         ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _WavePainter extends CustomPainter {
+  const _WavePainter(
+      {required this.progress, required this.color1, required this.color2});
+  final double progress;
+  final Color color1;
+  final Color color2;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    void wave(Color c, double amp, double speed, double off) {
+      final p = Paint()
+        ..color = c
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5;
+      final path = Path();
+      final phase = (progress * speed + off) * 2 * math.pi;
+      path.moveTo(0, size.height * 0.6);
+      for (double x = 0; x <= size.width; x++) {
+        path.lineTo(
+            x,
+            size.height * 0.6 +
+                math.sin(x / size.width * 3 * math.pi + phase) * amp);
+      }
+      canvas.drawPath(path, p);
+    }
+
+    wave(color1, 14, 0.55, 0.0);
+    wave(color1.withValues(alpha: 0.5), 9, 1.0, 0.5);
+    wave(color2, 18, 0.4, 1.0);
+    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
+  }
+
+  @override
+  bool shouldRepaint(_WavePainter old) => old.progress != progress;
 }
 
 class _OnboardingPanel extends StatelessWidget {

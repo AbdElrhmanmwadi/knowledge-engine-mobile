@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -8,7 +10,10 @@ import '../../data/models/auth_failure.dart';
 
 /// Shared scrollable scaffold for all auth pages: brand badge, serif title,
 /// subtitle and a card containing the form fields.
-class AuthScaffold extends StatelessWidget {
+///
+/// Renders an animated wave background (matching the Files and Onboarding
+/// pages) behind the form to keep the app's visual identity consistent.
+class AuthScaffold extends StatefulWidget {
   const AuthScaffold({
     super.key,
     required this.title,
@@ -23,12 +28,70 @@ class AuthScaffold extends StatelessWidget {
   final Widget? footer;
 
   @override
+  State<AuthScaffold> createState() => _AuthScaffoldState();
+}
+
+class _AuthScaffoldState extends State<AuthScaffold>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _waveController;
+
+  @override
+  void initState() {
+    super.initState();
+    _waveController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 3),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _waveController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colors = theme.colorScheme;
 
     return Scaffold(
       backgroundColor: theme.scaffoldBackgroundColor,
-      body: SafeArea(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Animated wave background (same style as Files / Onboarding pages).
+          Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  theme.scaffoldBackgroundColor,
+                  colors.primary.withValues(alpha: 0.35),
+                  colors.secondary.withValues(alpha: 0.1),
+                ],
+              ),
+            ),
+          ),
+          Positioned(
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 220.h,
+            child: AnimatedBuilder(
+              animation: _waveController,
+              builder: (_, _) => CustomPaint(
+                size: Size.infinite,
+                painter: _WavePainter(
+                  progress: _waveController.value,
+                  color1: colors.primary.withValues(alpha: 0.16),
+                  color2: colors.secondary.withValues(alpha: 0.1),
+                ),
+              ),
+            ),
+          ),
+          SafeArea(
         child: Center(
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
@@ -57,7 +120,7 @@ class AuthScaffold extends StatelessWidget {
                 ),
                 SizedBox(height: 14.h),
                 Text(
-                  title,
+                  widget.title,
                   style: TextStyle(
                     fontFamily: 'Georgia',
                     fontSize: 26.sp,
@@ -69,7 +132,7 @@ class AuthScaffold extends StatelessWidget {
                 ),
                 SizedBox(height: 6.h),
                 Text(
-                  subtitle,
+                  widget.subtitle,
                   style: TextStyle(
                     fontSize: 13.sp,
                     color: theme.textTheme.bodyLarge?.color
@@ -87,20 +150,58 @@ class AuthScaffold extends StatelessWidget {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: children,
+                    children: widget.children,
                   ),
                 ),
-                if (footer != null) ...[
+                if (widget.footer != null) ...[
                   SizedBox(height: 18.h),
-                  Center(child: footer),
+                  Center(child: widget.footer),
                 ],
               ],
             ),
           ),
         ),
+          ),
+        ],
       ),
     );
   }
+}
+
+class _WavePainter extends CustomPainter {
+  const _WavePainter(
+      {required this.progress, required this.color1, required this.color2});
+  final double progress;
+  final Color color1;
+  final Color color2;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    void wave(Color c, double amp, double speed, double off) {
+      final p = Paint()
+        ..color = c
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5;
+      final path = Path();
+      final phase = (progress * speed + off) * 2 * math.pi;
+      path.moveTo(0, size.height * 0.6);
+      for (double x = 0; x <= size.width; x++) {
+        path.lineTo(
+            x,
+            size.height * 0.6 +
+                math.sin(x / size.width * 3 * math.pi + phase) * amp);
+      }
+      canvas.drawPath(path, p);
+    }
+
+    wave(color1, 14, 0.55, 0.0);
+    wave(color1.withValues(alpha: 0.5), 9, 1.0, 0.5);
+    wave(color2, 18, 0.4, 1.0);
+    wave(color2.withValues(alpha: 0.4), 6, 1.2, 1.5);
+  }
+
+  @override
+  bool shouldRepaint(_WavePainter old) => old.progress != progress;
 }
 
 /// Text field styled consistently with the rest of the app.
