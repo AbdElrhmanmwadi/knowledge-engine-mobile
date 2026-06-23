@@ -2,7 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'api_exception.dart';
 import 'auth_interceptor.dart';
+import 'retry_interceptor.dart';
 import '../config/app_config.dart';
+import '../utils/app_logger.dart';
 
 /// Centralized Dio HTTP client with interceptors and configuration
 class DioClient {
@@ -29,8 +31,8 @@ class DioClient {
     _dio = Dio(
       BaseOptions(
         baseUrl: baseUrl ?? AppConfig.getBaseUrl(),
-        connectTimeout: Duration(seconds: AppConfig.requestTimeout),
-        receiveTimeout: Duration(seconds: AppConfig.requestTimeout),
+        connectTimeout: const Duration(seconds: AppConfig.requestTimeout),
+        receiveTimeout: const Duration(seconds: AppConfig.requestTimeout),
         contentType: 'application/json',
         responseType: ResponseType.json,
       ),
@@ -38,10 +40,12 @@ class DioClient {
 
     _authInterceptor = AuthInterceptor(dioProvider: () => _dio);
 
-    // Add interceptors. Auth goes first so it sees raw 401 responses
-    // before the error interceptor wraps them.
+    // Add interceptors. Auth goes first so it handles 401 refresh before
+    // anything else; retry then handles transient network/5xx failures; the
+    // error interceptor wraps whatever remains into a typed ApiException.
     _dio.interceptors.addAll([
       _authInterceptor,
+      RetryInterceptor(dioProvider: () => _dio),
       _LoggingInterceptor(),
       _ErrorInterceptor(),
     ]);
@@ -63,13 +67,12 @@ class _LoggingInterceptor extends Interceptor {
   @override
   void onRequest(RequestOptions options, RequestInterceptorHandler handler) {
     if (kDebugMode) {
-      print('═══════════════════════════════════════════════');
-      print('REQUEST: ${options.method} ${options.path}');
-      print('Headers: ${options.headers}');
-      if (options.data != null) {
-        print('Data: ${options.data}');
-      }
-      print('═══════════════════════════════════════════════');
+      AppLogger.debug(
+        'REQUEST: ${options.method} ${options.path}\n'
+        'Headers: ${options.headers}'
+        '${options.data != null ? '\nData: ${options.data}' : ''}',
+        name: 'http',
+      );
     }
     handler.next(options);
   }
@@ -77,10 +80,11 @@ class _LoggingInterceptor extends Interceptor {
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (kDebugMode) {
-      print('═══════════════════════════════════════════════');
-      print('RESPONSE: ${response.statusCode} ${response.requestOptions.path}');
-      print('Data: ${response.data}');
-      print('═══════════════════════════════════════════════');
+      AppLogger.debug(
+        'RESPONSE: ${response.statusCode} ${response.requestOptions.path}\n'
+        'Data: ${response.data}',
+        name: 'http',
+      );
     }
     handler.next(response);
   }
@@ -88,11 +92,12 @@ class _LoggingInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (kDebugMode) {
-      print('═══════════════════════════════════════════════');
-      print('ERROR: ${err.message}');
-      print('Status Code: ${err.response?.statusCode}');
-      print('Response: ${err.response?.data}');
-      print('═══════════════════════════════════════════════');
+      AppLogger.warning(
+        'ERROR: ${err.message}\n'
+        'Status Code: ${err.response?.statusCode}\n'
+        'Response: ${err.response?.data}',
+        name: 'http',
+      );
     }
     handler.next(err);
   }

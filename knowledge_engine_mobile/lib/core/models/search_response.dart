@@ -62,7 +62,7 @@ class SearchResponse extends ApiResponseBase {
       return const <SearchResultItem>[];
     }
     if (rawResults is! List) {
-      throw FormatException(
+      throw const FormatException(
         'Field "search_results/search_result" must be a list.',
       );
     }

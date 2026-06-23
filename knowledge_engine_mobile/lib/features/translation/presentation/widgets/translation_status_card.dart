@@ -419,7 +419,7 @@ class _ResultSection extends StatelessWidget {
           ),
           if (!isCompleted) ...[
             SizedBox(height: 10.h),
-            _InlineBanner(
+            const _InlineBanner(
               color: Colors.amber,
               icon: Icons.hourglass_top_rounded,
               message:

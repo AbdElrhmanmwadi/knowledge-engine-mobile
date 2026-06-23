@@ -112,9 +112,9 @@ class _ProjectsPageState extends ConsumerState<ProjectsPage> {
                       onPressed: _confirmLogout,
                     ),
                   ],
-                  flexibleSpace: FlexibleSpaceBar(
+                  flexibleSpace: const FlexibleSpaceBar(
                     collapseMode: CollapseMode.parallax,
-                    background: const _Hero(),
+                    background: _Hero(),
                   ),
                 ),
 
@@ -403,7 +403,7 @@ class _ProjectInputCard extends StatelessWidget {
                   ? SizedBox(
                       width: 16.w,
                       height: 16.h,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                         strokeWidth: 2,
                         color: Colors.white,
                       ),
@@ -554,7 +554,7 @@ class _RecentProjectTile extends StatelessWidget {
         HapticFeedback.mediumImpact();
         return onDelete();
       },
-      background: _SwipeBackground(alignment: AlignmentDirectional.centerEnd),
+      background: const _SwipeBackground(alignment: AlignmentDirectional.centerEnd),
       child: GestureDetector(
         onTap: onTap,
         child: Container(
@@ -778,15 +778,15 @@ class _ProjectTileSkeleton extends StatelessWidget {
       ),
       child: Row(
         children: [
-          SkeletonBox(width: 42, height: 42, borderRadius: 12),
+          const SkeletonBox(width: 42, height: 42, borderRadius: 12),
           SizedBox(width: 12.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SkeletonBox(width: 120, height: 14),
+                const SkeletonBox(width: 120, height: 14),
                 SizedBox(height: 8.h),
-                SkeletonBox(width: 80, height: 11),
+                const SkeletonBox(width: 80, height: 11),
               ],
             ),
           ),

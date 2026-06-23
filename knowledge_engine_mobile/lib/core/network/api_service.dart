@@ -242,7 +242,7 @@ class DioApiService implements ApiService {
       } else {
         throw ApiException.parseError(
           message: 'download translated file: unexpected response type',
-          originalException: FormatException('Invalid response payload'),
+          originalException: const FormatException('Invalid response payload'),
         );
       }
 
@@ -273,8 +273,8 @@ class DioApiService implements ApiService {
       onSendProgress: onProgress,
       options: Options(
         contentType: 'multipart/form-data',
-        sendTimeout: Duration(seconds: AppConfig.uploadTimeout),
-        receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+        sendTimeout: const Duration(seconds: AppConfig.uploadTimeout),
+        receiveTimeout: const Duration(seconds: AppConfig.uploadTimeout),
       ),
       parser: UploadResponse.fromJson,
       operation: 'upload file',
@@ -520,8 +520,8 @@ class DioApiService implements ApiService {
       queryParameters: _optionalLanguageQuery(language),
       options: Options(
         contentType: 'multipart/form-data',
-        sendTimeout: Duration(seconds: AppConfig.uploadTimeout),
-        receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+        sendTimeout: const Duration(seconds: AppConfig.uploadTimeout),
+        receiveTimeout: const Duration(seconds: AppConfig.uploadTimeout),
       ),
       parser: SttResponse.fromJson,
       operation: 'speech to text',
@@ -543,7 +543,7 @@ class DioApiService implements ApiService {
         options: Options(
           responseType: ResponseType.bytes,
           contentType: Headers.jsonContentType,
-          receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+          receiveTimeout: const Duration(seconds: AppConfig.uploadTimeout),
         ),
       );
       final status = response.statusCode ?? 0;
@@ -595,8 +595,8 @@ class DioApiService implements ApiService {
       queryParameters: _optionalLanguageQuery(language),
       options: Options(
         contentType: 'multipart/form-data',
-        sendTimeout: Duration(seconds: AppConfig.uploadTimeout),
-        receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+        sendTimeout: const Duration(seconds: AppConfig.uploadTimeout),
+        receiveTimeout: const Duration(seconds: AppConfig.uploadTimeout),
       ),
       parser: VoiceChatResponse.fromJson,
       operation: 'voice chat',
@@ -643,7 +643,7 @@ class DioApiService implements ApiService {
         options: Options(
           responseType: ResponseType.stream,
           headers: <String, dynamic>{'Accept': 'text/event-stream'},
-          receiveTimeout: Duration(seconds: AppConfig.uploadTimeout),
+          receiveTimeout: const Duration(seconds: AppConfig.uploadTimeout),
         ),
         cancelToken: cancelToken,
       );

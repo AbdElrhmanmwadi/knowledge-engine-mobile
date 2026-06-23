@@ -131,7 +131,7 @@ class SearchSection extends ConsumerWidget {
                   ? SizedBox(
                       width: 16.w,
                       height: 16.h,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                           strokeWidth: 2, color: Colors.white),
                     )
                   : Icon(Icons.search_rounded, size: 18.r),

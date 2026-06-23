@@ -73,7 +73,7 @@ class AppTheme {
       fontFamilyFallback: const ['Roboto', 'Arial'],
       primaryColor: primaryColor,
       scaffoldBackgroundColor: backgroundColor,
-      colorScheme: ColorScheme.light(
+      colorScheme: const ColorScheme.light(
         primary: primaryColor,
         secondary: secondaryColor,
         tertiary: tertiaryColor,
@@ -282,7 +282,7 @@ class AppTheme {
       fontFamilyFallback: const ['Roboto', 'Arial'],
       primaryColor: primaryColor,
       scaffoldBackgroundColor: darkBg,
-      colorScheme: ColorScheme.dark(
+      colorScheme: const ColorScheme.dark(
         primary: primaryColor,
         secondary: secondaryColor,
         tertiary: voiceColor,
@@ -390,7 +390,7 @@ class AppTheme {
         style: OutlinedButton.styleFrom(
           foregroundColor: primaryColor,
           padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 12.h),
-          side: BorderSide(color: primaryColor, width: 2),
+          side: const BorderSide(color: primaryColor, width: 2),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(8.r),
           ),
@@ -417,27 +417,27 @@ class AppTheme {
         contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(color: darkCardHov),
+          borderSide: const BorderSide(color: darkCardHov),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(color: darkCardHov),
+          borderSide: const BorderSide(color: darkCardHov),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(color: primaryColor, width: 2),
+          borderSide: const BorderSide(color: primaryColor, width: 2),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(color: errorDark),
+          borderSide: const BorderSide(color: errorDark),
         ),
         focusedErrorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.r),
-          borderSide: BorderSide(color: errorDark, width: 2),
+          borderSide: const BorderSide(color: errorDark, width: 2),
         ),
-        hintStyle: TextStyle(color: darkTextTertiary),
-        labelStyle: TextStyle(color: darkTextSecondary),
-        errorStyle: TextStyle(color: errorDark),
+        hintStyle: const TextStyle(color: darkTextTertiary),
+        labelStyle: const TextStyle(color: darkTextSecondary),
+        errorStyle: const TextStyle(color: errorDark),
       ),
       // Cards
       cardTheme: CardThemeData(
@@ -449,7 +449,7 @@ class AppTheme {
         ),
       ),
       // Dividers
-      dividerTheme: DividerThemeData(
+      dividerTheme: const DividerThemeData(
         color: darkCardHov,
         thickness: 1,
         space: 16,
@@ -466,7 +466,7 @@ class AppTheme {
         ),
       ),
       // Progress indicators
-      progressIndicatorTheme: ProgressIndicatorThemeData(
+      progressIndicatorTheme: const ProgressIndicatorThemeData(
         color: primaryColor,
       ),
       // Checkbox and Radio
@@ -477,7 +477,7 @@ class AppTheme {
           }
           return darkCard;
         }),
-        side: BorderSide(color: darkCardHov),
+        side: const BorderSide(color: darkCardHov),
       ),
     );
   }

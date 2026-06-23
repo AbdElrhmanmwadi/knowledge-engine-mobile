@@ -70,14 +70,14 @@ class _VoicePageState extends ConsumerState<VoicePage>
     final notifier = ref.read(voiceNotifierProvider(widget.projectId).notifier);
     final theme = Theme.of(context);
     final bg = theme.scaffoldBackgroundColor;
-    final accent = AppTheme.accentColor;
-    final teal = AppTheme.voiceColor;
+    const accent = AppTheme.accentColor;
+    const teal = AppTheme.voiceColor;
     final accentSoft = accent.withValues(alpha: 0.08);
-    final card = AppTheme.surfaceColor;
-    final textPrimary = AppTheme.textPrimary;
-    final textSecondary = AppTheme.textSecondary;
-    final error = AppTheme.errorColor;
-    final warning = AppTheme.warningColor;
+    const card = AppTheme.surfaceColor;
+    const textPrimary = AppTheme.textPrimary;
+    const textSecondary = AppTheme.textSecondary;
+    const error = AppTheme.errorColor;
+    const warning = AppTheme.warningColor;
 
     return Scaffold(
       backgroundColor: bg,

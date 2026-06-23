@@ -65,7 +65,7 @@ class AppButton extends StatelessWidget {
           SizedBox(
             width: 16.w,
             height: 16.h,
-            child: CircularProgressIndicator(
+            child: const CircularProgressIndicator(
               strokeWidth: 2,
             ),
           ),

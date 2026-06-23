@@ -126,7 +126,7 @@ class JobStatusSection extends ConsumerWidget {
                   ?  SizedBox(
                       width: 16.w,
                       height: 16.h,
-                      child: CircularProgressIndicator(
+                      child: const CircularProgressIndicator(
                           strokeWidth: 2, color: Color(0xFF0D0F14)),
                     )
                   : Icon(Icons.refresh_rounded, size: 18.r),

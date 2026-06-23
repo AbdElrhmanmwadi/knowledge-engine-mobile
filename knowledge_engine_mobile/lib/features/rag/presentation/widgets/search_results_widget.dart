@@ -157,7 +157,7 @@ class _SearchResultCard extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: '${entry.key}: ',
-                        style: TextStyle(fontWeight: FontWeight.w700),
+                        style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
                       TextSpan(text: '${entry.value}'),
                     ],

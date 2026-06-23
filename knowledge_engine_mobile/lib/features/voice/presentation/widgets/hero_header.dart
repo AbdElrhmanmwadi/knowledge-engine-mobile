@@ -105,7 +105,7 @@ class HeroHeader extends StatelessWidget {
                      Text(
                       'REC',
                       style: TextStyle(
-                        color: Color(0xFFFF5C6B),
+                        color: const Color(0xFFFF5C6B),
                         fontSize: 11.sp,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 1.4,
@@ -121,7 +121,7 @@ class HeroHeader extends StatelessWidget {
                   fontFamily: 'Georgia',
                   fontSize: 26.sp,
                   fontWeight: FontWeight.w700,
-                  color: Color(0xFFF0F2FF),
+                  color: const Color(0xFFF0F2FF),
                   height: 1.2,
                   letterSpacing: -0.3,
                 ),

@@ -150,7 +150,7 @@ class _OnboardingPageState extends State<OnboardingPage> {
                       ? SizedBox(
                           width: 20.w,
                           height: 20.h,
-                          child: CircularProgressIndicator(strokeWidth: 2),
+                          child: const CircularProgressIndicator(strokeWidth: 2),
                         )
                       : Text(isLast ? l10n.getStarted : l10n.next),
                 ),
