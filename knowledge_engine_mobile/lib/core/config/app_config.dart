@@ -1,16 +1,32 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 class AppConfig {
-  /// Backend base URL configuration
+  /// Backend base URL injected at build time, e.g.
+  /// `flutter run --dart-define=API_BASE_URL=https://api.example.com`.
+  /// This always takes precedence when set, in both debug and release builds.
   static const String configuredBaseUrl = String.fromEnvironment(
     'API_BASE_URL',
     defaultValue: '',
   );
-  static const String defaultBaseUrl = 'http://10.0.2.2:8000';
-  static const String prodBaseUrl = 'http://localhost:8000';
+
+  /// Production backend. Replace with the real HTTPS domain before shipping a
+  /// release build, or supply it via `--dart-define=API_BASE_URL=...`.
+  /// Must be HTTPS — plain HTTP is blocked by default on iOS/Android release.
+  static const String prodBaseUrl = 'https://api.example.com';
+
+  /// Local dev backend reached from the Android emulator (host loopback).
   static const String devBaseUrl = 'http://10.0.2.2:8000';
 
-  /// Get the current base URL based on platform and environment
+  /// Local dev backend reached from the iOS simulator / desktop.
+  static const String devBaseUrlIos = 'http://localhost:8000';
+
+  /// Resolves the base URL by priority:
+  /// 1. explicit [overrideUrl] (e.g. user-configured server)
+  /// 2. compile-time [configuredBaseUrl] (`--dart-define`)
+  /// 3. release builds → [prodBaseUrl]
+  /// 4. debug builds → platform-appropriate local dev URL
   static String getBaseUrl({String? overrideUrl}) {
     if (overrideUrl != null && overrideUrl.isNotEmpty) {
       return overrideUrl;
@@ -20,14 +36,15 @@ class AppConfig {
       return configuredBaseUrl;
     }
 
-    // For Android emulator, use 10.0.2.2. Use API_BASE_URL for physical devices.
-    if (Platform.isAndroid) {
-      return devBaseUrl;
-    } else if (Platform.isIOS) {
-      return 'http://localhost:8000';
+    if (kReleaseMode) {
+      return prodBaseUrl;
     }
 
-    return defaultBaseUrl;
+    // Debug/profile: talk to a locally running backend.
+    if (Platform.isAndroid) {
+      return devBaseUrl;
+    }
+    return devBaseUrlIos;
   }
 
   /// API request timeout in seconds
