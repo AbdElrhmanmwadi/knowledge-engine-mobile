@@ -331,6 +331,24 @@
   "agentEmptyBody": "It answers from your project’s documents and remembers the conversation.",
   "agentThinking": "Thinking…",
   "agentSources": "Sources",
+  "a11yYouMessage": "You said: {message}",
+  "@a11yYouMessage": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "a11yAssistantMessage": "Assistant said: {message}",
+  "@a11yAssistantMessage": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "a11yAnswer": "Answer: {answer}",
+  "@a11yAnswer": {
+    "placeholders": {
+      "answer": {}
+    }
+  },
   "agentUntitledSession": "Untitled chat",
   "agentDeleteSession": "Delete conversation",
   "agentDeleteSessionBody": "This conversation will be permanently deleted.",

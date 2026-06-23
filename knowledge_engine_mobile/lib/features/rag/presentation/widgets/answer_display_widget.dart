@@ -59,12 +59,20 @@ class AnswerDisplayWidget extends ConsumerWidget {
           // ── Answer body ───────────────────────────────────────────
           Padding(
             padding: EdgeInsets.fromLTRB(18.w, 0.h, 18.w, 0.h),
-            child: SelectableText(
-              response.answer,
-              style: TextStyle(
-                color: Theme.of(context).textTheme.bodyLarge?.color,
-                fontSize: 14.sp,
-                height: 1.7,
+            child: Semantics(
+              // Announce the answer (and its streaming updates) to screen
+              // readers as a single labelled live region.
+              label: context.l10n.a11yAnswer(response.answer),
+              liveRegion: state.isAnswering,
+              child: ExcludeSemantics(
+                child: SelectableText(
+                  response.answer,
+                  style: TextStyle(
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                    fontSize: 14.sp,
+                    height: 1.7,
+                  ),
+                ),
               ),
             ),
           ),
@@ -205,26 +213,30 @@ class _IconAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(9.r),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, color: color, size: 14.r),
-            SizedBox(width: 5.w),
-            Text(
-              label,
-              style: TextStyle(
-                  color: color, fontSize: 12.sp, fontWeight: FontWeight.w500),
-            ),
-          ],
+    return Semantics(
+      button: true,
+      label: label,
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 11.w, vertical: 7.h),
+          decoration: BoxDecoration(
+            color: color.withValues(alpha: 0.08),
+            borderRadius: BorderRadius.circular(9.r),
+            border: Border.all(color: color.withValues(alpha: 0.2)),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, color: color, size: 14.r),
+              SizedBox(width: 5.w),
+              Text(
+                label,
+                style: TextStyle(
+                    color: color, fontSize: 12.sp, fontWeight: FontWeight.w500),
+              ),
+            ],
+          ),
         ),
       ),
     );

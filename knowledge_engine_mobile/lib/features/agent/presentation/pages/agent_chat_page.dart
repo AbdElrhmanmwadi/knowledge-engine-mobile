@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -64,8 +66,9 @@ class _AgentChatPageState extends ConsumerState<AgentChatPage> {
   }
 
   Future<void> _openHistory() async {
-    // Refresh the list each time the sheet opens.
-    _notifier.loadSessions();
+    // Refresh the list each time the sheet opens. Fire-and-forget: the sheet
+    // rebuilds reactively when the sessions finish loading.
+    unawaited(_notifier.loadSessions());
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -215,32 +218,42 @@ class _MessageBubble extends StatelessWidget {
       alignment: isUser
           ? AlignmentDirectional.centerEnd
           : AlignmentDirectional.centerStart,
-      child: Container(
-        margin: EdgeInsets.only(bottom: 12.h),
-        constraints: BoxConstraints(maxWidth: 0.82.sw),
-        padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: BorderRadiusDirectional.only(
-            topStart: Radius.circular(16.r),
-            topEnd: Radius.circular(16.r),
-            bottomStart: Radius.circular(isUser ? 16.r : 4.r),
-            bottomEnd: Radius.circular(isUser ? 4.r : 16.r),
-          ),
-          border: isUser
-              ? null
-              : Border.all(color: scheme.onSurface.withValues(alpha: 0.08)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              message.content,
-              style: TextStyle(color: fg, fontSize: 14.sp, height: 1.4),
+      child: Semantics(
+        // Announce who is speaking and the message content as one unit for
+        // screen readers; assistant replies update live while streaming.
+        label: isUser
+            ? context.l10n.a11yYouMessage(message.content)
+            : context.l10n.a11yAssistantMessage(message.content),
+        liveRegion: message.isStreaming,
+        child: Container(
+          margin: EdgeInsets.only(bottom: 12.h),
+          constraints: BoxConstraints(maxWidth: 0.82.sw),
+          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: BorderRadiusDirectional.only(
+              topStart: Radius.circular(16.r),
+              topEnd: Radius.circular(16.r),
+              bottomStart: Radius.circular(isUser ? 16.r : 4.r),
+              bottomEnd: Radius.circular(isUser ? 4.r : 16.r),
             ),
-            if (message.sources.isNotEmpty)
-              _SourcesBlock(sources: message.sources),
-          ],
+            border: isUser
+                ? null
+                : Border.all(color: scheme.onSurface.withValues(alpha: 0.08)),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ExcludeSemantics(
+                child: Text(
+                  message.content,
+                  style: TextStyle(color: fg, fontSize: 14.sp, height: 1.4),
+                ),
+              ),
+              if (message.sources.isNotEmpty)
+                _SourcesBlock(sources: message.sources),
+            ],
+          ),
         ),
       ),
     );
@@ -652,7 +665,7 @@ class _SessionHistorySheet extends ConsumerWidget {
                     ),
                   );
                   if (confirmed == true) {
-                    notifier.deleteSession(sessionId);
+                    await notifier.deleteSession(sessionId);
                   }
                 },
               ),
@@ -785,9 +798,9 @@ class _SessionSkeleton extends StatelessWidget {
       ),
       child: Row(
         children: [
-          SkeletonBox(width: 18, height: 18, borderRadius: 6),
+          const SkeletonBox(width: 18, height: 18, borderRadius: 6),
           SizedBox(width: 12.w),
-          Expanded(child: SkeletonBox(height: 13)),
+          const Expanded(child: SkeletonBox(height: 13)),
         ],
       ),
     );

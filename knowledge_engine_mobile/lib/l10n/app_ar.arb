@@ -331,6 +331,24 @@
   "agentEmptyBody": "يجيب من مستندات مشروعك ويتذكر سياق المحادثة.",
   "agentThinking": "يفكّر…",
   "agentSources": "المصادر",
+  "a11yYouMessage": "قلت: {message}",
+  "@a11yYouMessage": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "a11yAssistantMessage": "قال المساعد: {message}",
+  "@a11yAssistantMessage": {
+    "placeholders": {
+      "message": {}
+    }
+  },
+  "a11yAnswer": "الإجابة: {answer}",
+  "@a11yAnswer": {
+    "placeholders": {
+      "answer": {}
+    }
+  },
   "agentUntitledSession": "محادثة بدون عنوان",
   "agentDeleteSession": "حذف المحادثة",
   "agentDeleteSessionBody": "سيتم حذف هذه المحادثة نهائيًا.",

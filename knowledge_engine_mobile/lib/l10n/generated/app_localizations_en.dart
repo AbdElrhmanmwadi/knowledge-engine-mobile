@@ -821,6 +821,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get agentSources => 'Sources';
 
   @override
+  String a11yYouMessage(Object message) {
+    return 'You said: $message';
+  }
+
+  @override
+  String a11yAssistantMessage(Object message) {
+    return 'Assistant said: $message';
+  }
+
+  @override
+  String a11yAnswer(Object answer) {
+    return 'Answer: $answer';
+  }
+
+  @override
   String get agentUntitledSession => 'Untitled chat';
 
   @override

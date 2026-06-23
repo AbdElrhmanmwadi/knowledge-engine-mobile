@@ -1586,6 +1586,24 @@ abstract class AppLocalizations {
   /// **'Sources'**
   String get agentSources;
 
+  /// No description provided for @a11yYouMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'You said: {message}'**
+  String a11yYouMessage(Object message);
+
+  /// No description provided for @a11yAssistantMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Assistant said: {message}'**
+  String a11yAssistantMessage(Object message);
+
+  /// No description provided for @a11yAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer: {answer}'**
+  String a11yAnswer(Object answer);
+
   /// No description provided for @agentUntitledSession.
   ///
   /// In en, this message translates to:

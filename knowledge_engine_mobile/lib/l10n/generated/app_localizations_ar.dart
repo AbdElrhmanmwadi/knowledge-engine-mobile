@@ -818,6 +818,21 @@ class AppLocalizationsAr extends AppLocalizations {
   String get agentSources => 'المصادر';
 
   @override
+  String a11yYouMessage(Object message) {
+    return 'قلت: $message';
+  }
+
+  @override
+  String a11yAssistantMessage(Object message) {
+    return 'قال المساعد: $message';
+  }
+
+  @override
+  String a11yAnswer(Object answer) {
+    return 'الإجابة: $answer';
+  }
+
+  @override
   String get agentUntitledSession => 'محادثة بدون عنوان';
 
   @override
