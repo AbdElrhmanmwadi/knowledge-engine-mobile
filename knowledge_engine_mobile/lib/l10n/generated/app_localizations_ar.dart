@@ -859,4 +859,25 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get cancel => 'إلغاء';
+
+  @override
+  String get feedbackPrompt => 'هل كانت هذه الإجابة مفيدة؟';
+
+  @override
+  String get feedbackThanks => 'شكرًا على ملاحظتك!';
+
+  @override
+  String get feedbackHelpful => 'مفيدة';
+
+  @override
+  String get feedbackNotHelpful => 'غير مفيدة';
+
+  @override
+  String get feedbackCommentHint => 'ما الخطأ في الإجابة؟ (اختياري)';
+
+  @override
+  String get feedbackSend => 'إرسال';
+
+  @override
+  String get feedbackError => 'تعذّر إرسال الملاحظة. حاول مرة أخرى.';
 }
