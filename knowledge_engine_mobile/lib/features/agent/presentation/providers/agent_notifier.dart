@@ -5,6 +5,7 @@ import '../../../../core/models/agent_chat_response.dart';
 import '../../../../core/models/agent_session.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/network/user_friendly_error.dart';
+import '../../../feedback/data/repositories/feedback_repository.dart';
 import '../../data/repositories/agent_repository.dart';
 
 /// A single chat bubble rendered in the conversation.
@@ -15,6 +16,8 @@ class ChatMessage {
     this.sources = const <AgentSource>[],
     this.isError = false,
     this.isStreaming = false,
+    this.rating,
+    this.isSubmittingFeedback = false,
   });
 
   /// "user" | "assistant"
@@ -26,7 +29,33 @@ class ChatMessage {
   /// True while an assistant message is still receiving streamed tokens.
   final bool isStreaming;
 
+  /// Submitted/optimistic answer rating: `1` (👍), `-1` (👎), or `null`.
+  final int? rating;
+  final bool isSubmittingFeedback;
+
   bool get isUser => role == 'user';
+
+  static const Object _unset = Object();
+
+  ChatMessage copyWith({
+    String? role,
+    String? content,
+    List<AgentSource>? sources,
+    bool? isError,
+    bool? isStreaming,
+    Object? rating = _unset,
+    bool? isSubmittingFeedback,
+  }) {
+    return ChatMessage(
+      role: role ?? this.role,
+      content: content ?? this.content,
+      sources: sources ?? this.sources,
+      isError: isError ?? this.isError,
+      isStreaming: isStreaming ?? this.isStreaming,
+      rating: identical(rating, _unset) ? this.rating : rating as int?,
+      isSubmittingFeedback: isSubmittingFeedback ?? this.isSubmittingFeedback,
+    );
+  }
 
   factory ChatMessage.fromAgentMessage(AgentMessage message) {
     return ChatMessage(
@@ -106,12 +135,14 @@ class AgentNotifier extends AsyncNotifier<AgentState> {
 
   final int _projectId;
   late AgentRepository _repository;
+  late FeedbackRepository _feedbackRepository;
   CancelToken? _cancelToken;
   bool _disposed = false;
 
   @override
   AgentState build() {
     _repository = AgentRepository();
+    _feedbackRepository = FeedbackRepository();
     ref.onDispose(() {
       _disposed = true;
       _cancelToken?.cancel('disposed');
@@ -233,6 +264,80 @@ class AgentNotifier extends AsyncNotifier<AgentState> {
   /// Abort an in-progress streamed answer.
   void cancelStreaming() {
     _cancelToken?.cancel('cancelled by user');
+  }
+
+  /// Submit a 👍/👎 rating for the assistant message at [index]. The question
+  /// is the nearest preceding user turn; the active [sessionId] is included so
+  /// the backend can tie feedback to the conversation. Optimistic: the rating
+  /// shows immediately and reverts if the request fails.
+  Future<void> submitFeedback(int index, int rating, {String? comment}) async {
+    final current = _currentState;
+    if (index < 0 || index >= current.messages.length) {
+      return;
+    }
+    final message = current.messages[index];
+    if (message.isUser ||
+        message.isError ||
+        message.isStreaming ||
+        message.isSubmittingFeedback ||
+        message.content.trim().isEmpty) {
+      return;
+    }
+
+    // Walk back to the user turn that prompted this answer.
+    var question = '';
+    for (var i = index - 1; i >= 0; i--) {
+      if (current.messages[i].isUser) {
+        question = current.messages[i].content;
+        break;
+      }
+    }
+    if (question.trim().isEmpty) {
+      return;
+    }
+
+    final previousRating = message.rating;
+    _setMessageAt(
+      index,
+      (m) => m.copyWith(rating: rating, isSubmittingFeedback: true),
+    );
+
+    try {
+      await _feedbackRepository.submitFeedback(
+        projectId: current.currentProjectId,
+        question: question,
+        answer: message.content,
+        rating: rating,
+        sessionId: current.sessionId,
+        comment: comment,
+      );
+      _setMessageAt(index, (m) => m.copyWith(isSubmittingFeedback: false));
+    } catch (error) {
+      _setMessageAt(
+        index,
+        (m) => m.copyWith(
+          rating: previousRating,
+          isSubmittingFeedback: false,
+        ),
+      );
+      _update(_currentState.copyWith(
+        errorMessage: UserFriendlyError.message(
+          error,
+          fallback: 'Couldn’t submit feedback. Please try again.',
+        ),
+      ));
+    }
+  }
+
+  /// Replace the message at [index] via [update], guarding the bounds since a
+  /// session switch or delete can shift the list between async gaps.
+  void _setMessageAt(int index, ChatMessage Function(ChatMessage) update) {
+    final messages = <ChatMessage>[..._currentState.messages];
+    if (index < 0 || index >= messages.length) {
+      return;
+    }
+    messages[index] = update(messages[index]);
+    _update(_currentState.copyWith(messages: messages));
   }
 
   void _handleStreamError(Object error, int assistantIndex) {
