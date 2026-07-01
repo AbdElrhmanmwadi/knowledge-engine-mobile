@@ -863,4 +863,25 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get cancel => 'Cancel';
+
+  @override
+  String get feedbackPrompt => 'Was this answer helpful?';
+
+  @override
+  String get feedbackThanks => 'Thanks for your feedback!';
+
+  @override
+  String get feedbackHelpful => 'Helpful';
+
+  @override
+  String get feedbackNotHelpful => 'Not helpful';
+
+  @override
+  String get feedbackCommentHint => 'What went wrong? (optional)';
+
+  @override
+  String get feedbackSend => 'Send';
+
+  @override
+  String get feedbackError => 'Couldn’t submit feedback. Please try again.';
 }

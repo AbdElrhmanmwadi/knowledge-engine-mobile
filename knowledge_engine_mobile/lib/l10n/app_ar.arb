@@ -358,5 +358,13 @@
   "logout": "تسجيل الخروج",
   "logoutConfirmTitle": "تسجيل الخروج؟",
   "logoutConfirmBody": "ستحتاج إلى تسجيل الدخول مرة أخرى للوصول إلى مشاريعك.",
-  "cancel": "إلغاء"
+  "cancel": "إلغاء",
+
+  "feedbackPrompt": "هل كانت هذه الإجابة مفيدة؟",
+  "feedbackThanks": "شكرًا على ملاحظتك!",
+  "feedbackHelpful": "مفيدة",
+  "feedbackNotHelpful": "غير مفيدة",
+  "feedbackCommentHint": "ما الخطأ في الإجابة؟ (اختياري)",
+  "feedbackSend": "إرسال",
+  "feedbackError": "تعذّر إرسال الملاحظة. حاول مرة أخرى."
 }

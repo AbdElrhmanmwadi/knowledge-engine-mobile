@@ -358,5 +358,13 @@
   "logout": "Sign out",
   "logoutConfirmTitle": "Sign out?",
   "logoutConfirmBody": "You'll need to sign in again to access your projects.",
-  "cancel": "Cancel"
+  "cancel": "Cancel",
+
+  "feedbackPrompt": "Was this answer helpful?",
+  "feedbackThanks": "Thanks for your feedback!",
+  "feedbackHelpful": "Helpful",
+  "feedbackNotHelpful": "Not helpful",
+  "feedbackCommentHint": "What went wrong? (optional)",
+  "feedbackSend": "Send",
+  "feedbackError": "Couldn’t submit feedback. Please try again."
 }
