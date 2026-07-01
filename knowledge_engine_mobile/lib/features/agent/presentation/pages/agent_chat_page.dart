@@ -8,6 +8,7 @@ import '../../../../core/models/agent_chat_response.dart';
 import '../../../../core/widgets/skeleton.dart';
 import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
+import '../../../feedback/presentation/widgets/feedback_bar.dart';
 import '../providers/agent_notifier.dart';
 import '../providers/agent_provider.dart';
 
@@ -150,7 +151,11 @@ class _AgentChatPageState extends ConsumerState<AgentChatPage> {
         children: [
           Expanded(
             child: state.hasMessages
-                ? _MessageList(state: state, controller: _scrollController)
+                ? _MessageList(
+                    state: state,
+                    controller: _scrollController,
+                    projectId: widget.projectId,
+                  )
                 : const _EmptyState(),
           ),
           if (state.errorMessage != null)
@@ -169,10 +174,15 @@ class _AgentChatPageState extends ConsumerState<AgentChatPage> {
 
 // ── Message list ─────────────────────────────────────────────────────────────
 class _MessageList extends StatelessWidget {
-  const _MessageList({required this.state, required this.controller});
+  const _MessageList({
+    required this.state,
+    required this.controller,
+    required this.projectId,
+  });
 
   final AgentState state;
   final ScrollController controller;
+  final int projectId;
 
   @override
   Widget build(BuildContext context) {
@@ -181,19 +191,29 @@ class _MessageList extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
       itemCount: state.messages.length,
       itemBuilder: (context, index) {
-        return _MessageBubble(message: state.messages[index]);
+        return _MessageBubble(
+          message: state.messages[index],
+          index: index,
+          projectId: projectId,
+        );
       },
     );
   }
 }
 
-class _MessageBubble extends StatelessWidget {
-  const _MessageBubble({required this.message});
+class _MessageBubble extends ConsumerWidget {
+  const _MessageBubble({
+    required this.message,
+    required this.index,
+    required this.projectId,
+  });
 
   final ChatMessage message;
+  final int index;
+  final int projectId;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final isUser = message.isUser;
 
     // Assistant bubble that hasn't received any tokens yet → show a thinking
@@ -214,47 +234,70 @@ class _MessageBubble extends StatelessWidget {
               ? scheme.error
               : Theme.of(context).textTheme.bodyLarge?.color);
 
+    // 👍/👎 shows only under a finalized, non-error assistant answer.
+    final showFeedback =
+        !isUser && !message.isError && !message.isStreaming &&
+            message.content.trim().isNotEmpty;
+
     return Align(
       alignment: isUser
           ? AlignmentDirectional.centerEnd
           : AlignmentDirectional.centerStart,
-      child: Semantics(
-        // Announce who is speaking and the message content as one unit for
-        // screen readers; assistant replies update live while streaming.
-        label: isUser
-            ? context.l10n.a11yYouMessage(message.content)
-            : context.l10n.a11yAssistantMessage(message.content),
-        liveRegion: message.isStreaming,
-        child: Container(
-          margin: EdgeInsets.only(bottom: 12.h),
-          constraints: BoxConstraints(maxWidth: 0.82.sw),
-          padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadiusDirectional.only(
-              topStart: Radius.circular(16.r),
-              topEnd: Radius.circular(16.r),
-              bottomStart: Radius.circular(isUser ? 16.r : 4.r),
-              bottomEnd: Radius.circular(isUser ? 4.r : 16.r),
-            ),
-            border: isUser
-                ? null
-                : Border.all(color: scheme.onSurface.withValues(alpha: 0.08)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ExcludeSemantics(
-                child: Text(
-                  message.content,
-                  style: TextStyle(color: fg, fontSize: 14.sp, height: 1.4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Semantics(
+            // Announce who is speaking and the message content as one unit for
+            // screen readers; assistant replies update live while streaming.
+            label: isUser
+                ? context.l10n.a11yYouMessage(message.content)
+                : context.l10n.a11yAssistantMessage(message.content),
+            liveRegion: message.isStreaming,
+            child: Container(
+              constraints: BoxConstraints(maxWidth: 0.82.sw),
+              padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
+              decoration: BoxDecoration(
+                color: bg,
+                borderRadius: BorderRadiusDirectional.only(
+                  topStart: Radius.circular(16.r),
+                  topEnd: Radius.circular(16.r),
+                  bottomStart: Radius.circular(isUser ? 16.r : 4.r),
+                  bottomEnd: Radius.circular(isUser ? 4.r : 16.r),
                 ),
+                border: isUser
+                    ? null
+                    : Border.all(
+                        color: scheme.onSurface.withValues(alpha: 0.08)),
               ),
-              if (message.sources.isNotEmpty)
-                _SourcesBlock(sources: message.sources),
-            ],
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  ExcludeSemantics(
+                    child: Text(
+                      message.content,
+                      style: TextStyle(color: fg, fontSize: 14.sp, height: 1.4),
+                    ),
+                  ),
+                  if (message.sources.isNotEmpty)
+                    _SourcesBlock(sources: message.sources),
+                ],
+              ),
+            ),
           ),
-        ),
+          if (showFeedback)
+            Padding(
+              padding: EdgeInsets.only(top: 6.h, bottom: 4.h),
+              child: FeedbackBar(
+                compact: true,
+                rating: message.rating,
+                isSubmitting: message.isSubmittingFeedback,
+                onSubmit: (rating, {String? comment}) => ref
+                    .read(agentNotifierProvider(projectId).notifier)
+                    .submitFeedback(index, rating, comment: comment),
+              ),
+            ),
+          SizedBox(height: 12.h),
+        ],
       ),
     );
   }
