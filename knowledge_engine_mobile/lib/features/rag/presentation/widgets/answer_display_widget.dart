@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../l10n/l10n.dart';
+import '../../../feedback/presentation/widgets/feedback_bar.dart';
 import '../providers/rag_provider.dart';
 
 class AnswerDisplayWidget extends ConsumerWidget {
@@ -85,35 +86,54 @@ class AnswerDisplayWidget extends ConsumerWidget {
           else
           Padding(
             padding: EdgeInsets.fromLTRB(18.w, 0.h, 18.w, 16.h),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                _MiniPill(
-                  label: 'Signal: ${response.signal}',
-                  color: Theme.of(context).textTheme.bodyMedium?.color ?? Theme.of(context).colorScheme.onSurface,
+                Row(
+                  children: [
+                    _MiniPill(
+                      label: 'Signal: ${response.signal}',
+                      color: Theme.of(context).textTheme.bodyMedium?.color ?? Theme.of(context).colorScheme.onSurface,
+                    ),
+                    const Spacer(),
+                    // Copy
+                    _IconAction(
+                      icon: Icons.copy_outlined,
+                      label: 'Copy',
+                      color: Theme.of(context).colorScheme.primary,
+                      onTap: () => _copy(
+                        context,
+                        response.answer,
+                        'Answer copied to clipboard.',
+                      ),
+                    ),
+                    if (state.hasDebugData) ...[
+                      SizedBox(width: 8.w),
+                      _IconAction(
+                        icon: state.isDebugVisible
+                            ? Icons.visibility_off_outlined
+                            : Icons.bug_report_outlined,
+                        label: state.isDebugVisible ? 'Hide debug' : 'Debug',
+                        color: Theme.of(context).colorScheme.secondary,
+                        onTap: ref
+                            .read(ragNotifierProvider(projectId).notifier)
+                            .toggleDebugVisibility,
+                      ),
+                    ],
+                  ],
                 ),
-                const Spacer(),
-                // Copy
-                _IconAction(
-                  icon: Icons.copy_outlined,
-                  label: 'Copy',
-                  color: Theme.of(context).colorScheme.primary,
-                  onTap: () => _copy(
-                    context,
-                    response.answer,
-                    'Answer copied to clipboard.',
-                  ),
-                ),
-                if (state.hasDebugData) ...[
-                  SizedBox(width: 8.w),
-                  _IconAction(
-                    icon: state.isDebugVisible
-                        ? Icons.visibility_off_outlined
-                        : Icons.bug_report_outlined,
-                    label: state.isDebugVisible ? 'Hide debug' : 'Debug',
-                    color: Theme.of(context).colorScheme.secondary,
-                    onTap: ref
+                // ── 👍/👎 feedback ─────────────────────────────────────
+                if (response.answer.trim().isNotEmpty) ...[
+                  Divider(
+                      color: Colors.white.withValues(alpha: 0.06),
+                      height: 24.h),
+                  FeedbackBar(
+                    rating: state.feedbackRating,
+                    isSubmitting: state.isSubmittingFeedback,
+                    errorMessage: state.feedbackError,
+                    onSubmit: (rating, {String? comment}) => ref
                         .read(ragNotifierProvider(projectId).notifier)
-                        .toggleDebugVisibility,
+                        .submitAnswerFeedback(rating, comment: comment),
                   ),
                 ],
               ],

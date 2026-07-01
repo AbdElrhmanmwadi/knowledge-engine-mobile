@@ -8,6 +8,7 @@ import '../../../../core/models/rag_answer_response.dart';
 import '../../../../core/models/search_response.dart';
 import '../../../../core/network/api_exception.dart';
 import '../../../../core/network/user_friendly_error.dart';
+import '../../../feedback/data/repositories/feedback_repository.dart';
 import '../../data/repositories/answer_repository.dart';
 import '../../data/repositories/search_repository.dart';
 
@@ -28,6 +29,10 @@ class RagState {
     this.answerResponse,
     this.answerErrorMessage,
     this.isDebugVisible = false,
+    this.answeredQuestion,
+    this.feedbackRating,
+    this.isSubmittingFeedback = false,
+    this.feedbackError,
   });
 
   factory RagState.initial(int projectId) {
@@ -49,6 +54,14 @@ class RagState {
   final RagAnswerResponse? answerResponse;
   final String? answerErrorMessage;
   final bool isDebugVisible;
+
+  /// The question that produced [answerResponse]; sent verbatim with feedback.
+  final String? answeredQuestion;
+
+  /// Submitted/optimistic answer rating: `1` (👍), `-1` (👎), or `null`.
+  final int? feedbackRating;
+  final bool isSubmittingFeedback;
+  final String? feedbackError;
 
   bool get isBusy => isSearching || isAnswering;
   bool get canSearch =>
@@ -88,6 +101,10 @@ class RagState {
     Object? answerResponse = _unset,
     Object? answerErrorMessage = _unset,
     bool? isDebugVisible,
+    Object? answeredQuestion = _unset,
+    Object? feedbackRating = _unset,
+    bool? isSubmittingFeedback,
+    Object? feedbackError = _unset,
   }) {
     return RagState(
       currentProjectId: currentProjectId,
@@ -119,6 +136,16 @@ class RagState {
           ? this.answerErrorMessage
           : answerErrorMessage as String?,
       isDebugVisible: isDebugVisible ?? this.isDebugVisible,
+      answeredQuestion: identical(answeredQuestion, _unset)
+          ? this.answeredQuestion
+          : answeredQuestion as String?,
+      feedbackRating: identical(feedbackRating, _unset)
+          ? this.feedbackRating
+          : feedbackRating as int?,
+      isSubmittingFeedback: isSubmittingFeedback ?? this.isSubmittingFeedback,
+      feedbackError: identical(feedbackError, _unset)
+          ? this.feedbackError
+          : feedbackError as String?,
     );
   }
 }
@@ -129,12 +156,14 @@ class RagNotifier extends AsyncNotifier<RagState> {
   final int _projectId;
   late SearchRepository _searchRepository;
   late AnswerRepository _answerRepository;
+  late FeedbackRepository _feedbackRepository;
   CancelToken? _answerCancelToken;
 
   @override
   RagState build() {
     _searchRepository = SearchRepository();
     _answerRepository = AnswerRepository();
+    _feedbackRepository = FeedbackRepository();
     ref.onDispose(() => _answerCancelToken?.cancel('disposed'));
     return RagState.initial(_projectId);
   }
@@ -308,12 +337,18 @@ class RagNotifier extends AsyncNotifier<RagState> {
     _answerCancelToken = cancelToken;
 
     // Clear the previous answer so the card fills in fresh as deltas arrive.
+    // Also reset any feedback from the prior answer and remember the question
+    // that this answer is for, so 👍/👎 sends the exact text later.
     _updateState(currentState.copyWith(
       isAnswering: true,
       answerErrorMessage: null,
       answerLimitError: null,
       answerResponse: null,
       isDebugVisible: false,
+      answeredQuestion: question,
+      feedbackRating: null,
+      isSubmittingFeedback: false,
+      feedbackError: null,
     ));
 
     final buffer = StringBuffer();
@@ -387,6 +422,49 @@ class RagNotifier extends AsyncNotifier<RagState> {
   /// Abort an in-progress streamed answer.
   void cancelAnswer() {
     _answerCancelToken?.cancel('cancelled by user');
+  }
+
+  /// Submit a 👍/👎 rating on the current answer. Optimistic: the selected
+  /// rating shows immediately and reverts if the request fails. A direct RAG
+  /// answer has no session, so `session_id` is omitted.
+  Future<void> submitAnswerFeedback(int rating, {String? comment}) async {
+    final current = _currentState;
+    final response = current.answerResponse;
+    final question = current.answeredQuestion;
+    if (response == null ||
+        question == null ||
+        question.trim().isEmpty ||
+        response.answer.trim().isEmpty ||
+        current.isSubmittingFeedback) {
+      return;
+    }
+
+    final previousRating = current.feedbackRating;
+    _updateState(current.copyWith(
+      feedbackRating: rating,
+      isSubmittingFeedback: true,
+      feedbackError: null,
+    ));
+
+    try {
+      await _feedbackRepository.submitFeedback(
+        projectId: current.currentProjectId,
+        question: question,
+        answer: response.answer,
+        rating: rating,
+        comment: comment,
+      );
+      _updateState(_currentState.copyWith(isSubmittingFeedback: false));
+    } catch (error) {
+      _updateState(_currentState.copyWith(
+        feedbackRating: previousRating,
+        isSubmittingFeedback: false,
+        feedbackError: UserFriendlyError.message(
+          error,
+          fallback: 'Couldn’t submit feedback. Please try again.',
+        ),
+      ));
+    }
   }
 
   /// Push the partial answer text into state so the card renders live.
