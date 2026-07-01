@@ -32,6 +32,10 @@ class ApiConstants {
   static String agentSession(int projectId, int sessionId) =>
       '$agentPath/sessions/$projectId/$sessionId';
 
+  // Feedback endpoints
+  static const String feedbackPath = '$basePath/feedback';
+  static String submitFeedback(int projectId) => '$feedbackPath/$projectId';
+
   // Voice endpoints
   static const String speechToText = '$voicePath/stt';
   static const String textToSpeech = '$voicePath/tts';
