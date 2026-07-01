@@ -8,6 +8,7 @@ import '../config/constants.dart';
 import '../models/agent_chat_response.dart';
 import '../models/agent_session.dart';
 import '../models/api_response_base.dart';
+import '../models/feedback_response.dart';
 import '../models/index_push_response.dart';
 import '../models/process_response.dart';
 import '../models/project_file.dart';
@@ -125,6 +126,20 @@ abstract class ApiService {
   Future<void> deleteAgentSession({
     required int projectId,
     required int sessionId,
+  });
+
+  /// Submit a 👍/👎 rating on an answer that was shown to the user.
+  ///
+  /// [rating] must be exactly `1` (helpful) or `-1` (not helpful). Pass
+  /// [sessionId] when the answer came from the agent chat; omit it for a
+  /// direct RAG answer. [comment] is optional free text (nice to ask on 👎).
+  Future<FeedbackResponse> submitFeedback({
+    required int projectId,
+    required String question,
+    required String answer,
+    required int rating,
+    int? sessionId,
+    String? comment,
   });
 
   Future<SttResponse> speechToText({
@@ -499,6 +514,31 @@ class DioApiService implements ApiService {
       path: ApiConstants.getTranslationStatus(jobId),
       parser: TranslationJobStatusResponse.fromJson,
       operation: 'get translation status',
+    );
+  }
+
+  @override
+  Future<FeedbackResponse> submitFeedback({
+    required int projectId,
+    required String question,
+    required String answer,
+    required int rating,
+    int? sessionId,
+    String? comment,
+  }) {
+    return _post(
+      path: ApiConstants.submitFeedback(projectId),
+      data: <String, dynamic>{
+        'question': question,
+        'answer': answer,
+        'rating': rating,
+        'session_id': ?sessionId,
+        'comment': ?comment,
+      },
+      parser: FeedbackResponse.fromJson,
+      operation: 'submit feedback',
+      requireSuccessSignal: false,
+      validateSignalIfPresent: true,
     );
   }
 
