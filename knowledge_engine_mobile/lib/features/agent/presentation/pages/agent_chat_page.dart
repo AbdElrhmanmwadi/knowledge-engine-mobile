@@ -9,6 +9,7 @@ import '../../../../core/widgets/skeleton.dart';
 import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 import '../../../feedback/presentation/widgets/feedback_bar.dart';
+import '../../../voice/presentation/widgets/voice_input_button.dart';
 import '../providers/agent_notifier.dart';
 import '../providers/agent_provider.dart';
 
@@ -165,6 +166,12 @@ class _AgentChatPageState extends ConsumerState<AgentChatPage> {
             isSending: state.isSending,
             onSend: _send,
             onStop: _stop,
+            onVoiceText: (text) {
+              _inputController.text = text;
+              _inputController.selection = TextSelection.collapsed(
+                offset: text.length,
+              );
+            },
           ),
         ],
       ),
@@ -236,8 +243,10 @@ class _MessageBubble extends ConsumerWidget {
 
     // 👍/👎 shows only under a finalized, non-error assistant answer.
     final showFeedback =
-        !isUser && !message.isError && !message.isStreaming &&
-            message.content.trim().isNotEmpty;
+        !isUser &&
+        !message.isError &&
+        !message.isStreaming &&
+        message.content.trim().isNotEmpty;
 
     return Align(
       alignment: isUser
@@ -267,7 +276,8 @@ class _MessageBubble extends ConsumerWidget {
                 border: isUser
                     ? null
                     : Border.all(
-                        color: scheme.onSurface.withValues(alpha: 0.08)),
+                        color: scheme.onSurface.withValues(alpha: 0.08),
+                      ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -438,47 +448,51 @@ class _EmptyState extends StatelessWidget {
           ),
         ),
         Center(
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 40.w),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: 64.w,
-              height: 64.w,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(color: color.withValues(alpha: 0.25)),
-              ),
-              child: Icon(Icons.auto_awesome_rounded, color: color, size: 30.w),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 40.w),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64.w,
+                  height: 64.w,
+                  decoration: BoxDecoration(
+                    color: color.withValues(alpha: 0.12),
+                    borderRadius: BorderRadius.circular(20.r),
+                    border: Border.all(color: color.withValues(alpha: 0.25)),
+                  ),
+                  child: Icon(
+                    Icons.auto_awesome_rounded,
+                    color: color,
+                    size: 30.w,
+                  ),
+                ),
+                SizedBox(height: 18.h),
+                Text(
+                  context.l10n.agentEmptyTitle,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Georgia',
+                    fontSize: 20.sp,
+                    fontWeight: FontWeight.w700,
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
+                  ),
+                ),
+                SizedBox(height: 8.h),
+                Text(
+                  context.l10n.agentEmptyBody,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 13.sp,
+                    height: 1.5,
+                    color: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 18.h),
-            Text(
-              context.l10n.agentEmptyTitle,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Georgia',
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w700,
-                color: Theme.of(context).textTheme.bodyLarge?.color,
-              ),
-            ),
-            SizedBox(height: 8.h),
-            Text(
-              context.l10n.agentEmptyBody,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 13.sp,
-                height: 1.5,
-                color: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.color?.withValues(alpha: 0.7),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
         ),
       ],
     );
@@ -492,12 +506,14 @@ class _InputBar extends StatelessWidget {
     required this.isSending,
     required this.onSend,
     required this.onStop,
+    required this.onVoiceText,
   });
 
   final TextEditingController controller;
   final bool isSending;
   final VoidCallback onSend;
   final VoidCallback onStop;
+  final ValueChanged<String> onVoiceText;
 
   @override
   Widget build(BuildContext context) {
@@ -548,6 +564,14 @@ class _InputBar extends StatelessWidget {
                   ),
                 ),
               ),
+            ),
+            SizedBox(width: 8.w),
+            VoiceInputButton(
+              enabled: !isSending,
+              onTranscribed: onVoiceText,
+              onError: (message) => ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(message))),
             ),
             SizedBox(width: 8.w),
             _SendButton(isSending: isSending, onSend: onSend, onStop: onStop),
