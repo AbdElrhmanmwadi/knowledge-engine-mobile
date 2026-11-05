@@ -114,11 +114,23 @@ class _RegisterPageState extends ConsumerState<RegisterPage> {
           ),
           SizedBox(height: 20.h),
           AuthSubmitButton(
-            label: l10n.backToSignIn,
-            loadingLabel: l10n.backToSignIn,
+            label: l10n.verifyEmailButton,
+            loadingLabel: l10n.verifyEmailButton,
             isLoading: false,
+            onPressed: () => context.push('/auth/verify-email'),
+            icon: Icons.verified_user_outlined,
+          ),
+          SizedBox(height: 10.h),
+          TextButton(
             onPressed: () => context.go('/login'),
-            icon: Icons.login_rounded,
+            child: Text(
+              l10n.backToSignIn,
+              style: TextStyle(
+                fontSize: 13.sp,
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
         ],
       );

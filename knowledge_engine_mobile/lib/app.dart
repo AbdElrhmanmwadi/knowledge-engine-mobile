@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'core/localization/locale_controller.dart';
+import 'core/onboarding/onboarding_provider.dart';
 import 'core/theme/app_theme.dart';
 import 'core/theme/theme_controller.dart';
 import 'l10n/l10n.dart';
@@ -22,11 +22,6 @@ import 'features/files/presentation/pages/files_page.dart';
 import 'features/rag/presentation/pages/ask_page.dart';
 import 'features/translation/presentation/pages/translate_page.dart';
 import 'features/voice/presentation/pages/voice_page.dart';
-
-final onboardingCompletedProvider = FutureProvider<bool>((ref) async {
-  final prefs = await SharedPreferences.getInstance();
-  return prefs.getBool('hasSeenOnboarding') ?? false;
-});
 
 const _supportedLocales = [
   Locale('en'),
@@ -103,10 +98,12 @@ GoRouter createRouter({
   required bool hasSeenOnboarding,
   required AuthStatus authStatus,
 }) => GoRouter(
-  initialLocation: !hasSeenOnboarding
-      ? '/onboarding'
-      : authStatus == AuthStatus.authenticated
-          ? '/projects'
+  // An authenticated user must always land in the app, even if the cached
+  // onboarding flag is stale from the pre-login session.
+  initialLocation: authStatus == AuthStatus.authenticated
+      ? '/projects'
+      : !hasSeenOnboarding
+          ? '/onboarding'
           : '/login',
   redirect: (context, state) {
     final isAuthenticated = authStatus == AuthStatus.authenticated;
@@ -116,7 +113,10 @@ GoRouter createRouter({
     if (!isAuthenticated && !isPublic) {
       return '/login';
     }
-    if (isAuthenticated && (location == '/login' || location == '/register')) {
+    if (isAuthenticated &&
+        (location == '/login' ||
+            location == '/register' ||
+            location == '/onboarding')) {
       return '/projects';
     }
     return null;

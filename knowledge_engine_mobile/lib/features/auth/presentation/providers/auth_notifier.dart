@@ -35,12 +35,21 @@ class AuthNotifier extends Notifier<AuthStatus> {
   }
 
   /// Auto-login on app start using the stored refresh token.
+  ///
+  /// Any storage/platform failure must never leave the app stuck on the
+  /// splash screen: fall back to the unauthenticated (login) state.
   Future<void> _restoreSession() async {
-    final tokens = await _repository.restoreSession();
-    if (state == AuthStatus.unknown) {
-      state = tokens != null
-          ? AuthStatus.authenticated
-          : AuthStatus.unauthenticated;
+    try {
+      final tokens = await _repository.restoreSession();
+      if (state == AuthStatus.unknown) {
+        state = tokens != null
+            ? AuthStatus.authenticated
+            : AuthStatus.unauthenticated;
+      }
+    } catch (_) {
+      if (state == AuthStatus.unknown) {
+        state = AuthStatus.unauthenticated;
+      }
     }
   }
 

@@ -126,7 +126,7 @@ class AuthRepository {
           data: <String, dynamic>{'refresh_token': refreshToken},
         ),
       );
-      return _persistTokens(json);
+      return await _persistTokens(json);
     } on AuthFailure catch (failure) {
       if (failure.isNetworkError) {
         final accessToken = await _tokenStorage.readAccessToken();

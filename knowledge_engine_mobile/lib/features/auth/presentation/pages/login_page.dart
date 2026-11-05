@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/l10n.dart';
+import '../../data/models/auth_failure.dart';
 import '../providers/auth_notifier.dart';
 import '../widgets/auth_widgets.dart';
 
@@ -20,6 +21,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   late final TextEditingController _passwordController;
 
   bool _isSubmitting = false;
+  bool _showVerifyLink = false;
   String? _errorMessage;
   String? _emailError;
   String? _passwordError;
@@ -45,6 +47,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
     setState(() {
       _errorMessage = null;
+      _showVerifyLink = false;
       _emailError = _validateEmail(email);
       _passwordError = password.isEmpty ? l10n.authPasswordRequired : null;
     });
@@ -60,6 +63,9 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       if (!mounted) return;
       setState(() {
         _errorMessage = describeAuthFailure(context, error, isLogin: true);
+        // 403 on login means the email is not verified yet; offer the
+        // in-app verification screen so the user can paste the email token.
+        _showVerifyLink = error is AuthFailure && error.statusCode == 403;
       });
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -96,6 +102,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       children: [
         if (_errorMessage != null) ...[
           AuthErrorBanner(message: _errorMessage!),
+          if (_showVerifyLink)
+            Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: TextButton(
+                onPressed: _isSubmitting
+                    ? null
+                    : () => context.push('/auth/verify-email'),
+                child: Text(l10n.verifyEmailButton),
+              ),
+            ),
           SizedBox(height: 14.h),
         ],
         AuthTextField(

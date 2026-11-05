@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../../core/onboarding/onboarding_provider.dart';
 import '../../../../core/widgets/wave_background.dart';
 import '../../../../l10n/l10n.dart';
 
-class OnboardingPage extends StatefulWidget {
+class OnboardingPage extends ConsumerStatefulWidget {
   const OnboardingPage({super.key});
 
   @override
-  State<OnboardingPage> createState() => _OnboardingPageState();
+  ConsumerState<OnboardingPage> createState() => _OnboardingPageState();
 }
 
-class _OnboardingPageState extends State<OnboardingPage> {
+class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   static const _storageKey = 'hasSeenOnboarding';
   static const _slideCount = 3;
 
@@ -31,6 +33,9 @@ class _OnboardingPageState extends State<OnboardingPage> {
     setState(() => _saving = true);
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_storageKey, true);
+    // Refresh the cached flag so the router does not send the user back to
+    // onboarding after they sign in during this same app session.
+    ref.invalidate(onboardingCompletedProvider);
     if (!mounted) return;
     context.go('/projects');
   }
